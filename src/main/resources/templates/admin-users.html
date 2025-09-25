@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Users-List</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="">
+  <meta name="author" content="Phoenixcoded" />
+  <link rel="icon" th:href="@{/Village/VillageAdmin/assets/images/favicon.ico}" type="image/x-icon">
+  <link rel="stylesheet" th:href="@{/Admin/assets/css/style.css}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+    .notification.unread {
+    background-color: #f5f5f5;
+    border-left: 4px solid #28a745;
+    }
+    .notification.read {
+    opacity: 0.7;
+    }
+    .noti-head {
+    background-color: #000;
+    color: #fff;
+    padding: 10px;
+    }
+
+    .noti-head a {
+    color: #fff !important;
+    text-decoration: none;
+    font-weight: 500;
+    }
+
+    .noti-head a:hover {
+    text-decoration: underline;
+    }
+
+    .notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    }
+
+    .notification-item.unread {
+    background-color: #f9f9f9;
+    font-weight: bold;
+    }
+
+    .notification-item.read {
+    background-color: #e0e0e0;
+    font-weight: normal;
+    }
+    </style>
+</head>
+<body class="">
+<div class="loader-bg">
+  <div class="loader-track">
+    <div class="loader-fill"></div>
+  </div>
+</div>
+<nav class="pcoded-navbar  ">
+  <div class="navbar-wrapper  ">
+    <div class="navbar-content scroll-div " >
+
+      <div class="">
+        <div class="main-menu-header">
+          <img class="img-radius" th:src="@{'/uploads/admin/' + ${admin.adminProfileImage}}" alt="Admin">
+          <div class="user-details">
+            <span th:text="${admin.adminName}"></span>
+            <div id="more-details">Administrator<i class="fa fa-chevron-down m-l-5"></i></div>
+          </div>
+        </div>
+        <div class="collapse" id="nav-user-link">
+          <ul class="list-unstyled">
+            <li class="list-group-item"><a th:href="@{/admin/profile}"><i class="feather icon-user m-r-5"></i>View Profile</a></li>
+            <li class="list-group-item"><a th:href="@{/admin/logout}"><i class="feather icon-log-out m-r-5"></i>Logout</a></li>
+          </ul>
+        </div>
+      </div>
+
+        <ul class="nav pcoded-inner-navbar ">
+            <li class="nav-item pcoded-menu-caption">
+                <label>Home</label>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/home}" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
+            </li>
+            <li class="nav-item pcoded-hasmenu">
+                <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-layout"></i></span><span class="pcoded-mtext">Village</span></a>
+                <ul class="pcoded-submenu">
+                    <li><a th:href="@{/admin/requests}" >Requests</a></li>
+                    <li><a th:href="@{/admin/viewAllVillages}" >View All</a></li>
+                    <li><a th:href="@{/admin/viewPendingVillageEditRequests}" >Update-Requests</a></li>
+                    <li><a th:href="@{/admin/updatedVillages}" >All Update Reqs</a></li>
+                </ul>
+            </li>
+            <li class="nav-item pcoded-menu-caption">
+                <label>Cultural Activities</label>
+            </li>
+            <li class="nav-item pcoded-hasmenu">
+                <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-box"></i></span><span class="pcoded-mtext">Activities</span></a>
+                <ul class="pcoded-submenu">
+                    <li><a th:href="@{/admin/viewActivityRequests}" >Requests</a></li>
+                    <li><a th:href="@{/admin/viewAllActivities}" >View All</a></li>
+                </ul>
+            </li>
+            <li class="nav-item pcoded-menu-caption">
+                <label>Others</label>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/allUsers}" class="nav-link "><span class="pcoded-micon"><i class="feather icon-file-text"></i></span><span class="pcoded-mtext">Users</span></a>
+            </li>
+            <li class="nav-item">
+                <a th:href="@{/admin/feedbacks}" class="nav-link "><span class="pcoded-micon"><i class="feather icon-align-justify"></i></span><span class="pcoded-mtext">FeedBacks</span></a>
+            </li>
+        </ul>
+
+    </div>
+  </div>
+</nav>
+<header class="navbar pcoded-header navbar-expand-lg navbar-light header-dark">
+
+
+  <div class="m-header">
+    <a class="mobile-menu" id="mobile-collapse" href="#!"><span></span></a>
+    <a href="#!" class="b-brand">
+      <img src="/Admin/assets/images/logo.png" alt="" class="logo">
+      <img src="/Admin/assets/images/logo-icon.png" alt="" class="logo-thumb">
+    </a>
+    <a href="#!" class="mob-toggler">
+      <i class="feather icon-more-vertical"></i>
+    </a>
+  </div>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ml-auto">
+        <li>
+            <div class="dropdown">
+                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                    <i class="icon feather icon-bell"></i>
+                    <span id="notification-count" class="badge badge-pill badge-danger"
+                          th:text="${messages.size()}">0</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right notification">
+                    <div class="noti-head">
+                        <h6 class="d-inline-block m-b-0">Notifications</h6>
+                        <div class="float-right">
+                            <a href="#!" class="mark-read-link m-r-10">mark as read</a>
+                            <a href="#!" class="clear-all-link">clear all</a>
+                        </div>
+                    </div>
+                    <ul class="noti-body">
+                        <li class="n-title"><p class="m-b-0">NEW</p></li>
+                        <li class="notification"
+                            th:each="message : ${messages}"
+                            th:data-id="${message.id}"
+                            th:classappend="${message.isRead} ? 'read' : 'unread'">
+                            <div class="media">
+                                <img class="img-radius"
+                                     th:src="${message.village?.villageProfileImage != null ? '/uploads/village/' + message.village.villageProfileImage : '/Admin/assets/images/user/default.jpg'}"
+                                     alt="Village image">
+                                <div class="media-body">
+                                    <p>
+                                        <strong th:text="${message.village?.villageName ?: 'Unknown Village'}">Village Name</strong>
+                                        <span class="n-time text-muted">
+                                                <i class="icon feather icon-clock m-r-10"></i>
+                                                <span th:text="${message.timestamp != null ? #temporals.format(message.timestamp, 'HH:mm') : '—'}"></span>
+                                            </span>
+                                        <span th:if="${#temporals.day(message.timestamp) == #temporals.day(#temporals.createNow())}"
+                                              class="badge bg-success ml-2">New</span>
+                                    </p>
+                                    <p th:text="${message.message}">Message content</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="noti-footer">
+                        <a th:href="@{/admin/inbox}">show all</a>
+                    </div>
+                </div>
+            </div>
+        </li>
+      <li>
+        <div class="dropdown drp-user">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="feather icon-user"></i>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right profile-notification">
+            <div class="pro-head">
+              <img th:src="@{'/uploads/admin/' + ${admin.adminProfileImage}}" alt="Admin" class="img-radius" >
+              <span th:text="${admin.adminName}"></span>
+              <a th:href="@{/admin/logout}" class="dud-logout" title="Logout">
+                <i class="feather icon-log-out"></i>
+              </a>
+            </div>
+            <ul class="pro-body">
+              <li><a th:href="@{/admin/profile}" class="dropdown-item"><i class="feather icon-user"></i> Profile</a></li>
+              <li><a th:href="@{/admin/viewResetPassword}" class="dropdown-item"><i class="feather icon-mail"></i>Reset-Password</a></li>
+              <li><a th:href="@{/admin/logout}" class="dropdown-item"><i class="feather icon-lock"></i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+
+</header>
+
+<div class="pcoded-main-container">
+  <div class="pcoded-content">
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="page-header-title">
+              <h5 class="m-b-10">Users List</h5>
+            </div>
+            <ul class="breadcrumb">
+              <li class="breadcrumb-item"><a th:href="@{/admin/home}"><i class="feather icon-home"></i></a></li>
+              <li class="breadcrumb-item"><a th:href="@{/admin/allUsers}">Users-List</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <h5>Users</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover">
+                <thead class="thead-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>User Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>ProfilePicture</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                  <td th:text="${user.userId}"></td>
+                  <td th:text="${user.userName}"></td>
+                  <td th:text="${user.userEmail}"></td>
+                  <td th:text="${user.userPhone}"></td>
+                  <td>
+                    <div style="display: flex; flex-wrap: nowrap; gap: 10px; overflow-x: auto; white-space: nowrap;">
+                        <img th:src="@{'/uploads/user/' + ${user.userProfilePicName}}" alt="User Photo" width="120" height="80">
+                        <br>
+                        <a th:href="@{'/uploads/user/' + ${user.userProfilePicName}}" download>Download Image</a>
+                    </div>
+                  </td>
+                  <td>
+                    <button class="btn btn-danger btn-delete-user" th:attr="data-id=${user.userId}">Remove</button>
+                  </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(users)}">
+                    <td colspan="16" style="text-align: center; color: red;">No data available</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this user?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button id="confirmDeleteBtn" class="btn btn-danger">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    let deleteUserId = null;
+    let deleteRow = null;
+
+    $(document).on('click', '.btn-delete-user', function () {
+      deleteUserId = $(this).data('id');
+      deleteRow = $(this).closest('tr');
+      $('#confirmDeleteModal').modal('show');
+    });
+
+    $('#confirmDeleteBtn').click(function () {
+      if (deleteUserId) {
+        $.ajax({
+          url: `/admin/deleteUser`,
+          type: 'POST',
+          data: { userId: deleteUserId },
+          success: function () {
+            deleteRow.remove();
+            $('#confirmDeleteModal').modal('hide');
+          },
+          error: function () {
+            alert('Error deleting user');
+            $('#confirmDeleteModal').modal('hide');
+          }
+        });
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const markReadBtn = document.querySelector(".mark-read-link");
+        const clearAllBtn = document.querySelector(".clear-all-link");
+        const notiBody = document.querySelector(".noti-body");
+        const countBadge = document.getElementById("notification-count");
+
+        const updateCount = () => {
+            const unread = notiBody.querySelectorAll(".notification.unread").length;
+            countBadge.textContent = unread > 0 ? unread : "0";
+        };
+
+        markReadBtn?.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch("/admin/inbox/markAllRead", {
+                    method: "POST"
+                });
+                if (res.ok) {
+                    notiBody.querySelectorAll(".notification.unread").forEach(item => {
+                        item.classList.remove("unread");
+                        item.classList.add("read");
+                    });
+                    updateCount();
+                }
+            } catch (err) {
+                console.error("Error marking all as read:", err);
+            }
+        });
+
+        clearAllBtn?.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch("/admin/inbox/clearAll", {
+                    method: "DELETE"
+                });
+                if (res.ok) {
+                    notiBody.innerHTML = `
+                        <li class="n-title">
+                            <p class="m-b-0 text-muted">No notifications</p>
+                        </li>
+                    `;
+                    updateCount();
+                }
+            } catch (err) {
+                console.error("Error clearing notifications:", err);
+            }
+        });
+
+        notiBody.addEventListener("click", async (e) => {
+            const item = e.target.closest(".notification.unread");
+            if (!item) return;
+            const id = item.dataset.id; // needs th:data-id in your HTML
+            try {
+                const res = await fetch(`/admin/inbox/markRead/${id}`, {
+                    method: "POST"
+                });
+                if (res.ok) {
+                    item.classList.remove("unread");
+                    item.classList.add("read");
+                    updateCount();
+                }
+            } catch (err) {
+                console.error("Error marking notification read:", err);
+            }
+        });
+        updateCount();
+    });
+</script>
+<script src="/Admin/assets/js/vendor-all.min.js"></script>
+<script src="/Admin/assets/js/plugins/bootstrap.min.js"></script>
+<script src="/Admin/assets/js/pcoded.min.js"></script>
+
+</body>
+
+</html>

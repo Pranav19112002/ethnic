@@ -1,0 +1,623 @@
+
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register-Village</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arizonia&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/animate.css}">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.theme.default.min.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/homepage/css/magnific-popup.css}">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/bootstrap-datepicker.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/jquery.timepicker.css}">
+
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/flaticon.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/style.css}">
+
+    <style>
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .login-btn {
+            padding: 8px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            color: orange;
+            border: 2px solid #ffc107;
+            text-transform: uppercase;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: transparent;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 15px;
+        }
+
+        .login-btn:hover {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .registration-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 50px 0;
+        }
+
+        .form-wrapper {
+            max-width: 600px;
+            width: 100%;
+            background-color: #fff;
+            padding: 20px;
+            border: 2px solid orange;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .form-wrapper h2 {
+            color: orange;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        form label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        form input,
+        form textarea,
+        form button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            background-color: orange;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        form button:hover {
+            background-color: darkorange;
+        }
+
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .captcha-box {
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .swal2-popup-custom {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 1rem;
+        }
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            width: 60%;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #333;
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .navbar-nav {
+    display: flex;
+    align-items: center; /* Ensures all items are vertically aligned */
+}
+
+.login-btn {
+    padding: 8px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    color: orange;
+    border: 2px solid #ffc107;
+    text-transform: uppercase;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: transparent;
+    text-decoration: none;
+    display: inline-block; /* Ensures button behaves like other navbar items */
+    margin-left: 15px; /* Adds space between menu items and button */
+}
+
+.login-btn:hover {
+    background-color: #ffc107;
+    color: black;
+}
+
+/* Base dropdown */
+.dropdown-menu {
+display: none;
+position: absolute;
+top: 100%;
+left: 0;
+z-index: 1000;
+width: 100%;
+max-height: 200px;
+overflow-y: auto;
+background-color: #fff;
+border: 1px solid #ccc;
+border-top: none;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+font-size: 0.95rem;
+padding: 0;
+border-radius: 0 0 6px 6px;
+}
+
+/* Dropdown item */
+.dropdown-item {
+display: block;
+width: 100%;
+padding: 10px 15px;
+color: #333;
+background-color: #fff;
+text-decoration: none;
+border-bottom: 1px solid #eee;
+cursor: pointer;
+transition: background 0.2s ease;
+}
+
+/* Hover effect */
+.dropdown-item:hover {
+background-color: #f1f1f1;
+color: #006600;
+}
+
+/* Active/selected effect */
+.dropdown-item.active,
+.dropdown-item:focus {
+background-color: #e6f7e6;
+color: #006600;
+font-weight: 600;
+}
+
+/* Scrollbar visibility (optional) */
+.dropdown-menu::-webkit-scrollbar {
+width: 6px;
+}
+.dropdown-menu::-webkit-scrollbar-thumb {
+background-color: #ccc;
+border-radius: 10px;
+}
+.dropdown-menu::-webkit-scrollbar-track {
+background-color: #f9f9f9;
+}
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Ethnic Village<span>Website</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active"><a th:href="@{/}" class="nav-link">Home</a></li>
+                <li class="nav-item"><a th:href="@{/about}" class="nav-link">About</a></li>
+                <li class="nav-item"><a th:href="@{/villages}" class="nav-link">Villages</a></li>
+                <li class="nav-item"><a th:href="@{/stays}" class="nav-link">Stays</a></li>
+                <li class="nav-item"><a th:href="@{/contact}" class="nav-link">Contact</a></li>
+                <li class="nav-item" th:if="${user == null}">
+                    <a th:href="@{/loginPage}" class="btn btn-outline-warning login-btn">Login</a>
+                </li>
+
+                <li class="nav-item dropdown" th:if="${user != null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span style="color: #ffc107; font-weight: bold; font-size: 1.2rem;">
+                            User:
+                            <span th:text="${user.userName}" style="color: #00ff00;"></span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/profile}">👤 Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/bookingsHistory/current}">🧾 Bookings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center" th:href="@{/user/notifications}">
+                            ✉️ Messages
+                            <span class="badge badge-pill badge-danger ml-2" th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/logout}">🚪 Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="hero-wrap js-fullheight" style="background-image: url('/User/HomePage/images/bg_7.png');">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-center" data-scrollax-parent="true">
+            <div class="col-md-7 ftco-animate">
+                <span class="subheading">Welcome to Ethnic Village</span>
+                <h1 class="mb-4">Explore Authentic Village Life, One Stay at a Time</h1>
+                <p class="caps">Search your favorite village, book unique activities, and experience culture beyond the ordinary</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="registration-section">
+    <div class="form-wrapper">
+        <h2>Official Village Registration Form</h2>
+        <form id="villageForm" th:action="@{/village/sendOtp}" enctype="multipart/form-data" method="post" th:object="${villageDto}">
+
+            <h3>Village Information</h3>
+
+            <label for="villageName">Village Name:</label>
+            <input type="text" id="villageName" th:field="*{villageName}" pattern="[A-Za-z\s]+" title="Only letters and spaces are allowed" required>
+            <p th:if="${#fields.hasErrors('villageName')}" th:errorclass="text-danger" th:errors="*{villageName}"></p>
+
+            <label for="villageEmail">Village Email:</label>
+            <input type="email" id="villageEmail" th:field="*{villageEmail}"  required>
+            <p th:if="${#fields.hasErrors('villageEmail')}" th:errorclass="text-danger" th:errors="*{villageEmail}"></p>
+
+            <label for="villageType">Village Type (Tribal, Coastal, etc.):</label>
+            <input type="text" id="villageType" th:field="*{villageType}" pattern="[A-Za-z\s]+" title="Only letters and spaces are allowed">
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" th:field="*{villageLocation}" pattern="[A-Za-z0-9,\s]+" required>
+            <p th:if="${#fields.hasErrors('villageLocation')}" th:errorclass="text-danger" th:errors="*{villageLocation}"></p>
+
+            <label for="latitude">Latitude (Optional):</label>
+            <input type="text" id="latitude" th:field="*{latitude}" pattern="^-?\d+(\.\d+)?$">
+            <p th:if="${#fields.hasErrors('latitude')}" th:errorclass="text-danger" th:errors="*{latitude}"></p>
+
+            <label for="longitude">Longitude (Optional):</label>
+            <input type="text" id="longitude" th:field="*{longitude}" pattern="^-?\d+(\.\d+)?$">
+            <p th:if="${#fields.hasErrors('longitude')}" th:errorclass="text-danger" th:errors="*{longitude}"></p>
+
+            <label for="description">Village Description:</label>
+            <textarea id="description" th:field="*{villageDescription}" required></textarea>
+            <p th:if="${#fields.hasErrors('villageDescription')}" th:errorclass="text-danger" th:errors="*{villageDescription}"></p>
+
+            <h3>Legal Registration Details</h3>
+
+            <label for="registrationNumber">Official Registration Number:</label>
+            <input type="text" id="registrationNumber" th:field="*{villageRegNumber}" pattern="[A-Za-z0-9-]+" required>
+            <p th:if="${#fields.hasErrors('villageRegNumber')}" th:errorclass="text-danger" th:errors="*{villageRegNumber}"></p>
+
+            <label for="issuingAuthority">Issuing Authority:</label>
+            <input type="text" id="issuingAuthority" th:field="*{villageAuthorityName}" pattern="[A-Za-z\s]+" required>
+            <p th:if="${#fields.hasErrors('villageAuthorityName')}" th:errorclass="text-danger" th:errors="*{villageAuthorityName}"></p>
+
+            <h3>Representative Details</h3>
+
+            <label for="adminName">Legal Representative Name:</label>
+            <input type="text" id="adminName" th:field="*{legalRepresentativeName}" pattern="[A-Za-z\s]+" required>
+            <p th:if="${#fields.hasErrors('legalRepresentativeName')}" th:errorclass="text-danger" th:errors="*{legalRepresentativeName}"></p>
+
+            <label for="position">Position (Chief, Head, etc.):</label>
+            <input type="text" id="position" th:field="*{representativePosition}" pattern="[A-Za-z\s]+" required>
+            <p th:if="${#fields.hasErrors('representativePosition')}" th:errorclass="text-danger" th:errors="*{representativePosition}"></p>
+
+            <label for="idNumber">Official ID Number:</label>
+            <input type="text" id="idNumber" th:field="*{officialIdNumber}" pattern="[A-Za-z0-9]+" required>
+            <p th:if="${#fields.hasErrors('officialIdNumber')}" th:errorclass="text-danger" th:errors="*{officialIdNumber}"></p>
+
+            <h3>Contact Details</h3>
+
+            <label for="contactName">Contact Person Name:</label>
+            <input type="text" id="contactName" th:field="*{contactPersonName}" pattern="[A-Za-z\s]+" title="Only letters and spaces are allowed" required>
+            <p th:if="${#fields.hasErrors('contactPersonName')}" th:errorclass="text-danger" th:errors="*{contactPersonName}"></p>
+
+            <label for="contactEmail">Contact Email:</label>
+            <input type="email" id="contactEmail" th:field="*{contactEmail}" required>
+            <p th:if="${#fields.hasErrors('contactEmail')}" th:errorclass="text-danger" th:errors="*{contactEmail}"></p>
+
+            <label for="contactNumber">Primary Contact Number:</label>
+            <input type="text" id="contactNumber" th:field="*{contactNo}" pattern="^(\\+\\d{1,3}[- ]?)?\\d{10}$" required>
+            <p th:if="${#fields.hasErrors('contactNo')}" th:errorclass="text-danger" th:errors="*{contactNo}"></p>
+
+            <label for="alternateContact">Alternate Contact Number (Optional):</label>
+            <input type="text" id="alternateContact" th:field="*{altContactNo}" pattern="^(\\+\\d{1,3}[- ]?)?\\d{10}$">
+            <p th:if="${#fields.hasErrors('altContactNo')}" th:errorclass="text-danger" th:errors="*{altContactNo}"></p>
+            <h3>Banking & Tax Details</h3>
+
+            <label for="bankName">Bank Name:</label>
+            <input type="text" id="bankName" th:field="*{bankName}" pattern="[A-Za-z\s]+" required>
+            <p th:if="${#fields.hasErrors('bankName')}" th:errorclass="text-danger" th:errors="*{bankName}"></p>
+
+            <label for="accountNumber">Bank Account Number:</label>
+            <input type="text" id="accountNumber" th:field="*{bankAccountNumber}" pattern="[0-9]{8,20}" required>
+            <p th:if="${#fields.hasErrors('bankAccountNumber')}" th:errorclass="text-danger" th:errors="*{bankAccountNumber}"></p>
+
+            <label for="taxNumber">Tax Number:</label>
+            <input type="text" id="taxNumber" th:field="*{taxInfoNumber}" pattern="[A-Za-z0-9]+" required>
+            <p th:if="${#fields.hasErrors('taxInfoNumber')}" th:errorclass="text-danger" th:errors="*{taxInfoNumber}"></p>
+
+            <h3>Upload Documents</h3>
+
+            <div th:if="${otpPhase == null}">
+                <label for="officialDocs">Upload Official Documents:</label>
+                <input type="file" id="officialDocs" th:field="*{officialDoc}" accept=".pdf,.jpg,.png" required>
+                <p th:if="${#fields.hasErrors('officialDoc')}" th:errorclass="text-danger" th:errors="*{officialDoc}"></p>
+            </div>
+            <div th:if="${otpPhase != null}">
+                <p>Official Document uploaded: <span th:text="${villageDto.officialDocPath}"></span></p>
+            </div>
+
+            <div th:if="${otpPhase == null}">
+                <label for="stamp">Upload Official Stamp/Seal (Optional):</label>
+                <input type="file" id="stamp" th:field="*{offStampOrSeal}" accept=".jpg,.png">
+                <p th:if="${#fields.hasErrors('offStampOrSeal')}" th:errorclass="text-danger" th:errors="*{offStampOrSeal}"></p>
+            </div>
+            <div th:if="${otpPhase != null}">
+                <p>Stamp/Seal uploaded: <span th:text="${villageDto.offStampOrSealPath}"></span></p>
+            </div>
+
+            <div th:if="${otpPhase == null}">
+                <label for="villagePhotos">Upload Village Photos:</label>
+                <input type="file" id="villagePhotos" th:field="*{villagePhotos}" multiple accept=".jpg,.jpeg,.png">
+                <p th:if="${#fields.hasErrors('villagePhotos')}" th:errorclass="text-danger" th:errors="*{villagePhotos}"></p>
+            </div>
+            <div th:if="${otpPhase != null}">
+                <p>Village Photos uploaded:</p>
+                <ul>
+                    <li th:each="photo : ${villageDto.villagePhotoPaths}" th:text="${photo}"></li>
+                </ul>
+            </div>
+
+            <div th:if="${otpPhase == null}">
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" th:field="*{newPassword}" class="form-control" required />
+            <p th:if="${#fields.hasErrors('newPassword')}" th:errorclass="text-danger" th:errors="*{newPassword}"></p>
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" required />
+            <p th:if="${#fields.hasErrors('confirmPassword')}" th:errorclass="text-danger" th:errors="*{confirmPassword}"></p>
+            </div>
+            <div th:if="${otpPhase != null}">
+                <p>Password entered and locked for verification.</p>
+            </div>
+            <div th:if="${passwordError}" style="color: red;">
+                <strong th:text="${passwordError}"></strong>
+            </div>
+
+            <div class="captcha-container"  th:if="${otpPhase == null}">
+                <div class="captcha-box" th:text="${captchaCode}"></div>
+                <input type="text" id="captchaInput" name="captchaInput" placeholder="Enter Captcha" required>
+            </div>
+
+
+            <div th:if="${otpPhase == null}">
+                <label>
+                    <input type="checkbox" id="terms" required />
+                    I agree to the <a href="#" onclick="openTermsModal()">Terms & Conditions</a>
+                </label>
+            </div>
+
+            <button type="submit" id="registerBtn" th:if="${otpPhase == null}">Register</button>
+        </form>
+    </div>
+    <div th:if="${errorMessage}" style="color: red;">
+        <strong th:text="${errorMessage}"></strong>
+    </div>
+    <div th:if="${otpPhase}">
+        <p>OTP sent to <strong th:text="${villageEmail}"></strong></p>
+
+        <form th:action="@{/village/verifyOtp}" method="post">
+            <input type="text" name="otp" placeholder="Enter OTP" required />
+            <button type="submit">Verify OTP</button>
+        </form>
+        <div class="text-center m-t-10">
+            <button id="resendBtn" class="btn btn-link" disabled onclick="document.getElementById('resendForm').submit()">
+                Resend OTP (<span id="countdown">30</span>s)
+            </button>
+        </div>
+
+        <form id="resendForm" th:action="@{/village/resendOtp}" method="post" style="display: none;">
+            <input type="hidden" name="villageEmail" th:value="${villageEmail}" />
+        </form>
+    </div>
+</section>
+
+<footer class="ftco-footer bg-bottom ftco-no-pt" style="background-image: url(User/HomePage/images/bg_3.jpg);">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row mb-5">
+            <!-- About Ethnic Village -->
+            <div class="col-md pt-5">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">About Ethnic Village</h2>
+                    <p>Ethnic Village connects travelers with authentic village stays and cultural experiences across India. From pottery workshops to folk performances, we help you discover the soul of rural life.</p>
+                    <ul class="ftco-footer-social list-unstyled mt-3">
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-twitter"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-facebook"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-instagram"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4 ml-md-5">
+                    <h2 class="ftco-heading-2">Quick Links</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="/enquiry" class="py-2 d-block">Online Enquiry</a></li>
+                        <li><a href="/faq" class="py-2 d-block">FAQs</a></li>
+                        <li><a href="/terms" class="py-2 d-block">Booking Terms</a></li>
+                        <li><a href="/privacy" class="py-2 d-block">Privacy Policy</a></li>
+                        <li><a href="/refund" class="py-2 d-block">Refund Policy</a></li>
+                        <li><a href="/contact" class="py-2 d-block">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Explore Experiences -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">Explore Experiences</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="/activities?type=adventure" class="py-2 d-block">Adventure</a></li>
+                        <li><a href="/activities?type=craft" class="py-2 d-block">Craft & Pottery</a></li>
+                        <li><a href="/activities?type=food" class="py-2 d-block">Local Cuisine</a></li>
+                        <li><a href="/activities?type=festivals" class="py-2 d-block">Festivals</a></li>
+                        <li><a href="/activities?type=nature" class="py-2 d-block">Nature Trails</a></li>
+                        <li><a href="/activities?type=heritage" class="py-2 d-block">Heritage Walks</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">Contact Us</h2>
+                    <div class="block-23 mb-3">
+                        <ul>
+                            <li><span class="icon fa fa-map-marker"></span><span class="text">Ethnic Village HQ, Kanayannur, Kerala, India</span></li>
+                            <li><a href="tel:+919876543210"><span class="icon fa fa-phone"></span><span class="text">+91 98765 43210</span></a></li>
+                            <li><a href="mailto:support@ethnicvillage.in"><span class="icon fa fa-paper-plane"></span><span class="text">support@ethnicvillage.in</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div id="termsModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeTermsModal()">&times;</span>
+        <h3>Terms & Conditions for Village Registration</h3>
+        <p>
+            By registering, you confirm that all submitted documents are authentic,
+            the representative is legally authorized, and the village complies with
+            local governance, cultural preservation, and administrative standards.
+        </p>
+        <p>
+            You also agree to periodic verification and updates to maintain transparency
+            and eligibility for government or community support programs.
+        </p>
+    </div>
+</div>
+
+<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const captchaInput = document.getElementById("captchaInput");
+        const termsCheckbox = document.getElementById("terms");
+        const registerBtn = document.getElementById("registerBtn");
+
+        if (captchaInput && termsCheckbox && registerBtn) {
+            captchaInput.addEventListener("input", checkFormReady);
+            termsCheckbox.addEventListener("change", checkFormReady);
+            checkFormReady(); // Initial state
+        }
+
+        const resendBtn = document.getElementById("resendBtn");
+        const countdownSpan = document.getElementById("countdown");
+
+        if (resendBtn && countdownSpan) {
+            let countdown = 30;
+            resendBtn.disabled = true;
+
+            const interval = setInterval(() => {
+                countdown--;
+                countdownSpan.textContent = countdown;
+                if (countdown <= 0) {
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = "Resend OTP";
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+
+        const registrationFailed = /*[[${registrationFailed}]]*/ false;
+        const errorMessage = /*[[${errorMessage}]]*/ '';
+
+        if (registrationFailed) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Registration Failed',
+                text: errorMessage || 'Something went wrong during registration.',
+                confirmButtonText: 'Try Again',
+                customClass: {
+                    popup: 'swal2-popup-custom'
+                }
+            });
+        }
+    });
+
+    // ✅ Add these two functions
+    function openTermsModal() {
+        document.getElementById("termsModal").style.display = "block";
+    }
+
+    function closeTermsModal() {
+        document.getElementById("termsModal").style.display = "none";
+    }
+</script>
+
+
+<script src="/User/HomePage/js/jquery.min.js"></script>
+<script src="/User/HomePage/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="/User/HomePage/js/popper.min.js"></script>
+<script src="/User/HomePage/js/bootstrap.min.js"></script>
+<script src="/User/HomePage/js/jquery.easing.1.3.js"></script>
+<script src="/User/HomePage/js/jquery.waypoints.min.js"></script>
+<script src="/User/HomePage/js/jquery.stellar.min.js"></script>
+<script src="/User/HomePage/js/owl.carousel.min.js"></script>
+<script src="/User/HomePage/js/jquery.magnific-popup.min.js"></script>
+<script src="/User/HomePage/js/jquery.animateNumber.min.js"></script>
+<script src="/User/HomePage/js/bootstrap-datepicker.js"></script>
+<script src="/User/HomePage/js/scrollax.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+<script src="/User/HomePage/js/google-map.js"></script>
+<script src="/User/HomePage/js/main.js"></script>
+
+</body>
+</html>

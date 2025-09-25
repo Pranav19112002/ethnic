@@ -1,0 +1,735 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Book Activity</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arizonia&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/animate.css}">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.theme.default.min.css}">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/bootstrap-datepicker.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/jquery.timepicker.css}">
+
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/flaticon.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <style>
+        .navbar-nav {
+            display: flex;
+            align-items: center; /* Ensures all items are vertically aligned */
+        }
+
+        .login-btn {
+            padding: 8px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            color: white;
+            border: 2px solid #ffc107;
+            text-transform: uppercase;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: transparent;
+            text-decoration: none;
+            display: inline-block; /* Ensures button behaves like other navbar items */
+            margin-left: 15px; /* Adds space between menu items and button */
+        }
+
+        .login-btn:hover {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .dropdown-menu {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          z-index: 1000;
+          width: 100%;
+          max-height: 200px;
+          overflow-y: auto;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-top: none;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          font-size: 0.95rem;
+          padding: 0;
+          border-radius: 0 0 6px 6px;
+        }
+
+        /* Dropdown item */
+        .dropdown-item {
+          display: block;
+          width: 100%;
+          padding: 10px 15px;
+          color: #333;
+          background-color: #fff;
+          text-decoration: none;
+          border-bottom: 1px solid #eee;
+          cursor: pointer;
+          transition: background 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+          background-color: #f1f1f1;
+          color: #006600;
+        }
+
+        body {
+            background: #f0f5f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .card {
+          background: #ffffff;
+          border-radius: 15px;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+          transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .card:hover {
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h4, h5 {
+          color: #006600;
+          font-weight: 600;
+        }
+
+        .btn-outline-info {
+          border-radius: 30px;
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+
+        .btn-book-now {
+            background-color: #006600;
+            color: white;
+            padding: 10px 24px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .btn-book-now:hover:enabled {
+            background-color: #009900;
+        }
+
+        .btn-book-now:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            color: #666;
+        }
+
+        .carousel-inner img {
+          border-radius: 12px;
+          height: 220px;
+          object-fit: cover;
+        }
+
+        ul {
+          padding-left: 18px;
+        }
+
+        ul li {
+          margin-bottom: 6px;
+          font-size: 0.95rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .badge {
+        font-size: 0.85rem;
+        padding: 5px 10px;
+        border-radius: 10px;
+         }
+
+        .badge.bg-success {
+            background-color: #28a745;
+        }
+
+        .badge.bg-primary {
+            background-color: #007bff;
+        }
+
+        .text-success {
+            font-weight: 600;
+            color: #28a745 !important;
+        }
+
+        .text-danger {
+            font-weight: 600;
+            color: #dc3545 !important;
+        }
+
+          .modal-content {
+        background-color: #fefefe;
+        border-radius: 1rem;
+        }
+
+        .list-group-item {
+            border: none;
+            padding: 0.75rem 1rem;
+        }
+
+        .list-group-item:hover {
+            background-color: #f3f3f3;
+        }
+
+        .btn-outline-dark:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        img.img-fluid {
+            height: 150px;
+            object-fit: cover;
+        }
+        .badge {
+            font-size: 0.8rem;
+        }
+        .booking-error-box {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px 18px;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .booking-error-box i {
+            font-size: 20px;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Ethnic Village<span>Website</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active"><a th:href="@{/}" class="nav-link">Home</a></li>
+                <li class="nav-item"><a th:href="@{/about}" class="nav-link">About</a></li>
+                <li class="nav-item"><a th:href="@{/villages}" class="nav-link">Villages</a></li>
+                <li class="nav-item"><a th:href="@{/stays}" class="nav-link">Stays</a></li>
+                <li class="nav-item"><a th:href="@{/contact}" class="nav-link">Contact</a></li>
+                <li class="nav-item" th:if="${user == null}">
+                    <a th:href="@{/loginPage}" class="btn btn-outline-warning login-btn">Login</a>
+                </li>
+
+                <li class="nav-item dropdown" th:if="${user != null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span style="color: #ffc107; font-weight: bold; font-size: 1.2rem;">
+                            User:
+                            <span th:text="${user.userName}" style="color: #00ff00;"></span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/profile}">👤 Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/bookingsHistory/current}">🧾 Bookings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center" th:href="@{/user/notifications}">
+                            ✉️ Messages
+                            <span class="badge badge-pill badge-danger ml-2" th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/logout}">🚪 Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container my-5">
+    <div class="row">
+        <!-- Village & Activity Preview -->
+        <div class="col-md-12">
+            <div class="card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4>Activity Preview</h4>
+                    <div>
+                        <strong th:text="${village.villageName}"></strong>
+                        <button class="btn btn-outline-info btn-sm ms-3" data-bs-toggle="modal" data-bs-target="#villageModal">Village Details</button>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 th:text="${activity.activityName}"></h5><span th:text="${activity.activityStatus}"
+                                                                          th:classappend="${activity.activityStatus == 'Available'} ? 'badge bg-success' : 'badge bg-danger'"></span>
+                        <p th:text="${activity.description}"></p>
+                        <ul class="mb-3">
+                            <li><strong>Type:</strong> <span th:text="${activity.activityType}"></span></li>
+                            <li><strong>Duration:</strong> <span th:text="${activity.duration}"></span>min</li>
+                            <li><strong>Price:</strong> ₹<span th:text="${activity.price}"></span> per person</li>
+                            <li><strong>Available Slots:</strong>
+                                <span th:each="slot : ${activity.timeSlots}" th:text="${#temporals.format(slot, 'hh:mm a')}" class="badge bg-primary me-1"></span>
+                            </li>
+
+                            <li th:if="${activity.activityType == 'seasonal'}">
+                                <strong>Start Date:</strong> <span th:text="${activity.startDate}"></span>
+                            </li>
+                            <li th:if="${activity.activityType == 'seasonal'}">
+                                <strong>End Date:</strong> <span th:text="${activity.endDate}"></span>
+                            </li>
+                            <li th:if="${activity.availableDays != null and !activity.availableDays.isEmpty()}">
+                                <strong>Available Days:</strong>
+                                <span th:each="day : ${activity.availableDays}" class="badge bg-success me-1" th:text="${day}"></span>
+                            </li>
+                            <!-- Real-Time -->
+                            <li th:if="${activity.activityType == 'realTimeEvent'}">
+                                <strong>Event Date & Time:</strong>
+                                <span th:text="${#temporals.format(activity.eventDateTime, 'dd MMM yyyy, hh:mm a')}"></span>
+                            </li>
+                            <li th:if="${activity.activityType == 'realTimeEvent'}">
+                                <strong>Max People/Date:</strong> <span th:text="${activity.noOfPeopleAllowedForDateOnly}"></span>
+                            </li>
+                            <li th:if="${activity.activityType == 'seasonal' || activity.activityType == 'permanent' || activity.activityType == 'weatherDependent'}">
+                                <strong>Max People/Date:</strong> <span th:text="${activity.noOfPeopleAllowedForSloted}"></span>
+                            </li>
+                            <li th:if="${activity.activityType == 'weatherDependent' and activity.alternativeActivity != null}">
+                                <strong>Alternative Activity:</strong>
+                                <a th:href="@{'/user/bookingPage'(villageId=${activity.village.villageId}, activityId=${activity.alternativeActivity.activityId})}">
+                                    <span th:text="${activity.alternativeActivity.activityName}"></span>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <div th:if="${activity.activityPhotosNames != null and !activity.activityPhotosNames.isEmpty()}">
+                        <div id="activityCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item" th:each="img, stat : ${activity.activityPhotosNames}" th:classappend="${stat.index == 0} ? ' active'">
+                                    <img th:src="@{'/uploads/activity/' + ${img}}" class="d-block w-100" alt="Activity Image" style="height: 220px; object-fit: cover; border-radius: 12px;">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#activityCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#activityCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <button class="btn btn-book-now"
+                            th:disabled="${activity.activityStatus != 'Available'}"
+                            th:attr="title=${activity.activityStatus != 'Available'} ? 'Activity is currently unavailable' : ''"
+                            onclick="toggleForm()">
+                        Book Now
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="card p-4" id="bookingForm" th:classappend="${error} ? '' : 'hidden'">
+                <h4>Booking Form</h4>
+                <form th:action="@{/user/confirm-booking}" method="post" th:object="${activityBookingDto}">
+                    <input type="hidden" th:field="*{activityId}"/>
+                    <input type="hidden" th:field="*{villageId}"/>
+                    <input type="hidden" th:field="*{userId}"/>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label"><strong>Activity:</strong></label>
+                            <p class="form-control-plaintext" th:text="${activity.activityName}"></p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"><strong>Village:</strong></label>
+                            <p class="form-control-plaintext" th:text="${village.villageName}"></p>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label"><strong>User Email:</strong></label>
+                            <p class="form-control-plaintext" th:text="${user.userEmail}"></p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="bookingDate" class="form-label">Booking Date</label>
+
+                            <input type="hidden" id="activityTypeForCalender" th:value="${activity.activityType}" />
+                            <input type="hidden" id="startDateForCalender" th:if="${activity.startDate != null}" th:value="${activity.startDate}" />
+                            <input type="hidden" id="endDateForCalender" th:if="${activity.endDate != null}" th:value="${activity.endDate}" />
+                            <input type="hidden" id="eventDateForCalender" th:if="${activity.eventDateTime != null}" th:value="${#temporals.format(activity.eventDateTime, 'yyyy-MM-dd')}" />
+                            <input type="hidden" id="availableDaysForCalender"
+                                   th:if="${activity.availableDays != null}"
+                                   th:value="${activity.availableDays}"
+                                   th:attr="data-days=${activity.availableDays}" />
+
+                            <input type="text" id="bookingDate" name="bookingDate" class="form-control" th:field="*{bookingDate}" required>
+                        </div>
+                        <div class="col-md-6" id="timeSlotWrapper">
+                            <label for="timeSlotSelect" class="form-label">Time Slot</label>
+                            <select class="form-control" th:field="*{timeSlot}" id="timeSlotSelect">
+                                <option value="" disabled selected>Select a time</option>
+                                <option th:each="slot : ${activity.timeSlots}"
+                                        th:value="${slot}"
+                                        th:text="${#temporals.format(slot, 'hh:mm a')}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" id="activityPrice" th:value="${activity.price}" />
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label for="numberOfPeople" class="form-label">Number of People</label>
+                            <input type="number" min="1" class="form-control" id="numberOfPeople" name="numberOfPeople"
+                                   oninput="updateTotal()" th:field="*{numberOfPeople}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="contactNo" class="form-label">Contact Number</label>
+                            <input type="text" id="contactNo" class="form-control" th:field="*{contactNo}" required>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label for="altContactNo" class="form-label">Alternate Contact Number</label>
+                            <input type="text" id="altContactNo" class="form-control" th:field="*{altContactNo}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Total Amount:</strong> <span id="totalAmountDisplay">₹0.00</span>
+                        <input type="hidden" name="totalAmount" id="totalAmount" th:field="*{totalAmount}" />
+                    </div>
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" id="termsCheckbox" required>
+                        <label class="form-check-label" for="termsCheckbox">
+                            I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms and Conditions</a>
+                        </label>
+                    </div>
+
+                    <div th:if="${error}" class="booking-error-box">
+                        <span th:text="${error}"></span>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <button type="submit" class="btn btn-success">Confirm Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="villageModal" tabindex="-1" aria-labelledby="villageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content shadow-lg border-0 rounded-4">
+            <div class="modal-header bg-light border-bottom">
+                <h5 class="modal-title fw-semibold text-dark" id="villageModalLabel">
+                    <i class="bi bi-house-door-fill me-2 text-primary"></i> Village Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body px-4">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <h4 class="text-success fw-bold mb-2" th:text="${village.villageName}">Village Name</h4>
+                        <p class="text-muted" th:text="${village.villageDescription}">Description</p>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item">
+                                <strong>📍 Location:</strong>
+                                <span class="text-dark" th:text="${village.villageLocation}"></span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>🏞️ Type:</strong>
+                                <span class="text-dark" th:text="${village.villageType}"></span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>📞 Contact:</strong>
+                                <span class="text-dark" th:text="${village.contactNo}"></span>
+                            </li>
+                        </ul>
+
+                        <div>
+                            <h6 class="fw-semibold mb-2">Activities in this Village:</h6>
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    th:each="act : ${activitiesOfVillage}">
+                                    <a th:href="@{'/user/bookingPage?villageId=' + ${act.village.villageId} + '&activityId=' + ${act.activityId}}"
+                                       class="text-decoration-none text-primary fw-medium">
+                                        <i class="bi bi-arrow-right-circle me-1"></i>
+                                        <span th:text="${act.activityName}"></span>
+                                    </a>
+                                    <span class="badge rounded-pill"
+                                          th:classappend="${act.activityStatus == 'Available'} ? 'bg-success' : 'bg-secondary'"
+                                          th:text="${act.activityStatus}">Status</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="row g-3">
+                            <div class="col-6" th:each="imgName : ${village.villagePhotos}">
+                                <img th:src="@{'/uploads/village/' + ${imgName}}"
+                                     class="img-fluid rounded shadow-sm border"
+                                     alt="Village Image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light border-top">
+                <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Here you can outline your booking policies, cancellation rules, refund terms, and any disclaimers.</p>
+                <ul>
+                    <li>Bookings are non-refundable once confirmed.</li>
+                    <li>Ensure accurate contact details for communication.</li>
+                    <li>Late arrivals may result in forfeited slots.</li>
+                    <li>Pending bookings may be auto-cancelled if activity reaches full capacity before payment.</li>
+                    <li>Users will be notified if their booking size matches remaining slots—prompt payment is advised.</li>
+                    <li>In case of overbooking, unpaid bookings may be cancelled without prior notice.</li>
+                    <li>Receipt and payment confirmation will be sent via email upon successful transaction.</li>
+                    <li>Bookings are valid only for the selected date and time—rescheduling is subject to availability.</li>
+                    <li>Any changes to booking details must be requested at least 24 hours in advance.</li>
+                    <li>Activity providers reserve the right to cancel or reschedule due to unforeseen circumstances.</li>
+                    <li>By proceeding, you agree to the terms and conditions outlined above.</li>
+                </ul>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<footer class="ftco-footer bg-bottom ftco-no-pt" style="background-image: url(User/HomePage/images/bg_3.jpg);">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row mb-5">
+            <!-- About Ethnic Village -->
+            <div class="col-md pt-5">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">About Ethnic Village</h2>
+                    <p>Ethnic Village connects travelers with authentic village stays and cultural experiences across India. From pottery workshops to folk performances, we help you discover the soul of rural life.</p>
+                    <ul class="ftco-footer-social list-unstyled mt-3">
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-twitter"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-facebook"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-instagram"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4 ml-md-5">
+                    <h2 class="ftco-heading-2">Quick Links</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="/enquiry" class="py-2 d-block">Online Enquiry</a></li>
+                        <li><a href="/faq" class="py-2 d-block">FAQs</a></li>
+                        <li><a href="/terms" class="py-2 d-block">Booking Terms</a></li>
+                        <li><a href="/privacy" class="py-2 d-block">Privacy Policy</a></li>
+                        <li><a href="/refund" class="py-2 d-block">Refund Policy</a></li>
+                        <li><a href="/contact" class="py-2 d-block">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Explore Experiences -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">Explore Experiences</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="/activities?type=adventure" class="py-2 d-block">Adventure</a></li>
+                        <li><a href="/activities?type=craft" class="py-2 d-block">Craft & Pottery</a></li>
+                        <li><a href="/activities?type=food" class="py-2 d-block">Local Cuisine</a></li>
+                        <li><a href="/activities?type=festivals" class="py-2 d-block">Festivals</a></li>
+                        <li><a href="/activities?type=nature" class="py-2 d-block">Nature Trails</a></li>
+                        <li><a href="/activities?type=heritage" class="py-2 d-block">Heritage Walks</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">Contact Us</h2>
+                    <div class="block-23 mb-3">
+                        <ul>
+                            <li><span class="icon fa fa-map-marker"></span><span class="text">Ethnic Village HQ, Kanayannur, Kerala, India</span></li>
+                            <li><a href="tel:+919876543210"><span class="icon fa fa-phone"></span><span class="text">+91 98765 43210</span></a></li>
+                            <li><a href="mailto:support@ethnicvillage.in"><span class="icon fa fa-paper-plane"></span><span class="text">support@ethnicvillage.in</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+<script>
+    function toggleForm() {
+        const formSection = document.getElementById("bookingForm");
+        if (formSection.style.display === "none" || formSection.style.display === "") {
+            formSection.style.display = "block";
+            formSection.scrollIntoView({ behavior: "smooth" });
+        } else {
+            formSection.style.display = "none";
+        }
+    }
+
+    function updateTotal() {
+    const pricePerPerson = parseFloat(document.getElementById("activityPrice").value);
+    const people = parseInt(document.getElementById("numberOfPeople").value);
+    if (!isNaN(pricePerPerson) && !isNaN(people)) {
+        const total = pricePerPerson * people;
+        document.getElementById("totalAmountDisplay").textContent = `₹${total.toFixed(2)}`;
+        document.getElementById("totalAmount").value = total.toFixed(2);  // Set hidden field
+    } else {
+        document.getElementById("totalAmountDisplay").textContent = "₹0.00";
+        document.getElementById("totalAmount").value = 0;
+    }
+}
+
+     window.addEventListener("DOMContentLoaded", () => {
+        const type = document.getElementById("activityTypeForCalender")?.value?.trim();
+        const startDate = document.getElementById("startDateForCalender")?.value;
+        const endDate = document.getElementById("endDateForCalender")?.value;
+        const eventDate = document.getElementById("eventDateForCalender")?.value;
+        const availableDaysElement = document.getElementById("availableDaysForCalender");
+        const availableDaysRaw = availableDaysElement ? availableDaysElement.getAttribute("data-days") : "";
+        const availableDays = availableDaysRaw ? availableDaysRaw.replaceAll('[', '').replaceAll(']', '').replaceAll("'", "").split(",").map(d => d.trim()) : [];
+
+        const dayMap = {
+            "Sunday": 0,
+            "Monday": 1,
+            "Tuesday": 2,
+            "Wednesday": 3,
+            "Thursday": 4,
+            "Friday": 5,
+            "Saturday": 6
+        };
+
+        const enabledWeekdays = availableDays.map(day => dayMap[day]);
+        const today = new Date();
+
+        flatpickr("#bookingDate", {
+            minDate: today,
+            maxDate: type === "seasonal" ? endDate : null,
+            defaultDate: type === "realTimeEvent" ? eventDate : null,
+            enable: [
+                function (date) {
+                    const d = new Date(date);
+                    const day = d.getDay();
+
+                    if (type === "realTimeEvent") {
+                        return date.toISOString().split("T")[0] === eventDate;
+                    }
+
+                    if (type === "seasonal") {
+                        const start = flatpickr.parseDate(startDate, "Y-m-d");
+                        const end = flatpickr.parseDate(endDate, "Y-m-d");
+                        return d >= start && d <= end &&
+                            (enabledWeekdays.length === 0 || enabledWeekdays.includes(day));
+                    }
+
+                   if (type === "permanent") {
+                        return d >= today && (
+                            availableDays.length === 0 || enabledWeekdays.includes(day)
+                        );
+                    }
+
+                    if (type === "weatherDependent") {
+                        return d >= today && (
+                            availableDays.length === 0 || enabledWeekdays.includes(day)
+                        );
+                    }
+
+                    return false;
+                }
+            ],
+            dateFormat: "Y-m-d"
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const activityType = document.getElementById("activityTypeForCalender")?.value?.trim();
+        const timeSlotWrapper = document.getElementById("timeSlotWrapper");
+        const timeSlotSelect = document.getElementById("timeSlotSelect");
+
+        if (activityType === "realTimeEvent") {
+            timeSlotWrapper.style.display = "none";
+            timeSlotSelect.removeAttribute("required");
+            timeSlotSelect.value = "";
+        } else {
+            timeSlotWrapper.style.display = "block";
+            timeSlotSelect.setAttribute("required", "required");
+        }
+    });
+   });
+
+    document.querySelector("form").addEventListener("submit", function(e) {
+        const termsChecked = document.getElementById("termsCheckbox").checked;
+        if (!termsChecked) {
+            e.preventDefault(); // Stops form submission
+            alert("Please agree to the Terms and Conditions before booking.");
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/User/HomePage/js/jquery.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery-migrate-3.0.1.min.js}"></script>
+<script th:src="@{/User/HomePage/js/popper.min.js}"></script>
+<script th:src="@{/User/HomePage/js/bootstrap.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.easing.1.3.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.waypoints.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.stellar.min.js}"></script>
+<script th:src="@{/User/HomePage/js/owl.carousel.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.magnific-popup.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.animateNumber.min.js}"></script>
+<script th:src="@{/User/HomePage/js/bootstrap-datepicker.js}"></script>
+<script th:src="@{/User/HomePage/js/scrollax.min.js}"></script>
+<script th:src="@{/User/HomePage/js/main.js}"></script>
+
+</body>
+</html>

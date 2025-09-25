@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Village | Stays</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arizonia&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/animate.css}">
+
+    <link rel="stylesheet"  th:href="@{/User/HomePage/css/owl.carousel.min.css}">
+    <link rel="stylesheet"  th:href="@{/User/HomePage/css/owl.theme.default.min.css}">
+
+    <link rel="stylesheet"  th:href="@{/User/HomePage/css/bootstrap-datepicker.css}">
+    <link rel="stylesheet"  th:href="@{/User/HomePage/css/jquery.timepicker.css}">
+
+
+    <link rel="stylesheet"  th:href="@{/User/HomePage/css/flaticon.css}">
+    <link rel="stylesheet"  th:href="@{/User/HomePage/css/style.css}">
+    <style>
+        .navbar-nav {
+    display: flex;
+    align-items: center; /* Ensures all items are vertically aligned */
+}
+
+.login-btn {
+    padding: 8px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    color: orange;
+    border: 2px solid #ffc107;
+    text-transform: uppercase;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: transparent;
+    text-decoration: none;
+    display: inline-block; /* Ensures button behaves like other navbar items */
+    margin-left: 15px; /* Adds space between menu items and button */
+}
+
+.login-btn:hover {
+    background-color: #ffc107;
+    color: black;
+}
+
+/* Base dropdown */
+.dropdown-menu {
+display: none;
+position: absolute;
+top: 100%;
+left: 0;
+z-index: 1000;
+width: 100%;
+max-height: 200px;
+overflow-y: auto;
+background-color: #fff;
+border: 1px solid #ccc;
+border-top: none;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+font-size: 0.95rem;
+padding: 0;
+border-radius: 0 0 6px 6px;
+}
+
+/* Dropdown item */
+.dropdown-item {
+display: block;
+width: 100%;
+padding: 10px 15px;
+color: #333;
+background-color: #fff;
+text-decoration: none;
+border-bottom: 1px solid #eee;
+cursor: pointer;
+transition: background 0.2s ease;
+}
+
+/* Hover effect */
+.dropdown-item:hover {
+background-color: #f1f1f1;
+color: #006600;
+}
+
+/* Active/selected effect */
+.dropdown-item.active,
+.dropdown-item:focus {
+background-color: #e6f7e6;
+color: #006600;
+font-weight: 600;
+}
+
+/* Scrollbar visibility (optional) */
+.dropdown-menu::-webkit-scrollbar {
+width: 6px;
+}
+.dropdown-menu::-webkit-scrollbar-thumb {
+background-color: #ccc;
+border-radius: 10px;
+}
+.dropdown-menu::-webkit-scrollbar-track {
+background-color: #f9f9f9;
+}
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Ethnic Village<span>Website</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active"><a th:href="@{/}" class="nav-link">Home</a></li>
+                <li class="nav-item"><a th:href="@{/about}" class="nav-link">About</a></li>
+                <li class="nav-item"><a th:href="@{/villages}" class="nav-link">Villages</a></li>
+                <li class="nav-item"><a th:href="@{/stays}" class="nav-link">Stays</a></li>
+                <li class="nav-item"><a th:href="@{/contact}" class="nav-link">Contact</a></li>
+                <li class="nav-item" th:if="${user == null}">
+                    <a th:href="@{/loginPage}" class="btn btn-outline-warning login-btn">Login</a>
+                </li>
+
+                <li class="nav-item dropdown" th:if="${user != null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span style="color: #ffc107; font-weight: bold; font-size: 1.2rem;">
+                            User:
+                            <span th:text="${user.userName}" style="color: #00ff00;"></span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/profile}">👤 Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/bookingsHistory/current}">🧾 Bookings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center" th:href="@{/user/notifications}">
+                            ✉️ Messages
+                            <span class="badge badge-pill badge-danger ml-2" th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/logout}">🚪 Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url('User/HomePage/images/bg_10.png');">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-center">
+            <div class="col-md-9 ftco-animate pb-5 text-center">
+                <p class="breadcrumbs"><span class="mr-2"><a th:href="@{/}">Home <i class="fa fa-chevron-right"></i></a></span> <span>Stays <i class="fa fa-chevron-right"></i></span></p>
+                <h1 class="mb-0 bread">Village Stays</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section ftco-no-pb">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="search-wrap-1 ftco-animate">
+                    <form th:action="@{/stays}" method="GET" class="search-property-1">
+                        <div class="row no-gutters">
+                            <!-- Village Name -->
+                            <div class="col-lg d-flex">
+                                <div class="form-group p-4 border-0">
+                                    <label for="villageName">Village Name</label>
+                                    <div class="form-field">
+                                        <div class="icon"><span class="fa fa-home"></span></div>
+                                        <input type="text" name="villageName" id="villageName"
+                                               class="form-control"
+                                               placeholder="e.g. Kumily, Ollantaytambo"
+                                               th:value="${param.villageName}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Location -->
+                            <div class="col-lg d-flex">
+                                <div class="form-group p-4">
+                                    <label for="region">Location</label>
+                                    <div class="form-field">
+                                        <div class="icon"><span class="fa fa-map-marker"></span></div>
+                                        <input type="text" name="region" id="region"
+                                               class="form-control"
+                                               placeholder="e.g. Kerala, Cusco, Morocco"
+                                               th:value="${param.region}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit + Clear -->
+                            <div class="col-lg d-flex">
+                                <div class="form-group d-flex w-100 border-0">
+                                    <div class="form-field w-100 d-flex justify-content-start gap-2">
+                                        <input type="submit" value="Search" class="form-control btn btn-primary w-auto px-4">
+                                        <a href="/stays" class="btn btn-outline-secondary w-auto px-4">Clear</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 ftco-animate" th:each="stay : ${stays}">
+                <div class="project-wrap hotel">
+                    <a th:href="@{'/stay/' + ${stay.stayId}}"
+                       class="img"
+                       th:style="${#lists.isEmpty(stay.stayPhotosNames)} ?
+                       'background-image: url(/images/default.jpg);' :
+                       'background-image: url(/uploads/stay/' + ${stay.stayPhotosNames[0]} + ');'">
+                        <span class="price" th:text="'$' + ${stay.priceStartsFrom} + '/person'">Price</span>
+                    </a>
+                    <div class="text p-4">
+                        <span class="days">Village Stay</span>
+                        <h3><a th:href="@{'/stay/' + ${stay.stayId}}" th:text="${stay.villageStayName}">Stay Name</a></h3>
+                        <p class="location">
+                            <span class="fa fa-map-marker"></span>
+                            <span th:text="${stay.village.villageName} + ', ' + ${stay.village.villageLocation}">Location</span>
+                        </p>
+                        <ul>
+                            <li><span class="flaticon-shower"></span>2</li>
+                            <li><span class="flaticon-king-size"></span>3</li>
+                            <li><span class="flaticon-mountains"></span>Near Mountain</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<section class="ftco-intro ftco-section ftco-no-pt">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12 text-center">
+                <div class="img"  style="background-image: url(User/HomePage/images/bg_2.jpg);">
+                    <div class="overlay"></div>
+                    <h2>Register Village Now</h2>
+                    <p>Register village with proper data</p>
+                    <p class="mb-0"><a th:href="@{/village/register}" class="btn btn-primary px-4 py-3">Village Register Form</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="ftco-footer bg-bottom ftco-no-pt" style="background-image: url(User/HomePage/images/bg_3.jpg);">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row mb-5">
+            <!-- About Ethnic Village -->
+            <div class="col-md pt-5">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">About Ethnic Village</h2>
+                    <p>Ethnic Village connects travelers with authentic village stays and cultural experiences across India. From pottery workshops to folk performances, we help you discover the soul of rural life.</p>
+                    <ul class="ftco-footer-social list-unstyled mt-3">
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-twitter"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-facebook"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-instagram"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4 ml-md-5">
+                    <h2 class="ftco-heading-2">Quick Links</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="/enquiry" class="py-2 d-block">Online Enquiry</a></li>
+                        <li><a href="/faq" class="py-2 d-block">FAQs</a></li>
+                        <li><a href="/terms" class="py-2 d-block">Booking Terms</a></li>
+                        <li><a href="/privacy" class="py-2 d-block">Privacy Policy</a></li>
+                        <li><a href="/refund" class="py-2 d-block">Refund Policy</a></li>
+                        <li><a href="/contact" class="py-2 d-block">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Explore Experiences -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">Explore Experiences</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="/activities?type=adventure" class="py-2 d-block">Adventure</a></li>
+                        <li><a href="/activities?type=craft" class="py-2 d-block">Craft & Pottery</a></li>
+                        <li><a href="/activities?type=food" class="py-2 d-block">Local Cuisine</a></li>
+                        <li><a href="/activities?type=festivals" class="py-2 d-block">Festivals</a></li>
+                        <li><a href="/activities?type=nature" class="py-2 d-block">Nature Trails</a></li>
+                        <li><a href="/activities?type=heritage" class="py-2 d-block">Heritage Walks</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">Contact Us</h2>
+                    <div class="block-23 mb-3">
+                        <ul>
+                            <li><span class="icon fa fa-map-marker"></span><span class="text">Ethnic Village HQ, Kanayannur, Kerala, India</span></li>
+                            <li><a href="tel:+919876543210"><span class="icon fa fa-phone"></span><span class="text">+91 98765 43210</span></a></li>
+                            <li><a href="mailto:support@ethnicvillage.in"><span class="icon fa fa-paper-plane"></span><span class="text">support@ethnicvillage.in</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+<!-- loader -->
+<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+
+<script src="User/HomePage/js/jquery.min.js"></script>
+<script src="User/HomePage/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="User/HomePage/js/popper.min.js"></script>
+<script src="User/HomePage/js/bootstrap.min.js"></script>
+<script src="User/HomePage/js/jquery.easing.1.3.js"></script>
+<script src="User/HomePage/js/jquery.waypoints.min.js"></script>
+<script src="User/HomePage/js/jquery.stellar.min.js"></script>
+<script src="User/HomePage/js/owl.carousel.min.js"></script>
+<script src="User/HomePage/js/jquery.magnific-popup.min.js"></script>
+<script src="User/HomePage/js/jquery.animateNumber.min.js"></script>
+<script src="User/HomePage/js/bootstrap-datepicker.js"></script>
+<script src="User/HomePage/js/scrollax.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+<script src="User/HomePage/js/google-map.js"></script>
+<script src="User/HomePage/js/main.js"></script>
+</body>
+</html>

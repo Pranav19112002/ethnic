@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit-Village</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arizonia&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/animate.css}">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.theme.default.min.css}">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/bootstrap-datepicker.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/jquery.timepicker.css}">
+
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/flaticon.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/style.css}">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .registration-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 50px 0;
+        }
+
+        .form-wrapper {
+            max-width: 600px;
+            width: 100%;
+            background-color: #fff;
+            padding: 20px;
+            border: 2px solid #009966;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 153, 102, 0.15);
+            text-align: center;
+        }
+
+        .form-wrapper h2 {
+            color: #009966;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        form label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        form input,
+        form textarea,
+        form button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            background-color: #009966;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        form button:hover {
+            background-color: #007a5a;
+        }
+
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .captcha-box {
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="hero-wrap js-fullheight" style="background-image: url('/User/HomePage/images/bg_6.png');">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-center" data-scrollax-parent="true">
+            <div class="col-md-7 ftco-animate">
+                <span class="subheading">Welcome to Ethnic Village</span>
+                <h1 class="mb-4">Discover Your Favourite Villages with Us</h1>
+                <p class="caps">Enjoy Your Village Stay And Activities, without going around in circles</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="registration-section">
+    <div class="form-wrapper" style="max-width: 650px;">
+        <h2>Official Village Registration Form</h2>
+        <div th:if="${errorMessage}" style="color: red;">
+            <strong th:text="${errorMessage}"></strong>
+        </div>
+
+        <form id="nonApprovalForm" enctype="multipart/form-data" th:action="@{/village/sendUpdateVillageDetailsRequest}" method="post" th:object="${tempVillageDto}">
+            <input type="hidden" name="userId" th:field="${tempVillageDto.userId}" />
+
+            <h3>Village Information</h3>
+
+            <label for="villageId">Village Id:</label>
+            <input type="text" id="villageId" th:field="*{villageId}" readonly required>
+
+            <label for="villageEmail">Village Email:</label>
+            <input type="text" id="villageEmail" th:field="*{villageEmail}" readonly required>
+
+            <label for="villageName">Village Name:</label>
+            <input type="text" id="villageName" th:field="*{villageName}" pattern="[A-Za-z\s]+" title="Only letters and spaces are allowed" required>
+            <p th:if="${#fields.hasErrors('villageName')}" th:errorclass="text-danger" th:errors="*{villageName}"></p>
+
+            <label for="villageType">Village Type (Tribal, Coastal, etc.):</label>
+            <input type="text" id="villageType" th:field="*{villageType}" pattern="[A-Za-z\s]+" title="Only letters and spaces are allowed" required>
+            <p th:if="${#fields.hasErrors('villageType')}" th:errorclass="text-danger" th:errors="*{villageType}"></p>
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" th:field="*{villageLocation}" pattern="[A-Za-z0-9,\s]+" readonly required>
+            <p th:if="${#fields.hasErrors('villageLocation')}" th:errorclass="text-danger" th:errors="*{villageLocation}"></p>
+
+            <label for="latitude">Latitude (Optional):</label>
+            <input type="text" id="latitude" th:field="*{latitude}" pattern="^-?\d+(\.\d+)?$" readonly>
+            <p th:if="${#fields.hasErrors('latitude')}" th:errorclass="text-danger" th:errors="*{latitude}"></p>
+
+            <label for="longitude">Longitude (Optional):</label>
+            <input type="text" id="longitude" th:field="*{longitude}" pattern="^-?\d+(\.\d+)?$" readonly>
+            <p th:if="${#fields.hasErrors('longitude')}" th:errorclass="text-danger" th:errors="*{longitude}"></p>
+
+            <label for="description">Village Description:</label>
+            <textarea id="description" th:field="*{villageDescription}" required></textarea>
+            <p th:if="${#fields.hasErrors('villageDescription')}" th:errorclass="text-danger" th:errors="*{villageDescription}"></p>
+
+
+            <h3>Contact Details</h3>
+
+            <label for="contactName">Contact Person Name:</label>
+            <input type="text" id="contactName" th:field="*{contactPersonName}" pattern="[A-Za-z\s]+" title="Only letters and spaces are allowed" required>
+            <p th:if="${#fields.hasErrors('contactPersonName')}" th:errorclass="text-danger" th:errors="*{contactPersonName}"></p>
+
+            <label for="contactEmail">Contact Email:</label>
+            <input type="email" id="contactEmail" th:field="*{contactEmail}" required>
+            <p th:if="${#fields.hasErrors('contactEmail')}" th:errorclass="text-danger" th:errors="*{contactEmail}"></p>
+
+            <label for="contactNumber">Primary Contact Number:</label>
+            <input type="text" id="contactNumber" th:field="*{contactNo}" pattern="^(\\+\\d{1,3}[- ]?)?\\d{10}$" required>
+            <p th:if="${#fields.hasErrors('contactNo')}" th:errorclass="text-danger" th:errors="*{contactNo}"></p>
+
+            <label for="alternateContact">Alternate Contact Number (Optional):</label>
+            <input type="text" id="alternateContact" th:field="*{altContactNo}" pattern="^(\\+\\d{1,3}[- ]?)?\\d{10}$">
+            <p th:if="${#fields.hasErrors('altContactNo')}" th:errorclass="text-danger" th:errors="*{altContactNo}"></p>
+
+        <hr style="margin: 40px 0; border: 1px solid #009966;" />
+            <h3>Legal Registration Details</h3>
+
+            <label for="registrationNumber">Official Registration Number:</label>
+            <input type="text" id="registrationNumber" th:field="*{villageRegNumber}" pattern="[A-Za-z0-9-]+" required>
+            <p th:if="${#fields.hasErrors('villageRegNumber')}" th:errorclass="text-danger" th:errors="*{villageRegNumber}"></p>
+
+            <label for="issuingAuthority">Issuing Authority:</label>
+            <input type="text" id="issuingAuthority" th:field="*{villageAuthorityName}" pattern="[A-Za-z\s]+" required>
+            <p th:if="${#fields.hasErrors('villageAuthorityName')}" th:errorclass="text-danger" th:errors="*{villageAuthorityName}"></p>
+
+            <h3>Representative Details</h3>
+
+            <label for="adminName">Legal Representative Name:</label>
+            <input type="text" id="adminName" th:field="*{legalRepresentativeName}" pattern="[A-Za-z\s]+" required>
+            <p th:if="${#fields.hasErrors('legalRepresentativeName')}" th:errorclass="text-danger" th:errors="*{legalRepresentativeName}"></p>
+
+            <label for="position">Position (Chief, Head, etc.):</label>
+            <input type="text" id="position" th:field="*{representativePosition}" pattern="[A-Za-z\s]+" required>
+            <p th:if="${#fields.hasErrors('representativePosition')}" th:errorclass="text-danger" th:errors="*{representativePosition}"></p>
+
+            <label for="idNumber">Official ID Number:</label>
+            <input type="text" id="idNumber" th:field="*{officialIdNumber}" pattern="[A-Za-z0-9]+" required>
+            <p th:if="${#fields.hasErrors('officialIdNumber')}" th:errorclass="text-danger" th:errors="*{officialIdNumber}"></p>
+
+            <h3>Banking & Tax Details</h3>
+
+            <label for="bankName">Bank Name:</label>
+            <input type="text" id="bankName" th:field="*{bankName}" pattern="[A-Za-z\s]+" required>
+            <p th:if="${#fields.hasErrors('bankName')}" th:errorclass="text-danger" th:errors="*{bankName}"></p>
+
+            <label for="accountNumber">Bank Account Number:</label>
+            <input type="text" id="accountNumber" th:field="*{bankAccountNumber}" pattern="[0-9]{8,20}" required>
+            <p th:if="${#fields.hasErrors('bankAccountNumber')}" th:errorclass="text-danger" th:errors="*{bankAccountNumber}"></p>
+
+            <label for="taxNumber">Tax Number:</label>
+            <input type="text" id="taxNumber" th:field="*{taxInfoNumber}" pattern="[A-Za-z0-9]+" required>
+            <p th:if="${#fields.hasErrors('taxInfoNumber')}" th:errorclass="text-danger" th:errors="*{taxInfoNumber}"></p>
+
+            <h3>Upload Documents</h3>
+
+            <label for="officialDocs">Upload Official Documents:</label>
+            <input type="file" id="officialDocs" th:field="*{officialDoc}" accept=".pdf,.jpg,.png" >
+            <p th:if="${#fields.hasErrors('officialDoc')}" th:errorclass="text-danger" th:errors="*{officialDoc}"></p>
+
+            <label for="stamp">Upload Official Stamp/Seal (Optional):</label>
+            <input type="file" id="stamp" th:field="*{offStampOrSeal}" accept=".jpg,.png">
+            <p th:if="${#fields.hasErrors('offStampOrSeal')}" th:errorclass="text-danger" th:errors="*{offStampOrSeal}"></p>
+
+            <div class="captcha-container">
+                <div class="captcha-box" th:text="${captchaCode}">X7B9D</div>
+                <input type="text" id="captchaInput" name="captchaInput" placeholder="Enter Captcha" required>
+            </div>
+
+            <label for="terms" style="display: block; margin-top: 15px; cursor: pointer;" onclick="showTermsModal()">
+                <input type="checkbox" id="terms" required> I confirm all details are correct and agree to the terms.
+            </label>
+
+
+            <div th:if="${requestMsg != null}" style="color: red; margin-bottom: 10px;">
+                <p th:text="${requestMsg}"></p>
+            </div>
+
+            <button type="submit" style="margin-top: 20px;" th:if="${requestMsg == null}">Submit for Admin Approval</button>
+        </form>
+    </div>
+    <div th:if="${errorMessage}" style="color: red;">
+        <strong th:text="${errorMessage}"></strong>
+    </div>
+    <button type="button" onclick="history.back()" style="padding: 8px 16px; background-color: #ccc; border: none; cursor: pointer;">
+        ← Back
+    </button>
+</section>
+
+<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let successMessage = /*[[${successMessage}]]*/ null;
+    let errorMessage = /*[[${errorMessage}]]*/ null;
+
+    if (successMessage !== null) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: successMessage
+        });
+    }
+
+    if (errorMessage !== null) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorMessage
+        });
+    }
+    /*]]>*/
+
+    function showTermsModal() {
+    Swal.fire({
+        title: 'Terms & Conditions',
+        html: `
+            <ul style="text-align: left;">
+                <li><strong>Village Email and Password</strong> cannot be updated through this form.</li>
+                <li>All update requests will be reviewed and approved by the admin before taking effect.</li>
+                <li>Please ensure all details entered are <strong>true and genuine</strong>.</li>
+                <li>Any misleading or false information may result in rejection of your request.</li>
+                <li>Changes to sensitive fields like registration number or bank details will be verified thoroughly.</li>
+            </ul>
+        `,
+        icon: 'info',
+        confirmButtonText: 'I Understand',
+        width: '600px'
+    });
+}
+</script>
+
+<script src="/User/HomePage/js/jquery.min.js"></script>
+<script src="/User/HomePage/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="/User/HomePage/js/popper.min.js"></script>
+<script src="/User/HomePage/js/bootstrap.min.js"></script>
+<script src="/User/HomePage/js/jquery.easing.1.3.js"></script>
+<script src="/User/HomePage/js/jquery.waypoints.min.js"></script>
+<script src="/User/HomePage/js/jquery.stellar.min.js"></script>
+<script src="/User/HomePage/js/owl.carousel.min.js"></script>
+<script src="/User/HomePage/js/jquery.magnific-popup.min.js"></script>
+<script src="/User/HomePage/js/jquery.animateNumber.min.js"></script>
+<script src="/User/HomePage/js/bootstrap-datepicker.js"></script>
+<script src="/User/HomePage/js/scrollax.min.js"></script>
+<script src="/User/HomePage/js/main.js"></script>
+
+</body>
+</html>

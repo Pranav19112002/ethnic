@@ -1,0 +1,857 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Admin-All-Actvities</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="">
+    <meta name="author" content="Phoenixcoded" />
+    <link rel="icon" th:href="@{/Village/VillageAdmin/assets/images/favicon.ico}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/Admin/assets/css/style.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+
+        .forms-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        margin-bottom: 12px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .forms-container select,
+    .forms-container input {
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #6c757d;
+        border-radius: 6px;
+        outline: none;
+        transition: 0.3s ease-in-out;
+    }
+
+    .forms-container select:focus,
+    .forms-container input:focus {
+        border-color: #333;
+        box-shadow: 0 0 8px rgba(100, 100, 100, 0.6);
+        outline: none;
+    }
+
+    .forms-container button {
+        padding: 10px 18px;
+        background: #1f1f1f;
+        color: white;
+        font-size: 16px;
+        border: 2px solid #2c2c2c;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .forms-container button:hover {
+        background: #333333;
+        border-color: #333333;
+    }
+
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        cursor: pointer;
+        gap: 6px;
+        color: #495057;
+    }
+
+    .checkbox-label input {
+        width: 18px;
+        height: 18px;
+        accent-color: #6c757d;
+        cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+        .forms-container {
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .forms-container form {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .forms-container input,
+        .forms-container select {
+            width: 100%;
+        }
+    }
+
+   .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    }
+
+    .modal-content {
+        background: white;
+        width: 50%;
+        max-width: 600px;
+        max-height: 90vh; /* Limit modal height */
+        padding: 20px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        overflow: hidden; /* Prevent outer scroll */
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #333;
+        z-index: 10;
+    }
+
+    .close-modal:hover {
+        color: red;
+    }
+
+    .modal-body {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        overflow-y: auto; /* Enable vertical scroll */
+        max-height: 75vh; /* Scrollable drawer area */
+        padding-right: 10px; /* Prevent scrollbar overlap */
+    }
+
+    /* Optional scrollbar styling */
+    .modal-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 3px;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    .details-section {
+        flex: 1;
+        padding: 10px;
+    }
+
+    .details-section h2 {
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .details-section p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .image-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        position: relative;
+    }
+
+    .image-section img {
+        width: 300px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+
+    .image-name {
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        color: #444;
+    }
+
+    .prev, .next {
+        background-color: #1f1f1f;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .prev:hover, .next:hover {
+        background-color: #0056b3;
+    }
+
+    .badge-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 5px;
+    }
+
+    .badge {
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .badge.request {
+        background-color: #f39c12;
+        color: white;
+    }
+
+    .badge.activity {
+        background-color: #27ae60;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+        max-height: 95vh;
+    }
+
+    .modal-body {
+        flex-direction: column;
+        align-items: center;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .image-section img {
+        width: 250px;
+        height: 180px;
+    }
+
+    .prev, .next {
+        padding: 6px 10px;
+    }
+    }
+    .notification.unread {
+            background-color: #f5f5f5;
+            border-left: 4px solid #28a745;
+    }
+    .notification.read {
+        opacity: 0.7;
+    }
+       .noti-head {
+    background-color: #000;
+    color: #fff;
+    padding: 10px;
+    }
+
+    .noti-head a {
+        color: #fff !important;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .noti-head a:hover {
+        text-decoration: underline;
+    }
+
+    .notification-item {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .notification-item.unread {
+        background-color: #f9f9f9;
+        font-weight: bold;
+    }
+
+    .notification-item.read {
+        background-color: #e0e0e0;
+        font-weight: normal;
+    }
+
+    </style>
+
+</head>
+<body class="">
+<div class="loader-bg">
+    <div class="loader-track">
+        <div class="loader-fill"></div>
+    </div>
+</div>
+<nav class="pcoded-navbar  ">
+    <div class="navbar-wrapper  ">
+        <div class="navbar-content scroll-div " >
+
+            <div class="">
+                <div class="main-menu-header">
+                    <img class="img-radius" th:src="@{'/uploads/admin/' + ${admin.adminProfileImage}}" alt="Admin">
+                    <div class="user-details">
+                        <span th:text="${admin.adminName}"></span>
+                        <div id="more-details">Administrator<i class="fa fa-chevron-down m-l-5"></i></div>
+                    </div>
+                </div>
+                <div class="collapse" id="nav-user-link">
+                    <ul class="list-unstyled">
+                        <li class="list-group-item"><a th:href="@{/admin/profile}"><i class="feather icon-user m-r-5"></i>View Profile</a></li>
+                        <li class="list-group-item"><a th:href="@{/admin/logout}"><i class="feather icon-log-out m-r-5"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <ul class="nav pcoded-inner-navbar ">
+                <li class="nav-item pcoded-menu-caption">
+                    <label>Home</label>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/home}" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
+                </li>
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-layout"></i></span><span class="pcoded-mtext">Village</span></a>
+                    <ul class="pcoded-submenu">
+                        <li><a th:href="@{/admin/requests}" >Requests</a></li>
+                        <li><a th:href="@{/admin/viewAllVillages}" >View All</a></li>
+                        <li><a th:href="@{/admin/viewPendingVillageEditRequests}" >Update-Requests</a></li>
+                        <li><a th:href="@{/admin/updatedVillages}" >All Update Reqs</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item pcoded-menu-caption">
+                    <label>Cultural Activities</label>
+                </li>
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-box"></i></span><span class="pcoded-mtext">Activities</span></a>
+                    <ul class="pcoded-submenu">
+                        <li><a th:href="@{/admin/viewActivityRequests}" >Requests</a></li>
+                        <li><a th:href="@{/admin/viewAllActivities}" >View All</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item pcoded-menu-caption">
+                    <label>Others</label>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/allUsers}" class="nav-link "><span class="pcoded-micon"><i class="feather icon-file-text"></i></span><span class="pcoded-mtext">Users</span></a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/feedbacks}" class="nav-link "><span class="pcoded-micon"><i class="feather icon-align-justify"></i></span><span class="pcoded-mtext">FeedBacks</span></a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<header class="navbar pcoded-header navbar-expand-lg navbar-light header-dark">
+
+
+    <div class="m-header">
+        <a class="mobile-menu" id="mobile-collapse" href="#!"><span></span></a>
+        <a href="#!" class="b-brand">
+            <img src="/Admin/assets/images/logo.png" alt="" class="logo">
+            <img src="/Admin/assets/images/logo-icon.png" alt="" class="logo-thumb">
+        </a>
+        <a href="#!" class="mob-toggler">
+            <i class="feather icon-more-vertical"></i>
+        </a>
+    </div>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+            <li>
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                        <i class="icon feather icon-bell"></i>
+                        <span id="notification-count" class="badge badge-pill badge-danger"
+                              th:text="${messages.size()}">0</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right notification">
+                        <div class="noti-head">
+                            <h6 class="d-inline-block m-b-0">Notifications</h6>
+                            <div class="float-right">
+                                <a href="#!" class="mark-read-link m-r-10">mark as read</a>
+                                <a href="#!" class="clear-all-link">clear all</a>
+                            </div>
+                        </div>
+                        <ul class="noti-body">
+                            <li class="n-title"><p class="m-b-0">NEW</p></li>
+                            <li class="notification"
+                                th:each="message : ${messages}"
+                                th:data-id="${message.id}"
+                                th:classappend="${message.isRead} ? 'read' : 'unread'">
+                                <div class="media">
+                                    <img class="img-radius"
+                                         th:src="${message.village?.villageProfileImage != null ? '/uploads/village/' + message.village.villageProfileImage : '/Admin/assets/images/user/default.jpg'}"
+                                         alt="Village image">
+                                    <div class="media-body">
+                                        <p>
+                                            <strong th:text="${message.village?.villageName ?: 'Unknown Village'}">Village Name</strong>
+                                            <span class="n-time text-muted">
+                                                <i class="icon feather icon-clock m-r-10"></i>
+                                                <span th:text="${message.timestamp != null ? #temporals.format(message.timestamp, 'HH:mm') : '—'}"></span>
+                                            </span>
+                                            <span th:if="${#temporals.day(message.timestamp) == #temporals.day(#temporals.createNow())}"
+                                                  class="badge bg-success ml-2">New</span>
+                                        </p>
+                                        <p th:text="${message.message}">Message content</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="noti-footer">
+                            <a th:href="@{/admin/inbox}">show all</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="dropdown drp-user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="feather icon-user"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right profile-notification">
+                        <div class="pro-head">
+                            <img th:src="@{'/uploads/admin/' + ${admin.adminProfileImage}}" alt="Admin" class="img-radius" >
+                            <span th:text="${admin.adminName}"></span>
+                            <a th:href="@{/admin/logout}" class="dud-logout" title="Logout">
+                                <i class="feather icon-log-out"></i>
+                            </a>
+                        </div>
+                        <ul class="pro-body">
+                            <li><a th:href="@{/admin/profile}" class="dropdown-item"><i class="feather icon-user"></i> Profile</a></li>
+                            <li><a th:href="@{/admin/viewResetPassword}" class="dropdown-item"><i class="feather icon-mail"></i>Reset-Password</a></li>
+                            <li><a th:href="@{/admin/logout}" class="dropdown-item"><i class="feather icon-lock"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+</header>
+
+<div class="pcoded-main-container">
+    <div class="pcoded-content">
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">All Activities</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/admin/home}"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/viewAllActivities}">All-Activities</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Cultural Activities</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="forms-container">
+                            <form id="typeForm" th:action="@{/admin/viewAllActivities}" method="get">
+                                <select id="activityTypeFilter" name="selectedType" onchange="submitTypeForm()">
+                                    <option value="All" th:selected="${selectedType == 'All'}">All Types</option>
+                                    <option th:each="type : ${activityTypes}" th:value="${type}" th:text="${type}" th:selected="${selectedType == type}"></option>
+                                </select>
+                                <input type="hidden" id="hiddenSearchKeywordType" name="searchKeyword" value="">
+                                <input type="hidden" id="hiddenVillageIdType" name="villageId" value="">
+                                <input type="hidden" id="hiddenStatusFilterType" name="statusFilter" th:value="${statusFilter}">
+                            </form>
+
+                            <form id="searchForm" th:action="@{/admin/viewAllActivities}" method="get">
+                                <input type="text" id="searchKeyword" name="searchKeyword" th:value="${searchKeyword}" placeholder="Search activities...">
+                                <button type="submit" onclick="submitSearchForm()">Search</button>
+                                <input type="hidden" id="hiddenSelectedTypeSearch" name="selectedType" value="All">
+                                <input type="hidden" id="hiddenVillageIdSearch" name="villageId" value="">
+                                <input type="hidden" id="hiddenStatusFilterSearch" name="statusFilter" th:value="${statusFilter}">
+                            </form>
+
+                            <form id="villageForm" th:action="@{/admin/viewAllActivities}" method="get">
+                                <input type="number" id="villageId" name="villageId" th:value="${villageId}" placeholder="Enter Village ID" oninput="submitVillageForm()">
+                                <input type="hidden" id="hiddenSearchKeywordVillage" name="searchKeyword" value="">
+                                <input type="hidden" id="hiddenSelectedTypeVillage" name="selectedType" value="All">
+                                <input type="hidden" id="hiddenStatusFilterVillage" name="statusFilter" th:value="${statusFilter}">
+                            </form>
+
+                            <form id="statusForm" th:action="@{/admin/viewAllActivities}" method="get">
+                                <label>
+                                    <input type="checkbox" id="approvedCheck" name="statusFilter" value="Approved"
+                                           th:checked="${statusFilter == 'Approved'}" onchange="toggleStatus('Approved')"> Approved
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="rejectedCheck" name="statusFilter" value="Rejected"
+                                           th:checked="${statusFilter == 'Rejected'}" onchange="toggleStatus('Rejected')"> Rejected
+                                </label>
+                                <input type="hidden" id="hiddenSelectedTypeStatus" name="selectedType" th:value="${selectedType}">
+                                <input type="hidden" id="hiddenSearchKeywordStatus" name="searchKeyword" th:value="${searchKeyword}">
+                                <input type="hidden" id="hiddenVillageIdStatus" name="villageId" th:value="${villageId}">
+                            </form>
+
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th>Reg-Date</th>
+                                    <th>Activity ID</th>
+                                    <th>Village ID</th>
+                                    <th>Village Name</th>
+                                    <th>Activity Name</th>
+                                    <th>Place</th>
+                                    <th>Activity Type</th>
+                                    <th>Request-Status</th>
+                                    <th>Activity-Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="activity : ${activities}"
+                                    th:data-reg-date="${activity.registeredDate != null ? #temporals.format(activity.registeredDate,'dd-MM-yyyy HH:mm') :'❌'}"
+                                    th:data-id="${activity.activityId}"
+                                    th:data-village-id="${activity.village.villageId}"
+                                    th:data-village-name="${activity.village.villageName}"
+                                    th:data-name="${activity.activityName}"
+                                    th:data-place="${activity.activityName}"
+                                    th:data-registered-date="${activity.registeredDate != null ? #temporals.format(activity.registeredDate, 'dd-MM-yyyy HH:mm') : '❌'}"
+                                    th:data-type="${activity.activityType}"
+                                    th:data-description="${activity.description}"
+                                    th:data-duration="${activity.duration}"
+                                    th:data-price="${activity.price}"
+                                    th:data-available-days="${activity.availableDays != null and !#lists.isEmpty(activity.availableDays) ? #strings.arrayJoin(activity.availableDays,', ') : '❌'}"
+                                    th:data-start-date="${activity.startDate}"
+                                    th:data-end-date="${activity.endDate}"
+                                    th:data-alternative-activity="${activity.alternativeActivity != null ? activity.alternativeActivity.activityName : '❌'}"
+                                    th:data-event-date="${activity.eventDateTime != null ? #temporals.format(activity.eventDateTime, 'dd-MM-yyyy HH:mm') : '❌'}"
+                                    th:data-no-by-date="${activity.noOfPeopleAllowedForDateOnly}"
+                                    th:data-time-slots="${activity.timeSlots != null and !#lists.isEmpty(activity.timeSlots) ? #strings.arrayJoin(activity.timeSlots,', ') : '❌'}"
+                                    th:data-no-by-slots="${activity.noOfPeopleAllowedForSloted}"
+                                    th:data-request-status="${activity.requestStatus}"
+                                    th:data-activity-status="${activity.activityStatus}"
+                                    th:data-images="${#strings.listJoin(activity.activityPhotosNames, ',')}"
+                                    onclick="showActivityDetails(this)">
+
+                                    <td th:text="${activity.registeredDate != null ? #temporals.format(activity.registeredDate, 'dd-MM-yyyy HH:mm') : '❌'}"></td>
+                                    <td th:text="${activity.activityId ?: '❌'}"></td>
+                                    <td th:text="${activity.village.villageId ?: '❌'}"></td>
+                                    <td th:text="${activity.village.villageName ?: '❌'}"></td>
+                                    <td th:text="${activity.activityName ?: '❌'}"></td>
+                                    <td th:text="${activity.activityPlace ?: '❌'}"></td>
+                                    <td th:text="${activity.activityType ?: '❌'}"></td>
+                                    <td class="activity-status" th:text="${activity.requestStatus ?: '❌'}"></td>
+                                    <td th:text="${activity.activityStatus ?: '❌'}"></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(activities)}">
+                                    <td colspan="16" style="text-align: center; color: red;">No data available</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="activityModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeActivityModal()">&times;</span>
+
+        <div class="modal-body">
+            <div class="details-section">
+                <h2 id="modalActivityName"></h2>
+            <p><strong>Activity ID:</strong> <span id="modalActivityId"></span></p>
+            <p><strong>Village ID:</strong> <span id="modalVillageId"></span></p>
+            <p><strong>Village Name:</strong> <span id="modalVillageName"></span></p>
+            <p><strong>Reg-Date:</strong> <span id="modalRegDate"></span></p>
+            <p><strong>Village Place:</strong> <span id="modalActivityPlace"></span></p>
+            <p><strong>Type:</strong> <span id="modalActivityType"></span></p>
+            <p><strong>Description:</strong> <span id="modalActivityDescription"></span></p>
+            <p><strong>Duration:</strong> <span id="modalActivityDuration"></span></p>
+            <p><strong>Price:</strong> <span id="modalActivityPrice"></span></p>
+            <p><strong>Available Days:</strong> <span id="modalAvailableDays"></span></p>
+            <p><strong>Start Date:</strong> <span id="modalStartDate"></span></p>
+            <p><strong>End Date:</strong> <span id="modalEndDate"></span></p>
+            <p><strong>Alternative Activity:</strong> <span id="modalAlternativeActivity"></span></p>
+            <p><strong>Event Date:</strong> <span id="modalEventDate"></span></p>
+            <p><strong>No of People/Date:</strong> <span id="modalPeopleByDate"></span></p>
+            <p><strong>Time Slots:</strong> <span id="modalTimeSlots"></span></p>
+            <p><strong>No of People/Slot:</strong> <span id="modalPeopleBySlot"></span></p>
+            </div>
+            <div class="image-section">
+                <div class="badge-container">
+                    <span id="requestStatusBadge" class="badge request">Pending</span>
+                    <span id="activityStatusBadge" class="badge activity">Available</span>
+                </div>
+
+                <button class="prev" onclick="changeImage(-1)">&#10094;</button>
+                <img id="modalImage" src="/uploads/activity/default-image.jpg" alt="Activity Image">
+                <p id="modalImageName" class="image-name">No Image Available</p>
+                <button class="next" onclick="changeImage(1)">&#10095;</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function submitTypeForm() {
+   document.getElementById("hiddenSearchKeywordType").value = "";
+   document.getElementById("hiddenVillageIdType").value = "";
+   document.getElementById("typeForm").submit();
+}
+
+function submitSearchForm() {
+    document.getElementById("hiddenSelectedTypeSearch").value = "All";
+    document.getElementById("hiddenVillageIdSearch").value = "";
+    document.getElementById("searchForm").submit();
+}
+
+function submitVillageForm() {
+    document.getElementById("hiddenSearchKeywordVillage").value = "";
+    document.getElementById("hiddenSelectedTypeVillage").value = "All";
+    document.getElementById("villageForm").submit();
+}
+
+function toggleStatus(status) {
+    let approvedCheck = document.getElementById("approvedCheck");
+    let rejectedCheck = document.getElementById("rejectedCheck");
+    let statusForm = document.getElementById("statusForm");
+
+    if (status === "Approved") {
+        if (approvedCheck.checked) {
+            rejectedCheck.checked = false;
+        }
+    } else if (status === "Rejected") {
+        if (rejectedCheck.checked) {
+            approvedCheck.checked = false;
+        }
+    }
+
+    statusForm.submit();
+}
+let images = [];
+let currentIndex = 0;
+
+function showActivityDetails(row) {
+
+    function updateField(id, value) {
+        const el = document.getElementById(id);
+        const parent = el?.parentElement;
+
+        if (!value || value === "No Data") {
+            el.textContent = "No Data";
+            if (parent) parent.style.display = "none";
+        } else {
+            el.textContent = value;
+            if (parent) parent.style.display = ""; // Reset to default
+        }
+    }
+
+    updateField("modalActivityName", row.dataset.name);
+    updateField("modalActivityId", row.dataset.id);
+    updateField("modalVillageId", row.dataset.villageId);
+    updateField("modalVillageName", row.dataset.villageName);
+    updateField("modalRegDate", row.dataset.regDate);
+    updateField("modalActivityPlace", row.dataset.place);
+    updateField("modalActivityType", row.dataset.type);
+    updateField("modalActivityDescription", row.dataset.description);
+    updateField("modalActivityDuration", row.dataset.duration);
+    updateField("modalActivityPrice", row.dataset.price);
+    updateField("modalAvailableDays", row.dataset.availableDays);
+    updateField("modalStartDate", row.dataset.startDate);
+    updateField("modalEndDate", row.dataset.endDate);
+    updateField("modalAlternativeActivity", row.dataset.alternativeActivity);
+    updateField("modalEventDate", row.dataset.eventDate);
+    updateField("modalPeopleByDate", row.dataset.noByDate);
+    updateField("modalPeopleByDate", row.dataset.noByDate);
+    updateField("modalTimeSlots", row.dataset.timeSlots);
+    updateField("modalPeopleBySlot", row.dataset.noBySlots);
+
+
+    const requestStatusBadge = document.getElementById("requestStatusBadge");
+    const activityStatusBadge = document.getElementById("activityStatusBadge");
+
+    const requestStatus = row.dataset.requestStatus || "Unknown";
+    const activityStatus = row.dataset.activityStatus || "Unknown";
+
+    requestStatusBadge.textContent = requestStatus;
+    activityStatusBadge.textContent = activityStatus;
+
+    requestStatusBadge.className = "badge request";
+    activityStatusBadge.className = "badge activity";
+
+    if (requestStatus.toLowerCase() === "approved") {
+        requestStatusBadge.style.backgroundColor = "green";
+        requestStatusBadge.style.color = "white";
+    } else if (requestStatus.toLowerCase() === "rejected") {
+        requestStatusBadge.style.backgroundColor = "red";
+        requestStatusBadge.style.color = "white";
+    } else if (requestStatus.toLowerCase() === "request-sent") {
+        requestStatusBadge.style.backgroundColor = "yellow";
+        requestStatusBadge.style.color = "black";
+    }
+
+    if (activityStatus.toLowerCase() === "available") {
+        activityStatusBadge.style.backgroundColor = "green";
+        activityStatusBadge.style.color = "white";
+    } else if (activityStatus.toLowerCase() === "unavailable") {
+        activityStatusBadge.style.backgroundColor = "red";
+        activityStatusBadge.style.color = "white";
+    }
+
+    console.log("Images from row.dataset.images:", row.dataset.images);
+    images = row.dataset.images ? row.dataset.images.split(",") : [];
+    currentIndex = 0;
+    updateImage();
+
+    document.getElementById("activityModal").style.display = "flex";
+}
+
+function closeActivityModal() {
+    document.getElementById("activityModal").style.display = "none";
+}
+
+function changeImage(step) {
+    if (images.length === 0) return;
+    currentIndex = (currentIndex + step + images.length) % images.length;
+    updateImage();
+}
+
+function updateImage() {
+    const imgElement = document.getElementById("modalImage");
+    const imageNameElement = document.getElementById("modalImageName");
+
+    if (images.length > 0) {
+        const encodedImageName = encodeURIComponent(images[currentIndex].trim());
+        imgElement.src = "/uploads/activity/" + encodedImageName;
+        imageNameElement.textContent = images[currentIndex];
+    } else {
+        imgElement.src = "/uploads/activity/default-image.jpg";
+        imageNameElement.textContent = "No Image Available";
+    }
+}
+
+document.getElementById("activityModal").addEventListener("click", function (event) {
+    if (!event.target.closest(".modal-content")) {
+        closeActivityModal();
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+        const markReadBtn = document.querySelector(".mark-read-link");
+        const clearAllBtn = document.querySelector(".clear-all-link");
+        const notiBody = document.querySelector(".noti-body");
+        const countBadge = document.getElementById("notification-count");
+
+        const updateCount = () => {
+            const unread = notiBody.querySelectorAll(".notification.unread").length;
+            countBadge.textContent = unread > 0 ? unread : "0";
+        };
+
+        markReadBtn?.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch("/admin/inbox/markAllRead", {
+                    method: "POST"
+                });
+                if (res.ok) {
+                    notiBody.querySelectorAll(".notification.unread").forEach(item => {
+                        item.classList.remove("unread");
+                        item.classList.add("read");
+                    });
+                    updateCount();
+                }
+            } catch (err) {
+                console.error("Error marking all as read:", err);
+            }
+        });
+
+        clearAllBtn?.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch("/admin/inbox/clearAll", {
+                    method: "DELETE"
+                });
+                if (res.ok) {
+                    notiBody.innerHTML = `
+                        <li class="n-title">
+                            <p class="m-b-0 text-muted">No notifications</p>
+                        </li>
+                    `;
+                    updateCount();
+                }
+            } catch (err) {
+                console.error("Error clearing notifications:", err);
+            }
+        });
+
+        notiBody.addEventListener("click", async (e) => {
+            const item = e.target.closest(".notification.unread");
+            if (!item) return;
+            const id = item.dataset.id; // needs th:data-id in your HTML
+            try {
+                const res = await fetch(`/admin/inbox/markRead/${id}`, {
+                    method: "POST"
+                });
+                if (res.ok) {
+                    item.classList.remove("unread");
+                    item.classList.add("read");
+                    updateCount();
+                }
+            } catch (err) {
+                console.error("Error marking notification read:", err);
+            }
+        });
+        updateCount();
+    });
+
+</script>
+<script src="/Admin/assets/js/vendor-all.min.js"></script>
+<script src="/Admin/assets/js/plugins/bootstrap.min.js"></script>
+<script src="/Admin/assets/js/pcoded.min.js"></script>
+
+</body>
+
+</html>

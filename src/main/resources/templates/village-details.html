@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Village Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        *{
+          margin: 0; padding: 0; box-sizing: border-box;
+          font-family: 'Poppins', sans-serif;
+        }
+        body {
+          background: linear-gradient(135deg, #f7f4ef, #e8e2d6);
+          min-height: 100vh;
+          display: flex;
+          justify-content: center;
+          padding: 40px 20px;
+          animation: fadeIn 1s ease forwards;
+        }
+
+        @keyframes fadeIn {
+          from {opacity: 0; transform: translateY(15px);}
+          to {opacity: 1; transform: translateY(0);}
+        }
+
+        .village-container {
+          background: white;
+          max-width: 1000px;
+          width: 100%;
+          border-radius: 28px;
+          box-shadow: 0 25px 40px rgba(0,0,0,0.12);
+          padding: 40px 50px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 40px;
+        }
+
+        .left-panel {
+          flex: 1 1 300px;
+          max-width: 350px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .main-image {
+          width: 220px;
+          height: 220px;
+          border-radius: 50%;
+          overflow: hidden;
+          box-shadow: 0 0 0 8px #aee5cc;
+          border: 6px solid #009966;
+          cursor: pointer;
+          transition: box-shadow 0.3s ease;
+          margin-bottom: 24px;
+        }
+        .main-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .main-image:hover {
+          box-shadow: 0 0 15px 10px #a17f49cc;
+        }
+
+       .gallery {
+          width: 100%;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+          gap: 12px;
+        }
+
+        .gallery img {
+          width: 100%;
+          aspect-ratio: 1/1;
+          border-radius: 12px;
+          object-fit: cover;
+          box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+          cursor: pointer;
+          transition: transform 0.2s ease;
+        }
+
+        .gallery img:hover {
+          transform: scale(1.1);
+          box-shadow: 0 5px 15px rgba(161, 127, 73, 0.6);
+        }
+
+        .image-container {
+          position: relative;
+          border-radius: 12px;
+          overflow: hidden;
+          width: 100%; /* Slight increase to accommodate buttons */
+          margin: auto; /* center the image if needed */
+        }
+
+        .image-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 8px;
+          background-color: rgba(0, 0, 0, 0.4);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          border-radius: 12px;
+        }
+
+        .image-container:hover .image-overlay {
+          opacity: 1;
+        }
+
+        .gallery-btn {
+          background-color: rgba(255, 255, 255, 0.85);
+          border: none;
+          padding: 5px 10px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .gallery-view-btn:hover {
+          background-color: rgba(34, 197, 94, 0.95); /* green */
+          color: white;
+        }
+
+        .gallery-update-btn:hover {
+          background-color: rgba(239, 68, 68, 0.95); /* red */
+          color: white;
+        }
+        .gallery-delete-btn:hover {
+          background-color: rgba(0, 0, 0, 0.85);
+          color: white;
+        }
+
+        .right-panel {
+          flex: 2 1 600px;
+          display: flex;
+          flex-direction: column;
+          gap: 32px;
+        }
+
+        .village-name {
+          font-size: 3rem;
+          font-weight: 700;
+          color: #009966;
+          text-transform: capitalize;
+          margin-bottom: 4px;
+          text-shadow: 1px 1px 4px #cdb87d;
+        }
+
+        .village-type {
+          font-size: 1.25rem;
+          color: #1f7a52;
+          font-weight: 600;
+          margin-bottom: 20px;
+          letter-spacing: 1.2px;
+        }
+
+        .info-block {
+          background: #f0fbf6;
+          padding: 24px 30px;
+          border-radius: 18px;
+          box-shadow:  0 6px 18px rgba(0, 153, 102, 0.15);
+        }
+        .info-block h3 {
+          color: #1f7a52;
+          font-weight: 700;
+          margin-bottom: 12px;
+          border-bottom: 2px solid #66cc99;
+          padding-bottom: 6px;
+        }
+        .info-list {
+          list-style: none;
+          font-size: 1.1rem;
+          color: #2b6e4a;
+        }
+        .info-list li {
+          margin-bottom: 10px;
+          line-height: 1.4;
+        }
+        .info-list strong {
+          color: #1f7a52;
+          width: 160px;
+          display: inline-block;
+          font-weight: 600;
+        }
+
+        .map-section {
+          margin-top: 30px;
+          border-radius: 20px;
+          overflow: hidden;
+          box-shadow: 0 10px 30px rgba(0, 153, 102, 0.25);
+          height: 300px;
+          width: 100%;
+          background: #ddd;
+          position: relative;
+        }
+        .map-section iframe {
+          width: 100%;
+          height: 100%;
+          border: none;
+        }
+        .map-placeholder {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: #1f7a52;
+          font-weight: 600;
+          font-size: 1.2rem;
+        }
+
+        .buttons-row {
+          margin-top: 40px;
+          display: flex;
+          gap: 18px;
+          justify-content: flex-end;
+        }
+        .btn {
+          background: #009966;
+          border: none;
+          color: white;
+          padding: 14px 28px;
+          border-radius: 50px;
+          font-weight: 700;
+          font-size: 1.15rem;
+          cursor: pointer;
+          transition: background 0.3s ease;
+          text-decoration: none;
+          text-align: center;
+          user-select: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .btn:hover {
+          background: #006644;
+        }
+        .btn.back {
+          background: #66cc99;
+          color: white;
+        }
+        .btn.back:hover {
+          background: #009966;
+          color: white;
+        }
+
+        @media (max-width: 900px) {
+          .village-container {
+            flex-direction: column;
+            padding: 30px 20px;
+          }
+          .left-panel {
+            max-width: none;
+            flex: none;
+            margin: 0 auto;
+            margin-bottom: 36px;
+          }
+          .right-panel {
+            flex: none;
+          }
+          .buttons-row {
+            justify-content: center;
+          }
+        }
+
+        .img-modal {
+          display: none;
+          position: fixed;
+          z-index: 3000;
+          left: 0; top: 0;
+          width: 100vw;
+          height: 100vh;
+          background-color: rgba(0,0,0,0.85);
+          justify-content: center;
+          align-items: center;
+          overflow: auto;
+          padding: 20px;
+        }
+        .img-modal.active {
+          display: flex;
+        }
+        .img-modal-content {
+          max-width: 90vw;
+          max-height: 85vh;
+          border-radius: 14px;
+          box-shadow: 0 20px 40px rgba(0, 153, 102, 0.6);
+        }
+        .img-modal-close {
+          position: fixed;
+          top: 30px;
+          right: 40px;
+          color: #66cc99;
+          font-size: 40px;
+          font-weight: 900;
+          cursor: pointer;
+          user-select: none;
+          transition: color 0.3s ease;
+        }
+        .img-modal-close:hover {
+          color:#e6f2eb;
+        }
+        .status-buttons button {
+            margin-right: 8px;
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-available {
+            background-color: #10b981;
+        }
+        .btn-available:hover {
+            background-color: #059669;
+        }
+
+        .btn-unavailable {
+            background-color: #f59e0b;
+        }
+
+        .btn-unavailable:hover {
+            background-color: #d97706;
+        }
+
+        .btn-deactivate {
+            background-color: #ef4444;
+        }
+        .btn-deactivate:hover {
+            background-color: #dc2626;
+        }
+         .profile-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .profile-options {
+          display: none;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .profile-options button {
+          background-color: #009966;
+          border: none;
+          color: white;
+          padding: 4px 10px;
+          font-size: 12px;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+
+        .profile-options button:hover {
+          background-color: #00794d;
+        }
+
+        .add-more-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #f3f4f6;
+          border-radius: 12px;
+          height: 100%;
+          min-height: 100px;
+          box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-more-btn {
+          background-color: #009966;
+          color: white;
+          padding: 8px 16px;
+          font-size: 0.9rem;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background-color 0.2s ease;
+        }
+
+        .add-more-btn:hover {
+          background-color:  #00804d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="village-container">
+
+    <div class="left-panel">
+        <div class="profile-wrapper">
+            <div class="main-image" onclick="toggleProfileOptions()">
+                <img id="villageProfileImg" th:src="@{'/uploads/village/' + ${village.villageProfileImage}}" alt="Village Profile Image" />
+            </div>
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+            <div class="profile-options" id="profileOptions">
+                <button onclick="document.getElementById('uploadInput').click()">✏️ Update</button>
+                <button onclick="openImagePreview(document.getElementById('villageProfileImg').src)">👁 View</button>
+                <button th:onclick="|confirmDeleteProfileImage(this)|"
+                        th:attr="data-villageid=${village.villageId}">🗑 Delete</button>
+            </div>
+
+        </div>
+        <form id="uploadForm" th:action="@{/village/updateProfileImage}" th:object="${villageDto}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="villageId" th:value="${village.villageId}" />
+            <input type="file" id="uploadInput"  th:field="*{villageProfileImageFile}" style="display: none;" accept="image/*"
+                   onchange="handleImageUpload(this)" />
+        </form>
+
+        <div class="gallery" id="villageGallery">
+            <div class="image-container" th:each="imgName : ${village.villagePhotos}">
+                <img th:src="@{'/uploads/village/' + ${imgName}}"
+                     alt="Village Photo"
+                     onclick="openImagePreview(this.src)" />
+                <div class="image-overlay">
+                    <button class="gallery-btn gallery-update-btn"
+                            th:attr="data-villageid=${village.villageId}, data-imgname=${imgName}"
+                            onclick="updateImageHandler(this)">
+                        Update
+                    </button>
+                    <button class="gallery-btn gallery-delete-btn"
+                            th:attr="data-villageid=${village.villageId}, data-imgname=${imgName}"
+                            onclick="confirmDeleteGalleryImage(this)">
+                        Delete
+                    </button>
+                    <button class="gallery-btn gallery-view-btn"
+                            onclick="openImagePreview(this.closest('.image-container').querySelector('img').src)">
+                        View
+                    </button>
+                    <input type="file" class="image-update-input" style="display: none;" accept="image/*" onchange="submitImageUpdate(this)">
+                </div>
+            </div>
+        </div>
+        <div class="gallery-feedback">
+            <div th:if="${successMessage}" class="alert alert-success">
+                <span th:text="${successMessage}"></span>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger">
+                <span th:text="${errorMessage}"></span>
+            </div>
+        </div>
+        <form id="villagePhotoUploadForm" th:action="@{/village/addGalleryPhotos}" th:object="${villageDto}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="villageId" th:value="${village.villageId}" />
+            <input type="file" id="villagePhotoInput" name="villageGalleryFiles" multiple accept="image/*" style="display: none;" onchange="submitVillageGalleryPhotos()" />
+        </form>
+    </div>
+
+    <div class="right-panel">
+        <h1 class="village-name" th:text="${village.villageName}">Village Name</h1>
+        <p class="village-type" th:text="${village.villageType}">Village Type</p>
+
+        <section class="info-block">
+            <h3>Village Information</h3>
+            <ul class="info-list">
+                <li><strong>Village ID:</strong> <span th:text="${village.villageId}">Id</span></li>
+                <li><strong>Village Register No:</strong> <span th:text="${village.villageRegNumber}">Register Number</span></li>
+                <li><strong>Village Email:</strong> <span th:text="${village.villageEmail}">VillageEmail</span></li>
+                <li><strong>Authority Name:</strong> <span th:text="${village.villageAuthorityName}">Authority Name</span></li>
+                <li><strong>Representative:</strong> <span th:text="${village.villageRepresentativeName}">Rep Name</span></li>
+                <li><strong>Position:</strong> <span th:text="${village.representativePosition}">Position</span></li>
+                <li><strong>Id-Number:</strong> <span th:text="${village.officialIdNumber}">Off Id No</span></li>
+                <li><strong>Description:</strong> <span th:text="${village.villageDescription}">Description</span></li>
+                <li><strong>Date of Registration:</strong>
+                    <span th:text="${#temporals.format(village.registeredDate, 'dd MMM yyyy')}">01 Jan 2024</span>
+                </li>
+                <li><strong>Stamp Image:</strong><br/>
+                    <div th:if="${village.offStampOrSealFileName != null}">
+                        <img th:src="@{'/uploads/village/' + ${village.offStampOrSealFileName}}"
+                             alt="Stamp Image"
+                             style="max-width: 200px; margin-top: 10px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    </div>
+                </li>
+                <li><strong>Official Document:</strong><br/>
+                    <div th:if="${village.offDocFileName != null}">
+                        <div>
+                            <object
+                                    th:data="@{'/uploads/village/' + ${village.offDocFileName}}"
+                                    th:type="'application/' + ${#strings.toLowerCase(village.offDocFileName.substring(village.offDocFileName.lastIndexOf('.') + 1))}"
+                                    style="width:100%; height:400px;">
+                                <a th:href="@{'/uploads/village/' + ${village.offDocFileName}}" download>
+                                    Download Document
+                                </a>
+                            </object>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="info-block">
+            <h3>Basic Information</h3>
+            <ul class="info-list">
+                <li><strong>Contact Person:</strong> <span th:text="${village.contactPersonName}">Contact Name</span></li>
+                <li><strong>Phone:</strong> <span th:text="${village.contactNo}">0123456789</span></li>
+                <li><strong>Alternate Phone:</strong> <span th:text="${village.altContactNo}">0987654321</span></li>
+                <li><strong>Email:</strong> <span th:text="${village.contactEmail}">village@example.com</span></li>
+            </ul>
+        </section>
+        <section class="info-block">
+            <h3>Banking Information</h3>
+            <ul class="info-list">
+                <li><strong>Bank:</strong> <span th:text="${village.bankName}">Bank Name</span></li>
+                <li><strong>Account No:</strong> <span th:text="${village.bankAccountNumber}">0123456789</span></li>
+                <li><strong>TIN:</strong> <span th:text="${village.tin}">0987654321</span></li>
+            </ul>
+        </section>
+        <section class="info-block">
+            <h3>Location & Status</h3>
+            <ul class="info-list">
+                <li><strong>Address:</strong> <span th:text="${village.villageLocation}">Village Address Here</span></li>
+                <li><strong>Latitude:</strong> <span th:text="${village.latitude}">00.0000</span></li>
+                <li><strong>Longitude:</strong> <span th:text="${village.longitude}">00.0000</span></li>
+                <li><strong>Request status:</strong> <span th:text="${village.villageStatus}">Pending</span></li>
+                <li>
+                    <strong>Status:</strong>
+                    <span id="villageCurrentStatusText" th:text="${village.villageCurrentStatus}">Available</span>
+
+                    <input type="hidden" id="villageId" th:value="${village.villageId}" />
+
+                    <div class="status-buttons" style="margin-top: 10px;">
+                        <button class="btn-available" onclick="submitStatusChange('Available')">Available</button>
+                        <button class="btn-unavailable" onclick="submitStatusChange('Unavailable')">Unavailable</button>
+                        <button class="btn-deactivate" onclick="submitStatusChange('Deactivated')">Deactivate</button>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="map-section" th:if="${village.latitude != null && village.longitude != null}">
+                <iframe
+                        th:src="@{'https://maps.google.com/maps?q=' + ${village.latitude} + ',' + ${village.longitude} + '&z=15&output=embed'}"
+                        loading="lazy"
+                        allowfullscreen
+                        referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <div class="map-section map-placeholder" th:if="${village.latitude == null || village.longitude == null}">
+                Location coordinates not available
+            </div>
+        </section>
+    </div>
+    <div class="buttons-row">
+        <button class="btn back" onclick="window.location.href='/village/home'">Back</button>
+        <a th:href="@{/village/editVillage}" class="btn edit">Edit</a>
+    </div>
+</div>
+
+<div id="imagePreviewModal" class="img-modal" onclick="closeImagePreview(event)">
+    <span class="img-modal-close" onclick="closeImagePreview(event)">&times;</span>
+    <img class="img-modal-content" id="imgPreview" alt="Preview" />
+</div>
+
+<script>
+    function confirmDeleteProfileImage(button) {
+    const villageId = button.dataset.villageid;
+
+    if (!villageId) {
+        Swal.fire('Error', 'Village ID is missing.', 'error');
+        return;
+    }
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'This will permanently delete the profile image.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deleteVillageProfileImage(villageId);
+        }
+    });
+}
+
+function deleteVillageProfileImage(villageId) {
+    const url = `/village/deleteProfileImage?villageId=${encodeURIComponent(villageId)}`;
+
+    fetch(url, { method: 'DELETE' })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                Swal.fire('Deleted!', data.message, 'success');
+                document.getElementById('villageProfileImg').src = '/images/default-placeholder.png';
+                document.querySelector('.profile-options button[onclick*="openImagePreview"]').disabled = true;
+            } else {
+                Swal.fire('Error', data.message, 'error');
+            }
+        })
+        .catch(() => {
+            Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+        });
+}
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const gallery = document.getElementById("villageGallery");
+
+      const addMoreContainer = document.createElement("div");
+      addMoreContainer.className = "image-container add-more-container";
+
+      addMoreContainer.innerHTML = `
+        <div class="image-overlay" style="opacity: 1;">
+          <button class="gallery-btn add-more-btn" onclick="openAddImageModal()">
+            + Add More
+          </button>
+        </div>
+      `;
+
+      gallery.appendChild(addMoreContainer);
+    });
+
+
+    function openImagePreview(src) {
+          const modal = document.getElementById('imagePreviewModal');
+          const img = document.getElementById('imgPreview');
+          if (modal && img) {
+              img.src = src;
+              modal.classList.add('active');
+          }
+      }
+
+    function closeImagePreview(event) {
+          const isBackdropClick = event.target.id === 'imagePreviewModal';
+          const isCloseClick = event.target.classList.contains('img-modal-close');
+          if (isBackdropClick || isCloseClick) {
+              document.getElementById('imagePreviewModal').classList.remove('active');
+          }
+    }
+
+function confirmDeleteGalleryImage(button) {
+    const villageId = button.getAttribute('data-villageid');
+    const imgName = button.getAttribute('data-imgname');
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'This image will be permanently deleted.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e02424',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, delete it',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deleteVillageImage(villageId, imgName, button);
+        }
+    });
+}
+
+      function deleteVillageImage(villageId, imgName, button) {
+    fetch('/village/deleteVillageImage', {
+        method: 'POST',
+              headers: {
+        'Content-Type': 'application/json'
+    },
+        body: JSON.stringify({
+            villageId: villageId,
+            imageName: imgName
+        })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Network error');
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                title: 'Deleted!',
+                text: data.message,
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            // Remove image container from DOM
+            const container = button.closest('.image-container');
+            container.remove();
+        } else {
+            throw new Error(data.message || 'Deletion failed');
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: 'Error',
+            text: error.message,
+            icon: 'error'
+        });
+    });
+}
+
+    function submitStatusChange(newStatus) {
+        const villageId = $('#villageId').val();
+
+        $.ajax({
+          url: '/village/updateVillageCurrentStatus',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            villageId: villageId,
+            newStatus: newStatus
+          }),
+          success: function(response) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Status Updated',
+              text: 'Village status changed to ' + newStatus,
+              confirmButtonColor: '#009966'
+            }).then(() => {
+               $('#villageCurrentStatusText').text(newStatus);
+            });
+          },
+          error: function(xhr, status, error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Update Failed',
+              text: 'Could not update status. Please try again.',
+              confirmButtonColor: '#009966'
+            });
+          }
+        });
+    }
+
+    function toggleProfileOptions() {
+          const options = document.getElementById('profileOptions');
+          options.style.display = options.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function openImagePreview(src) {
+          const modal = document.getElementById('imagePreviewModal');
+          const img = document.getElementById('imgPreview');
+          img.src = src;
+          modal.classList.add('active');
+    }
+
+    function handleImageUpload(input) {
+          const file = input.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              document.getElementById('villageProfileImg').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            setTimeout(() => {
+              document.getElementById('uploadForm').submit();
+            }, 300);
+          }
+    }
+
+    function updateImageHandler(button) {
+        const villageId = button.getAttribute('data-villageid');
+        const imageName = button.getAttribute('data-imgname');
+
+        const fileInput = button.nextElementSibling;
+
+        fileInput.dataset.villageid = villageId;
+        fileInput.dataset.oldimgname = imageName;
+
+        fileInput.click();
+    }
+
+    function submitImageUpdate(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const villageId = input.dataset.villageid;
+        const oldImageName = input.dataset.oldimgname;
+
+        const formData = new FormData();
+        formData.append('newImage', file);
+        formData.append('villageId', villageId);
+        formData.append('oldImageName', oldImageName);
+
+        fetch('/village/updateVillageImage', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Image updated successfully!',
+                    confirmButtonColor: '#009966'
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Update Failed',
+                    text: 'Server responded with an error.',
+                    confirmButtonColor: '#009966'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Something went wrong!',
+                text: 'There was a problem updating the image.',
+                confirmButtonColor: '#009966'
+            });
+        });
+    }
+
+    function openAddImageModal() {
+          document.getElementById("villagePhotoInput").click();
+    }
+
+    function submitVillageGalleryPhotos() {
+          document.getElementById("villagePhotoUploadForm").submit();
+    }
+</script>
+</body>
+</html>

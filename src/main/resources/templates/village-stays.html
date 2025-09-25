@@ -1,0 +1,1241 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Village-View All Stays</title>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="description" content="CodedThemes">
+    <meta name="keywords" content="flat ui, admin  Admin , Responsive, Landing, Bootstrap, App, Template, Mobile, iOS, Android, apple, creative app">
+    <meta name="author" content="CodedThemes">
+    <link rel="icon" th:href="@{/Village/VillageAdmin/assets/images/favicon.ico}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/Village/VillageAdmin/assets/css/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/Village/VillageAdmin/assets/icon/themify-icons/themify-icons.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/Village/VillageAdmin/assets/icon/icofont/css/icofont.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/Village/VillageAdmin/assets/css/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/Village/VillageAdmin/assets/css/jquery.mCustomScrollbar.css}">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/path/to/jquery.mCustomScrollbar.concat.min.js"></script>
+
+    <style>
+
+        #stayType {
+            width: 100%;
+            height: 35px;
+            font-size: 14px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+
+
+        .card-block h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+            font-size: 16px;
+            padding: 12px;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        @media screen and (max-width: 768px) {
+            .card-block {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            .form-control {
+                padding: 8px;
+            }
+
+            .btn-primary {
+                padding: 10px;
+            }
+        }
+                .img-thumbnail {
+          border: 2px solid #ddd;
+          transition: transform 0.2s ease;
+        }
+        .img-thumbnail:hover {
+          transform: scale(1.05);
+          border-color: #007bff;
+        }
+       .stay-modal-overlay {
+          display: none;
+          position: fixed;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 9999;
+          overflow-y: auto;
+          padding: 2rem;
+        }
+
+        .stay-modal-overlay.visible {
+          display: block;
+        }
+
+        .stay-modal-box {
+          background: #fff;
+          max-width: 900px;
+          margin: auto;
+          border-radius: 8px;
+          padding: 1.5rem;
+          box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        }
+
+        .stay-modal-close {
+          float: right;
+          font-size: 24px;
+          cursor: pointer;
+        }
+
+        .stay-modal-body {
+          display: flex;
+          gap: 2rem;
+          margin-top: 1rem;
+        }
+
+        .stay-modal-left, .stay-modal-right {
+          flex: 1;
+        }
+
+        .stay-image-row img {
+          max-height: 120px;
+          margin: 5px;
+          border-radius: 4px;
+        }
+
+        .stay-room-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+
+        .stay-room-card {
+          background: #f8f9fa;
+          padding: 1rem;
+          border-radius: 6px;
+          width: 45%;
+          cursor: pointer;
+          box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        .stay-modal-footer {
+          margin-top: 1.5rem;
+          text-align: right;
+        }
+
+        .badge {
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-weight: bold;
+        }
+
+        .badge-success {
+          background-color: #28a745;
+          color: white;
+        }
+
+        .badge-danger {
+          background-color: #dc3545;
+          color: white;
+        }
+
+                .swal-image-small {
+          max-width: 400px;
+          max-height: 300px;
+          border-radius: 6px;
+        }
+        .swal2-container {
+          z-index: 99999 !important;
+        }
+        .swal-zindex {
+          z-index: 99999 !important;
+        }
+
+        .swal-room-preview {
+          z-index: 9999 !important;
+          border-radius: 10px;
+        }
+
+        .img-thumbnail {
+          transition: transform 0.2s ease;
+        }
+
+        .img-thumbnail:hover {
+          transform: scale(1.05);
+        }
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
+        }
+                .room-image-wrapper {
+          display: inline-block;
+          text-align: center;
+          margin: 8px;
+        }
+
+        .room-image-actions {
+          margin-top: 4px;
+          display: flex;
+          justify-content: center;
+          gap: 6px;
+        }
+
+                #stayImages {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr); /* Two images per row */
+          gap: 12px;
+          margin-top: 12px;
+        }
+
+        .stay-image-wrapper {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .mark-all-btn {
+          background: none;
+          border: none;
+          color: #28a745;
+          font-size: 0.85rem;
+          cursor: pointer;
+          margin-top: 5px;
+        }
+
+        .show-notification {
+  max-height: 300px; /* Adjust based on your design */
+  overflow-y: auto;
+  padding-right: 5px; /* Prevent scrollbar overlap */
+}
+
+/* Optional: smooth scroll and scrollbar styling */
+.show-notification::-webkit-scrollbar {
+  width: 6px;
+}
+
+.show-notification::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+        .show-notification::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, white);
+  pointer-events: none;
+}
+    </style>
+
+</head>
+
+<body>
+<div class="theme-loader">
+    <div class="ball-scale">
+        <div class='contain'>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+            <div class="ring">
+                <div class="frame"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="pcoded" class="pcoded">
+    <div class="pcoded-overlay-box"></div>
+    <div class="pcoded-container navbar-wrapper">
+
+        <nav class="navbar header-navbar pcoded-header">
+            <div class="navbar-wrapper">
+
+                <div class="navbar-logo">
+                    <a class="mobile-menu" id="mobile-collapse" href="#!">
+                        <i class="ti-menu"></i>
+                    </a>
+                    <a class="mobile-search morphsearch-search" href="#">
+                        <i class="ti-search"></i>
+                    </a>
+                    <a href="index.html">
+                        <img class="img-fluid" src="/Village/VillageAdmin/assets/images/logo.png" alt="Theme-Logo" />
+                    </a>
+                    <a class="mobile-options">
+                        <i class="ti-more"></i>
+                    </a>
+                </div>
+
+                <div class="navbar-container container-fluid">
+                    <ul class="nav-left">
+                        <li>
+                            <div class="sidebar_toggle"><a href="javascript:void(0)"><i class="ti-menu"></i></a></div>
+                        </li>
+                    </ul>
+                    <ul class="nav-right">
+                        <li class="header-notification">
+                            <a href="#!">
+                                <i class="ti-bell"></i>
+                                <span class="badge bg-c-green" th:if="${unreadCount > 0}" th:text="${unreadCount}"></span>
+                            </a>
+                            <ul class="show-notification">
+                                <li>
+                                    <h6>Notifications</h6>
+                                    <label class="label label-custom-green">New</label>
+                                    <a th:href="@{/village/notifications}" class="view-all-link">View All</a>
+                                    <button onclick="markAllAsRead()" class="mark-all-btn">Mark All as Read</button>
+                                </li>
+
+                                <!-- Show fallback if no messages -->
+                                <li th:if="${#lists.isEmpty(villageMessages)}">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <p class="notification-msg">No messages available</p>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <!-- Loop through messages -->
+                                <li th:each="msg : ${villageMessages}"
+                                    th:classappend="${!msg.read} ? 'unread'"
+                                    th:onclick="'markAsRead(' + ${msg.id} + ')'">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <h5 class="notification-user" th:text="${msg.type}">Type</h5>
+                                            <p class="notification-msg" th:text="${msg.message}">Message</p>
+                                            <span class="notification-time"
+                                                  th:text="${msg.timestamp != null} ? ${#temporals.format(msg.timestamp, 'dd MMM yyyy, hh:mm a')} : '—'"></span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="user-profile header-notification">
+                            <a href="#!">
+                                <img th:src="@{'/uploads/village/' + ${village.villageProfileImage}}" class="img-radius" alt="User-Profile-Image">
+                                <span ></span>
+                                <i class="ti-angle-down"></i>
+                            </a>
+                            <ul class="show-notification profile-notification">
+                                <li>
+                                    <a th:href="@{/village/settings}">
+                                        <i class="ti-settings"></i> Settings
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/village/villageDetails}">
+                                        <i class="ti-user"></i> Village Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/village/notifications}">
+                                        <i class="ti-email"></i> My Messages
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/village/editVillageRequests}">
+                                        <i class="ti-pencil"></i> Edit-Requests
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/village/logout}">
+                                        <i class="ti-layout-sidebar-left"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="pcoded-main-container">
+            <div class="pcoded-wrapper">
+                <nav class="pcoded-navbar">
+                    <div class="sidebar_toggle"><a href="#"><i class="icon-close icons"></i></a></div>
+                    <div class="pcoded-inner-navbar main-menu">
+                        <div class="">
+                            <div class="main-menu-header">
+                                <img class="img-40 img-radius" th:src="@{'/uploads/village/' + ${village.villageProfileImage}}" alt="User-Profile-Image">
+                                <div class="user-details">
+                                    <span th:text="${village.villageName}"></span>
+                                    <span id="more-details" th:text="'ID: ' + ${village.villageId}"><i class="ti-angle-down"></i></span>
+                                </div>
+                            </div>
+
+
+                            <div class="main-menu-content">
+                                <ul>
+                                    <li class="more-details">
+                                        <a th:href="@{/village/villageDetails}"><i class="ti-user"></i>View Profile</a>
+                                        <a th:href="@{/village/editVillageRequests}"><i class="ti-pencil"></i>Edit Requests</a>
+                                        <a th:href="@{/village/settings}"><i class="ti-settings"></i>Settings</a>
+                                        <a th:href="@{/village/logout}"><i class="ti-layout-sidebar-left"></i>Logout</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="pcoded-navigatio-lavel" data-i18n="nav.category.navigation">Village Home</div>
+                        <ul class="pcoded-item pcoded-left-item">
+                            <li class="active">
+                                <a th:href="@{/village/home}">
+                                    <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
+                                    <span class="pcoded-mtext" data-i18n="nav.dash.main">Dashboard</span>
+                                    <span class="pcoded-mcaret"></span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="pcoded-navigatio-lavel" data-i18n="nav.category.forms">Bookings</div>
+                        <ul class="pcoded-item pcoded-left-item">
+                            <li class="pcoded-hasmenu">
+                                <a href="javascript:void(0)">
+                                    <span class="pcoded-micon"><i class="ti-layers"></i><b>FC</b></span>
+                                    <span class="pcoded-mtext" data-i18n="nav.form-components.main">Cultural Bookings</span>
+                                    <span class="pcoded-mcaret"></span>
+                                </a>
+                                <ul class="pcoded-submenu">
+                                    <li class=" ">
+                                        <a th:href="@{/village/confirmedBookings}">
+                                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                            <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Confirmed</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                    </li>
+                                    <li class=" ">
+                                        <a th:href="@{/village/pendingBookings}">
+                                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                            <span class="pcoded-mtext" data-i18n="nav.basic-components.breadcrumbs">Pending</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                    </li>
+                                    <li class=" ">
+                                        <a th:href="@{/village/cancelledOrExpiredBookings}">
+                                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                            <span class="pcoded-mtext" data-i18n="nav.basic-components.breadcrumbs">Cancelled/Expired</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                    </li>
+                                    <li class=" ">
+                                        <a th:href="@{/village/endedBookings}">
+                                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                            <span class="pcoded-mtext" data-i18n="nav.basic-components.breadcrumbs">Ended</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <div class="pcoded-navigatio-lavel" data-i18n="nav.category.forms">Registration & Details</div>
+                        <ul class="pcoded-item pcoded-left-item">
+                            <li class="pcoded-hasmenu">
+                                <a href="javascript:void(0)">
+                                    <span class="pcoded-micon"><i class="ti-layout-grid2-alt"></i></span>
+                                    <span class="pcoded-mtext"  data-i18n="nav.basic-components.main">Village Stay</span>
+                                    <span class="pcoded-mcaret"></span>
+                                </a>
+                                <ul class="pcoded-submenu">
+                                    <li class=" ">
+                                        <a th:href="@{/village/stay/register}">
+                                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                            <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Register</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                    <li class=" ">
+                                        <a th:href="@{/village/stays}">
+                                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                            <span class="pcoded-mtext" data-i18n="nav.basic-components.breadcrumbs">View</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="pcoded-hasmenu">
+                                <a href="javascript:void(0)">
+                                    <span class="pcoded-micon"><i class="ti-layout-grid2-alt"></i></span>
+                                    <span class="pcoded-mtext"  data-i18n="nav.basic-components.main">Cultural Activities</span>
+                                    <span class="pcoded-mcaret"></span>
+                                </a>
+                                <ul class="pcoded-submenu">
+                                    <li class=" ">
+                                        <a th:href="@{/village/addActivity}">
+                                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                            <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Add</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                    </li>
+                                    <li class=" ">
+                                        <a th:href="@{/village/showPendingActivities}">
+                                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                            <span class="pcoded-mtext" data-i18n="nav.basic-components.breadcrumbs">Pending Requests</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                    </li>
+                                    <li class=" ">
+                                        <a th:href="@{/village/viewAllApprovedActivities}">
+                                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                            <span class="pcoded-mtext" data-i18n="nav.basic-components.breadcrumbs">Approved</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                    </li>
+                                    <li class=" ">
+                                        <a th:href="@{/village/viewAllRejectedActivities}">
+                                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                                            <span class="pcoded-mtext" data-i18n="nav.basic-components.breadcrumbs">Rejected</span>
+                                            <span class="pcoded-mcaret"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <div class="pcoded-navigatio-lavel" data-i18n="nav.category.other">Feedbacks</div>
+                        <ul class="pcoded-item pcoded-left-item">
+                            <li>
+                                <a th:href="@{/village/feedbacks}">
+                                    <span class="pcoded-micon"><i class="ti-layers"></i><b>FC</b></span>
+                                    <span class="pcoded-mtext" data-i18n="nav.form-components.main">View Feedbacks</span>
+                                    <span class="pcoded-mcaret"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="pcoded-content">
+                    <div class="pcoded-inner-content">
+
+                        <div class="main-body">
+                            <div class="page-wrapper">
+                                <div class="page-header card">
+                                    <div class="row align-items-end">
+                                        <div class="col-lg-8">
+                                            <div class="page-header-title">
+                                                <i class="icofont icofont icofont icofont-file-document bg-c-pink"></i>
+                                                <div class="d-inline">
+                                                    <h4>Village Stays</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="page-header-breadcrumb">
+                                                <ul class="breadcrumb-title">
+                                                    <li class="breadcrumb-item">
+                                                        <a th:href="@{/village/home}">
+                                                            <i class="icofont icofont-home"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li class="breadcrumb-item"><a th:href="@{/village/stays}">Stays </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="page-body">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h5>Village Stay</h5>
+                                                </div>
+                                                <div class="card-block">
+                                                    <div class="filters-container">
+                                                        <form method="get" th:action="@{/village/stays}" class="mb-4">
+                                                            <div class="form-row">
+                                                                <div class="col-md-3">
+                                                                    <input type="text" name="filterStayId" class="form-control" placeholder="Stay ID"
+                                                                           th:value="${filterStayId}">
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <input type="text" name="filterStayName" class="form-control" placeholder="Stay Name"
+                                                                           th:value="${filterStayName}">
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <select name="filterStatus" class="form-control">
+                                                                        <option value="">-- Status --</option>
+                                                                        <option th:value="true" th:selected="${filterStatus == true}">Active</option>
+                                                                        <option th:value="false" th:selected="${filterStatus == false}">Inactive</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-3 d-flex gap-2">
+                                                                    <button type="submit" class="btn btn-primary w-50">Search</button>
+                                                                    <a th:href="@{/village/stays}" class="btn btn-secondary w-50">Reset</a>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+                                                    <h3>All Stays</h3>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered table-hover">
+                                                            <thead class="thead-light">
+                                                            <tr>
+                                                                <th>Stay ID</th>
+                                                                <th>Stay Name</th>
+                                                                <th>Village</th>
+                                                                <th>Type</th>
+                                                                <th>Place</th>
+                                                                <th>Price</th>
+                                                                <th>Status</th>
+                                                                <th>Actions</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr th:each="stay : ${listStays}" th:attr="data-stay-id=${stay.stayId}">
+                                                                <td th:text="${stay.stayId}"></td>
+                                                                <td th:text="${stay.villageStayName}"></td>
+                                                                <td th:text="${stay.village.villageName}"></td>
+                                                                <td th:text="${stay.stayType}"></td>
+                                                                <td th:text="${stay.stayPlace}"></td>
+                                                                <td>₹<span th:text="${stay.priceStartsFrom}"></span></td>
+                                                                <td>
+                                                                    <span th:if="${stay.active}" class="badge badge-success">Active</span>
+                                                                    <span th:if="${!stay.active}" class="badge badge-danger">Inactive</span>
+                                                                </td>
+                                                                <td>
+                                                                    <button type="button" class="btn btn-info btn-sm" onclick="openStayModalFromRow(this)">View</button>
+                                                                    <a th:href="@{/village/editStay/{id}(id=${stay.stayId})}" class="btn btn-warning btn-sm">Edit</a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr th:if="${#lists.isEmpty(listStays)}">
+                                                                <td colspan="8" style="text-align: center; color: red;">No village stays available</td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="styleSelector">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="stayModal" class="stay-modal-overlay">
+    <div class="stay-modal-box">
+        <span class="stay-modal-close" onclick="closeStayModal()">&times;</span>
+        <h2 id="stayModalTitle">Stay Details</h2>
+
+        <div class="stay-modal-body">
+            <div class="stay-modal-left">
+                <p><strong>ID:</strong> <span id="stayId"></span></p>
+                <p><strong>Name:</strong> <span id="stayName"></span></p>
+                <p><strong>Type:</strong> <span id="stayType"></span></p>
+                <p><strong>Place:</strong> <span id="stayPlace"></span></p>
+                <p><strong>Contact:</strong> <span id="stayContact"></span></p>
+                <p><strong>Email:</strong> <span id="stayEmail"></span></p>
+                <p><strong>Status:</strong> <span id="stayStatus" class="badge"></span></p>
+                <div class="stay-status-toggle mt-2">
+                    <button class="btn btn-outline-success" onclick="updateStayStatus(true)">Available</button>
+                    <button class="btn btn-outline-danger" onclick="updateStayStatus(false)">Unavailable</button>
+                </div>
+                <p><strong>Price:</strong> ₹<span id="stayPrice"></span></p>
+                <p><strong>Description:</strong> <span id="stayDescription"></span></p>
+            </div>
+
+            <div class="stay-modal-right">
+                <h4>Stay Images</h4>
+                <div id="stayImages" class="stay-image-row"></div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="stay-room-section">
+            <h4>Rooms</h4>
+            <div id="stayRooms" class="stay-room-list"></div>
+            <a id="addRoomLink" class="btn btn-success mt-2">➕ Add Room</a>
+        </div>
+
+        <div class="stay-modal-footer">
+            <a id="editStayLink" class="btn btn-warning">Edit Stay</a>
+        </div>
+    </div>
+</div>
+
+<div id="roomModal" class="stay-modal-overlay">
+    <div class="stay-modal-box">
+        <span class="stay-modal-close" onclick="closeRoomModal()">&times;</span>
+        <h3 id="roomModalTitle">Room Details</h3>
+
+        <div class="stay-modal-body">
+            <div class="stay-modal-left">
+                <p><strong>Name:</strong> <span id="roomName"></span></p>
+                <p><strong>Type:</strong> <span id="roomType"></span></p>
+                <p><strong>AC:</strong> <span id="roomAC"></span></p>
+                <p><strong>Available:</strong> <span id="roomAvailable"></span></p>
+                <p><strong>Price:</strong> ₹<span id="roomPrice"></span></p>
+                <p><strong>Amenities:</strong> <span id="roomAmenities"></span></p>
+                <p><strong>Notes:</strong> <span id="roomNotes"></span></p>
+            </div>
+            <div class="stay-modal-right">
+                <h4>Room Images</h4>
+                <div id="roomImages" class="stay-image-row"></div>
+            </div>
+        </div>
+
+        <div class="stay-modal-footer">
+            <a id="editRoomLink" class="btn btn-warning">Edit Room</a>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let stayIdToOpen = [[${stayIdToOpen}]];
+    /*]]>*/
+</script>
+
+<script>
+    function openStayModalFromRow(button) {
+      const row = button.closest('tr');
+      const stayId = row.getAttribute('data-stay-id');
+
+      fetch(`/village/stay/${stayId}`)
+        .then(res => res.json())
+        .then(data => StayModal.open(data))
+        .catch(err => console.error("Failed to load stay:", err));
+    }
+
+    const StayModal = {
+      open: function (stayData) {
+        document.getElementById('stayId').textContent = stayData.stayId;
+        document.getElementById('stayName').textContent = stayData.villageStayName;
+        document.getElementById('stayType').textContent = stayData.stayType;
+        document.getElementById('stayPlace').textContent = stayData.stayPlace;
+        document.getElementById('stayContact').textContent = stayData.contactNo;
+        document.getElementById('stayEmail').textContent = stayData.contactEmail;
+        document.getElementById('stayStatus').textContent = stayData.active ? 'Active' : 'Inactive';
+        document.getElementById('stayStatus').className = 'badge ' + (stayData.active ? 'badge-success' : 'badge-danger');
+        document.getElementById('stayPrice').textContent = stayData.priceStartsFrom;
+        document.getElementById('stayDescription').textContent = stayData.description || 'No description';
+
+        const imageRow = document.getElementById('stayImages');
+        imageRow.innerHTML = '';
+
+        (stayData.stayPhotosNames || []).forEach(src => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'stay-image-wrapper';
+
+          const img = document.createElement('img');
+          img.src = `/uploads/stay/${src}`;
+          img.className = 'img-thumbnail';
+          img.style.cursor = 'pointer';
+          img.style.margin = '8px';
+          img.style.maxWidth = '120px';
+          img.style.borderRadius = '6px';
+
+          img.onclick = () => {
+            Swal.fire({
+              title: 'Stay Image Preview',
+              imageUrl: `/uploads/stay/${src}`,
+              imageAlt: 'Stay Image',
+              showCloseButton: true,
+              showConfirmButton: false,
+              background: '#fff',
+              width: 600,
+              padding: '1rem',
+              customClass: { popup: 'swal-stay-preview' }
+            });
+          };
+
+          const actions = document.createElement('div');
+          actions.className = 'stay-image-actions';
+
+          const updateBtn = document.createElement('button');
+          updateBtn.textContent = 'Update';
+          updateBtn.className = 'btn btn-sm btn-info';
+          updateBtn.onclick = () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = () => {
+              const file = input.files[0];
+              if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                fetch(`/village/updateStayImage/${stayData.stayId}/${src}`, {
+                  method: 'PATCH',
+                  body: formData
+                })
+                  .then(res => res.ok ? res.text() : Promise.reject(res))
+                  .then(msg => {
+                    Swal.fire('Updated!', msg, 'success').then(() => {
+                      window.location.reload();
+                    });
+                  })
+                  .catch(() => Swal.fire('Error', 'Failed to update image', 'error'));
+              }
+            };
+            input.click();
+          };
+
+          const deleteBtn = document.createElement('button');
+          deleteBtn.textContent = 'Delete';
+          deleteBtn.className = 'btn btn-sm btn-danger';
+          deleteBtn.onclick = () => {
+            fetch(`/village/deleteStayImage/${stayData.stayId}/${src}`, {
+              method: 'DELETE'
+            })
+              .then(res => res.ok ? res.text() : Promise.reject(res))
+              .then(msg => {
+                Swal.fire('Deleted!', msg, 'success').then(() => {
+                  window.location.reload();
+                });
+              })
+              .catch(() => Swal.fire('Error', 'Failed to delete image', 'error'));
+          };
+
+          actions.appendChild(updateBtn);
+          actions.appendChild(deleteBtn);
+          wrapper.appendChild(img);
+          wrapper.appendChild(actions);
+          imageRow.appendChild(wrapper);
+        });
+
+        const addMoreBtn = document.createElement('button');
+        addMoreBtn.textContent = 'Add More Images';
+        addMoreBtn.className = 'btn btn-sm btn-success';
+        addMoreBtn.onclick = () => {
+          const remainingSlots = MAX_IMAGES - (stayData.stayPhotosNames?.length || 0);
+          if (remainingSlots <= 0) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Limit Reached',
+              text: `Only ${MAX_IMAGES} images allowed per stay.`,
+              confirmButtonColor: '#d33'
+            });
+            return;
+          }
+
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.accept = 'image/*';
+          input.multiple = true;
+          input.onchange = () => {
+            const selectedFiles = input.files;
+            if (selectedFiles.length > remainingSlots) {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Too Many Images',
+                text: `You can only add ${remainingSlots} more image(s).`,
+                confirmButtonColor: '#f0ad4e'
+              });
+            } else {
+              const formData = new FormData();
+              for (let i = 0; i < selectedFiles.length; i++) {
+                formData.append('files', selectedFiles[i]);
+              }
+
+              fetch(`/village/addMoreStayImages/${stayData.stayId}`, {
+                method: 'POST',
+                body: formData
+              })
+                .then(res => res.ok ? res.text() : Promise.reject(res))
+                .then(msg => {
+                  Swal.fire('Added!', msg, 'success').then(() => {
+                    window.location.reload();
+                  });
+                })
+                .catch(() => Swal.fire('Error', 'Failed to add images', 'error'));
+            }
+          };
+          input.click();
+        };
+
+        imageRow.appendChild(addMoreBtn);
+
+        const roomList = document.getElementById('stayRooms');
+        roomList.innerHTML = '';
+        (stayData.rooms || []).forEach(room => {
+          const card = document.createElement('div');
+          card.className = 'stay-room-card';
+          card.innerHTML = `<strong>${room.roomName}</strong><br>₹${room.pricePerRoom} | ${room.availableRooms}`;
+          card.onclick = () => RoomModal.open(room);
+          roomList.appendChild(card);
+        });
+
+        document.getElementById('editStayLink').href = `/village/editStay/${stayData.stayId}`;
+        const encodedStayId = encodeURIComponent(stayData.stayId);
+        document.getElementById('addRoomLink').href = `/village/room/register?stayId=${encodedStayId}`;
+
+        document.getElementById('stayModal').classList.add('visible');
+        document.body.classList.add('modal-open');
+      },
+
+      close: function () {
+        document.getElementById('stayModal').classList.remove('visible');
+        document.body.classList.remove('modal-open');
+      }
+    };
+
+
+    const MAX_IMAGES = 5;
+
+const RoomModal = {
+  open: function (room) {
+    document.getElementById('roomModalTitle').textContent = room.roomName;
+    document.getElementById('roomName').textContent = room.roomName;
+    document.getElementById('roomType').textContent = room.roomType;
+    document.getElementById('roomAC').textContent = room.ac ? 'Yes' : 'No';
+    document.getElementById('roomAvailable').textContent = room.availableRooms;
+    document.getElementById('roomPrice').textContent = room.pricePerRoom;
+    document.getElementById('roomAmenities').textContent = (room.amenities || []).join(', ');
+    document.getElementById('roomNotes').textContent = room.notes || '—';
+
+    document.getElementById('editRoomLink').href = `/village/editRoom/${room.id}`;
+
+
+    const imageRow = document.getElementById('roomImages');
+    imageRow.innerHTML = '';
+
+    (room.roomPhotoNames || []).forEach((src) => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'room-image-wrapper';
+
+      const img = document.createElement('img');
+      img.src = `/uploads/room/${src}`;
+      img.className = 'img-thumbnail';
+      img.style.cursor = 'pointer';
+      img.style.margin = '8px';
+      img.style.maxWidth = '120px';
+      img.style.borderRadius = '6px';
+
+      img.onclick = () => {
+        Swal.fire({
+          title: 'Room Image Preview',
+          imageUrl: `/uploads/room/${src}`,
+          imageAlt: 'Room Image',
+          showCloseButton: true,
+          showConfirmButton: false,
+          background: '#fefefe',
+          width: 600,
+          padding: '1rem',
+          customClass: { popup: 'swal-room-preview' }
+        });
+      };
+
+      const actions = document.createElement('div');
+      actions.className = 'room-image-actions';
+
+      const updateBtn = document.createElement('button');
+      updateBtn.textContent = 'Update';
+      updateBtn.className = 'btn btn-sm btn-info';
+      updateBtn.onclick = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = () => {
+          const file = input.files[0];
+          if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            fetch(`/village/updateRoomImage/${room.id}/${src}`, {
+              method: 'PATCH',
+              body: formData
+            })
+              .then(res => res.ok ? res.text() : Promise.reject(res))
+              .then(msg => {
+                Swal.fire('Updated!', msg, 'success').then(() => {
+                  window.location.reload();
+                });
+              })
+              .catch(() => Swal.fire('Error', 'Failed to update image', 'error'));
+          }
+        };
+        input.click();
+      };
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.className = 'btn btn-sm btn-danger';
+      deleteBtn.onclick = () => {
+        fetch(`/village/deleteRoomImage/${room.id}/${src}`, {
+          method: 'DELETE'
+        })
+          .then(res => res.ok ? res.text() : Promise.reject(res))
+          .then(msg => {
+            Swal.fire('Deleted!', msg, 'success').then(() => {
+              window.location.reload();
+            });
+          })
+          .catch(() => Swal.fire('Error', 'Failed to delete image', 'error'));
+      };
+
+      actions.appendChild(updateBtn);
+      actions.appendChild(deleteBtn);
+      wrapper.appendChild(img);
+      wrapper.appendChild(actions);
+      imageRow.appendChild(wrapper);
+    });
+
+    const addMoreBtn = document.createElement('button');
+    addMoreBtn.textContent = 'Add More Images';
+    addMoreBtn.className = 'btn btn-sm btn-success';
+    addMoreBtn.onclick = () => {
+      const remainingSlots = MAX_IMAGES - (room.roomPhotoNames?.length || 0);
+      if (remainingSlots <= 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Limit Reached',
+          text: `Only ${MAX_IMAGES} images allowed per room.`,
+          confirmButtonColor: '#d33'
+        });
+        return;
+      }
+
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.multiple = true;
+      input.onchange = () => {
+        const selectedFiles = input.files;
+        if (selectedFiles.length > remainingSlots) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Too Many Images',
+            text: `You can only add ${remainingSlots} more image(s).`,
+            confirmButtonColor: '#f0ad4e'
+          });
+        } else {
+          const formData = new FormData();
+          for (let i = 0; i < selectedFiles.length; i++) {
+            formData.append('files', selectedFiles[i]);
+          }
+
+          fetch(`/village/addMoreRoomImages/${room.id}`, {
+            method: 'POST',
+            body: formData
+          })
+            .then(res => res.ok ? res.text() : Promise.reject(res))
+            .then(msg => {
+              Swal.fire('Added!', msg, 'success').then(() => {
+                window.location.reload();
+              });
+            })
+            .catch(() => Swal.fire('Error', 'Failed to add images', 'error'));
+        }
+      };
+      input.click();
+    };
+
+    imageRow.appendChild(addMoreBtn);
+
+    document.getElementById('roomModal').classList.add('visible');
+    document.body.classList.add('modal-open');
+  },
+
+  close: function () {
+    document.getElementById('roomModal').classList.remove('visible');
+    document.body.classList.remove('modal-open');
+  }
+};
+
+
+
+    function closeStayModal() {
+      StayModal.close();
+    }
+
+    function closeRoomModal() {
+      RoomModal.close();
+    }
+
+    window.addEventListener('click', function (e) {
+      const stayModal = document.getElementById('stayModal');
+      const roomModal = document.getElementById('roomModal');
+
+      if (stayModal.classList.contains('visible') && e.target === stayModal) {
+        StayModal.close();
+      }
+
+      if (roomModal.classList.contains('visible') && e.target === roomModal) {
+        RoomModal.close();
+      }
+    });
+
+    function updateStayStatus(isActive) {
+  const statusBadge = document.getElementById('stayStatus');
+  const stayId = document.getElementById('stayId').textContent;
+
+  statusBadge.textContent = isActive ? 'Available' : 'Unavailable';
+  statusBadge.className = isActive ? 'badge bg-success' : 'badge bg-danger';
+
+  fetch(`/village/stays/${stayId}/status`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ isActive })
+  })
+  .then(res => {
+    if (res.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Status Updated',
+        text: `Stay marked as ${isActive ? 'Available' : 'Unavailable'}`,
+        timer: 1800,
+        showConfirmButton: false,
+        customClass: {
+          popup: 'swal-zindex'
+        }
+      });
+    } else {
+      throw new Error('Update failed');
+    }
+  })
+  .catch(err => {
+    Swal.fire({
+      icon: 'error',
+      title: 'Update Failed',
+      text: 'Could not update stay status. Please try again.',
+      showConfirmButton: true,
+      customClass: {
+        popup: 'swal-zindex'
+      }
+    });
+    console.error(err);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof stayIdToOpen !== 'undefined' && stayIdToOpen !== null) {
+    fetch(`/village/stay/${stayIdToOpen}`)
+      .then(res => res.json())
+      .then(data => {
+        StayModal.open(data);
+
+        const roomList = document.getElementById('stayRooms');
+        const lastRoom = roomList.lastElementChild;
+        if (lastRoom) {
+          lastRoom.style.border = '2px solid #28a745';
+          lastRoom.style.animation = 'pulse 1s ease-in-out';
+        }
+      })
+      .catch(err => console.error("Failed to auto-open stay modal:", err));
+  }
+});
+
+    function markAllAsRead() {
+      fetch('/village/messages/mark-all-read', {
+        method: 'POST'
+      }).then(() => location.reload());
+    }
+
+   function markAsRead(id) {
+      fetch('/village/messages/' + id + '/mark-read', {
+        method: 'POST'
+      }).then(() => location.reload());
+    }
+</script>
+
+
+    <script type="text/javascript" src="/Village/VillageAdmin/assets/js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/popper.js/popper.min.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/modernizr/modernizr.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/modernizr/css-scrollbars.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/classie/classie.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/script.js"></script>
+<script src="/Village/VillageAdmin/assets/js/pcoded.min.js"></script>
+<script src="/Village/VillageAdmin/assets/js/demo-12.js"></script>
+<script src="/Village/VillageAdmin/assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
+</body>
+
+</html>

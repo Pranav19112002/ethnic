@@ -1,0 +1,694 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>User Profile</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Arizonia&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/animate.css}">
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.carousel.min.css}">
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.theme.default.min.css}">
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/bootstrap-datepicker.css}">
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/jquery.timepicker.css}">
+
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/flaticon.css}">
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/style.css}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+  <style>
+    .navbar-nav {
+        display: flex;
+        align-items: center; /* Ensures all items are vertically aligned */
+    }
+
+    .login-btn {
+        padding: 8px 15px;
+        font-size: 16px;
+        border-radius: 5px;
+        color: white;
+        border: 2px solid #ffc107;
+        text-transform: uppercase;
+        transition: background-color 0.3s, color 0.3s;
+        background-color: transparent;
+        text-decoration: none;
+        display: inline-block;
+        margin-left: 15px;
+    }
+
+    .login-btn:hover {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 0.95rem;
+    padding: 0;
+    border-radius: 0 0 6px 6px;
+    }
+
+    .dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    color: #333;
+    background-color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+    background-color: #f1f1f1;
+    color: #006600;
+    }
+    .user-sidebar {
+      width: 250px;
+      background: #ffffff;
+      height: calc(100vh - 70px);
+      position: fixed;
+      top: 91px;
+      left: 0;
+      color: #2e8b57;
+      overflow-y: auto;
+      padding-top: 20px;
+      z-index: 1000;
+      border-right: 1px solid #dee2e6;
+    }
+
+    .dropdown-submenu {
+    display: none;
+    flex-direction: column;
+    margin-left: 0;
+    padding-left: 20px;
+    }
+
+    .dropdown-submenu .dropdown-item {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    text-align: left;
+    color: #2e8b57;
+    text-decoration: none;
+    line-height: 1.4;
+    }
+
+    .dropdown-submenu .dropdown-item:hover {
+    background-color: #e6f4ea;
+    color: #216c4b;
+    }
+
+
+
+    .user-content {
+      margin-left: 250px;
+      flex-grow: 1;
+      overflow-y: auto;
+      min-height: 100vh;
+      background: #f8f9fa;
+    }
+
+    .profile-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #2e8b57;
+    }
+
+    .nav-link {
+      color: #2e8b57;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .nav-link:hover {
+      background-color: #e6f4ea;
+      color: #216c4b;
+      border-radius: 5px;
+    }
+
+    .hidden-section {
+      display: none;
+    }
+
+    .active-section {
+      display: block;
+    }
+
+        .profile-avatar-container {
+      position: relative;
+      display: inline-block;
+      margin-top: 15px;
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #2e8b57;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .profile-avatar:hover {
+      box-shadow: 0 0 10px rgba(46, 139, 87, 0.5);
+    }
+
+    .profile-options {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .profile-options button {
+      background-color: #009966;
+      border: none;
+      color: white;
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .profile-options button:hover {
+      background-color: #00794d;
+    }
+
+    .form-delete button {
+      background-color: #009966;
+      border: none;
+      color: white;
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-delete button:hover {
+      background-color: #00794d;
+    }
+
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-avatar {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #2e8b57;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+      .img-modal {
+          display: none;
+          position: fixed;
+          z-index: 3000;
+          left: 0; top: 0;
+          width: 100vw;
+          height: 100vh;
+          background-color: rgba(0,0,0,0.85);
+          justify-content: center;
+          align-items: center;
+          overflow: auto;
+          padding: 20px;
+      }
+      .img-modal.active {
+        display: flex;
+      }
+      .img-modal-content {
+        max-width: 90vw;
+        max-height: 85vh;
+        border-radius: 14px;
+        box-shadow: 0 20px 40px rgba(0, 153, 102, 0.6);
+      }
+      .img-modal-close {
+        position: fixed;
+        top: 30px;
+        right: 40px;
+        color: #66cc99;
+        font-size: 40px;
+        font-weight: 900;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.3s ease;
+      }
+      .img-modal-close:hover {
+        color:#e6f2eb;
+      }
+
+      .status-message {
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .status-message.success {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      border-left: 5px solid #2e7d32;
+    }
+
+    .status-message.error {
+      background-color: #fbe9e7;
+      color: #d32f2f;
+      border-left: 5px solid #d32f2f;
+    }
+
+    .status-message .icon {
+      font-size: 1.4rem;
+    }
+      .username-display {
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 1rem;
+    }
+
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+  <div class="container">
+    <a class="navbar-brand" th:href="@{/}">Ethnic Village<span>Website</span></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="oi oi-menu"></span> Menu
+    </button>
+
+      <div class="collapse navbar-collapse" id="ftco-nav">
+          <ul class="navbar-nav ml-auto">
+              <li class="nav-item active"><a th:href="@{/}" class="nav-link">Home</a></li>
+              <li class="nav-item"><a th:href="@{/about}" class="nav-link">About</a></li>
+              <li class="nav-item"><a th:href="@{/villages}" class="nav-link">Villages</a></li>
+              <li class="nav-item"><a th:href="@{/stays}" class="nav-link">Stays</a></li>
+              <li class="nav-item"><a th:href="@{/contact}" class="nav-link">Contact</a></li>
+              <li class="nav-item" th:if="${user == null}">
+                  <a th:href="@{/loginPage}" class="btn btn-outline-warning login-btn">Login</a>
+              </li>
+
+              <li class="nav-item dropdown" th:if="${user != null}">
+                  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span style="color: #ffc107; font-weight: bold; font-size: 1.2rem;">
+                            User:
+                            <span th:text="${user.userName}" style="color: #00ff00;"></span>
+                        </span>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" th:href="@{/user/profile}">👤 Profile</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" th:href="@{/user/bookingsHistory/current}">🧾 Bookings</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item d-flex justify-content-between align-items-center" th:href="@{/user/notifications}">
+                          ✉️ Messages
+                          <span class="badge badge-pill badge-danger ml-2" th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" th:href="@{/user/logout}">🚪 Logout</a>
+                  </div>
+              </li>
+          </ul>
+      </div>
+  </div>
+</nav>
+<div class="d-flex">
+    <div class="user-sidebar p-4 text-center">
+        <img th:src="@{'/uploads/user/' + ${user.userProfilePicName}}" alt="Profile" class="profile-img mb-3">
+        <p class="text-muted" th:text="'ID: ' + ${user.userId}">ID: 12</p>
+        <h5 class="text-dark username-display">User: <span th:text="${user.userName}">Pranav</span></h5>
+
+        <nav class="nav flex-column mt-4">
+            <a th:href="@{/user/profile}" class="nav-link">👤 Profile</a>
+
+            <a href="#" class="nav-link" onclick="toggleBookingsDropdown(event)">📦 Bookings ▾</a>
+
+            <div id="bookings-dropdown" class="dropdown-submenu">
+                <a th:href="@{/user/bookingsHistory/current}" class="dropdown-item">🟢 Current</a>
+                <a th:href="@{/user/bookingsHistory/pending}" class="dropdown-item">⏳ Pending</a>
+                <a th:href="@{/user/bookingsHistory/cancelled}" class="dropdown-item">❌ Cancelled</a>
+                <a th:href="@{/user/bookingsHistory/past}" class="dropdown-item">📚 Past</a>
+            </div>
+
+            <a th:href="@{/user/paymentsHistory}" class="nav-link">💰 Payments</a>
+
+            <a th:href="@{/user/notifications}" class="nav-link d-flex justify-content-between align-items-center">
+                ✉️ Inbox
+                <span th:if="${unreadCount > 0}" class="badge badge-warning ml-2" th:text="${unreadCount}"></span>
+            </a>
+
+            <a th:href="@{/user/feedback}" class="nav-link">🗣️ Feedback</a>
+
+            <a th:href="@{/user/logout}" class="nav-link">🚪 Logout</a>
+        </nav>
+    </div>
+
+    <div class="user-content p-5">
+    <div id="profile" class="active-section">
+      <h3>👤 Your Profile</h3>
+
+      <div class="profile-avatar-container" onclick="toggleProfileOptions()">
+        <img id="userProfileImage" th:src="@{'/uploads/user/' + ${user.userProfilePicName}}" alt="Profile Picture" class="profile-avatar">
+
+          <div class="profile-options" id="profileOptions">
+              <button onclick="document.getElementById('uploadInput').click()">✏️ Update</button>
+              <button onclick="openImagePreview(document.getElementById('userProfileImage').src)">👁 View</button>
+              <Form th:if="${user.userProfilePicName} != null" class="form-delete" id="deleteImageForm" th:action="@{/user/deleteProfileImage}" method="post">
+                  <input type="hidden" name="userId" th:value="${user.userId}" />
+                  <button onclick="submitDeleteImageForm()">🗑️ Delete</button>
+              </Form>
+          </div>
+      </div>
+
+        <form id="uploadForm" th:action="@{/user/updateProfileImage}" th:object="${userDto}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="userId" th:value="${user.userId}" />
+            <input type="file" id="uploadInput"  th:field="*{profilePic}" style="display: none;" accept="image/*"
+                   onchange="handleImageUpload(this)" />
+            <p th:if="${#fields.hasErrors('profilePic')}" th:errorclass="text-danger" th:errors="${userDto.profilePic}"></p>
+        </form>
+
+      <div id="profileDetails" class="mt-3" >
+        <p><strong>ID:</strong><span th:text="${user.userId}">USER00</span></p>
+        <p><strong>Name:</strong><span th:text="${user.userName}">User</span></p>
+        <p><strong>Email:</strong><span th:text="${user.userEmail}">user@email.com</span></p>
+        <p><strong>Contact:</strong><span th:text="${user.userPhone}">Contact No</span></p>
+        <button class="btn btn-info me-2" onclick="showEditForm()">✏️ Edit Profile</button>
+        <button class="btn btn-warning" onclick="showResetPasswordForm()">🔑 Reset Password</button>
+      </div>
+      <div th:if="${profileUpdateMsg}"
+           th:class="'status-message ' + (${profileUpdateMsg.contains('successfully') ? 'success' : 'error'})">
+        <span class="icon" th:text="${profileUpdateMsg.contains('successfully') ? '✅' : '❌'}"></span>
+        <span th:text="${profileUpdateMsg}"></span>
+      </div>
+      <div th:if="${imageUpdateMsg}"
+           th:class="'status-message ' + (${imageUpdateMsg.contains('successfully') ? 'success' : 'error'})">
+        <span class="icon" th:text="${imageUpdateMsg.contains('successfully') ? '✅' : '❌'}"></span>
+        <span th:text="${imageUpdateMsg}"></span>
+      </div>
+        <div th:if="${resetPasswordMsg}"
+             th:class="'status-message ' + (${resetPasswordMsg.contains('successfully') ? 'success' : 'error'})">
+            <span class="icon" th:text="${resetPasswordMsg.contains('successfully') ? '✅' : '❌'}"></span>
+            <span th:text="${resetPasswordMsg}"></span>
+        </div>
+        <div th:if="${imageDeleteMsg}"
+             th:class="'status-message ' + (${imageDeleteMsg.contains('successfully') ? 'success' : 'error'})">
+            <span class="icon" th:text="${imageDeleteMsg.contains('successfully') ? '✅' : '❌'}"></span>
+            <span th:text="${imageDeleteMsg}"></span>
+        </div>
+
+        <br/>
+        <br/>
+        <br/>
+
+        <div id="editProfileForm" class="mt-3" th:style="${showEditForm} ? 'display:block;' : 'display:none;'">
+            <h3>👤 Edit Details</h3>
+            <form th:action="@{/user/updateProfile}" th:object="${userDto}" method="post">
+                <input type="hidden" name="userId" th:field="${user.userId}">
+                <div class="mb-3">
+
+                    <label>Name</label>
+                    <input type="text" name="userName" class="form-control" th:field="${user.userName}" required>
+                </div>
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input type="email" name="userEmail" class="form-control" th:field="${user.userEmail}" required>
+                </div>
+                <div class="mb-3">
+                    <label>Contact</label>
+                    <input type="text" name="userPhone" class="form-control" th:field="${user.userPhone}" required>
+                </div>
+                <p th:if="${#fields.hasErrors('userName')}" th:errorclass="text-danger" th:errors="${userDto.userName}"></p>
+                <p th:if="${#fields.hasErrors('userEmail')}" th:errorclass="text-danger" th:errors="${userDto.userEmail}"></p>
+                <p th:if="${#fields.hasErrors('userPhone')}" th:errorclass="text-danger" th:errors="${userDto.userPhone}"></p>
+                <button type="submit" class="btn btn-success me-2">💾 Save Changes</button>
+                <button type="button" class="btn btn-secondary" onclick="cancelEditForm()">❌ Cancel</button>
+            </form>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+      <div id="resetPassword" th:style="${showResetPasswordForm} ? 'display:block;' : 'display:none;'">
+        <h3>🔒 Reset Your Password</h3>
+        <form th:action="@{/user/resetPassword}" th:object="${userDto}" method="post">
+            <input type="hidden" name="userId" th:field="${user.userId}">
+          <div class="mb-3">
+            <label>Current Password</label>
+            <input type="password" th:field="*{userPassword}" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label>New Password</label>
+            <input type="password" th:field="*{newPassword}" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label>Confirm Password</label>
+            <input type="password" th:field="*{confirmPassword}" class="form-control">
+          </div>
+            <p th:if="${#fields.hasErrors('userPassword')}" th:errorclass="text-danger" th:errors="${userDto.userPassword}"></p>
+            <p th:if="${#fields.hasErrors('newPassword')}" th:errorclass="text-danger" th:errors="${userDto.newPassword}"></p>
+            <p th:if="${#fields.hasErrors('confirmPassword')}" th:errorclass="text-danger" th:errors="${userDto.confirmPassword}"></p>
+          <button class="btn btn-warning" type="submit">🔁 Reset Password</button>
+          <button type="button" class="btn btn-secondary" onclick="cancelResetPasswordForm()">❌ Cancel</button>
+        </form>
+      </div>
+    </div>
+    </div>
+  </div>
+
+<div id="imageModal" class="modal-overlay" onclick="closeModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <img th:src="@{'/uploads/user/' + ${user.userProfilePicName}}" alt="Profile Picture" class="modal-avatar">
+    <button class="btn btn-secondary mt-3" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+
+<footer class="ftco-footer bg-bottom ftco-no-pt" style="background-image: url(/User/HomePage/images/bg_3.jpg);">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-md pt-5">
+        <div class="ftco-footer-widget pt-md-5 mb-4">
+          <h2 class="ftco-heading-2">About</h2>
+          <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+          <ul class="ftco-footer-social list-unstyled float-md-left float-lft">
+            <li class="ftco-animate"><a href="#"><span class="fa fa-twitter"></span></a></li>
+            <li class="ftco-animate"><a href="#"><span class="fa fa-facebook"></span></a></li>
+            <li class="ftco-animate"><a href="#"><span class="fa fa-instagram"></span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md pt-5 border-left">
+        <div class="ftco-footer-widget pt-md-5 mb-4 ml-md-5">
+          <h2 class="ftco-heading-2">Infromation</h2>
+          <ul class="list-unstyled">
+            <li><a href="#" class="py-2 d-block">Online Enquiry</a></li>
+            <li><a href="#" class="py-2 d-block">General Enquiries</a></li>
+            <li><a href="#" class="py-2 d-block">Booking Conditions</a></li>
+            <li><a href="#" class="py-2 d-block">Privacy and Policy</a></li>
+            <li><a href="#" class="py-2 d-block">Refund Policy</a></li>
+            <li><a href="#" class="py-2 d-block">Call Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md pt-5 border-left">
+        <div class="ftco-footer-widget pt-md-5 mb-4">
+          <h2 class="ftco-heading-2">Experience</h2>
+          <ul class="list-unstyled">
+            <li><a href="#" class="py-2 d-block">Adventure</a></li>
+            <li><a href="#" class="py-2 d-block">Hotel and Restaurant</a></li>
+            <li><a href="#" class="py-2 d-block">Beach</a></li>
+            <li><a href="#" class="py-2 d-block">Nature</a></li>
+            <li><a href="#" class="py-2 d-block">Camping</a></li>
+            <li><a href="#" class="py-2 d-block">Party</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md pt-5 border-left">
+        <div class="ftco-footer-widget pt-md-5 mb-4">
+          <h2 class="ftco-heading-2">Have a Questions?</h2>
+          <div class="block-23 mb-3">
+            <ul>
+              <li><span class="icon fa fa-map-marker"></span><span class="text">203 Fake St. Mountain View, San Francisco, California, USA</span></li>
+              <li><a href="#"><span class="icon fa fa-phone"></span><span class="text">+2 392 3929 210</span></a></li>
+              <li><a href="#"><span class="icon fa fa-paper-plane"></span><span class="text">info@yourdomain.com</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<div id="imagePreviewModal" class="img-modal" onclick="closeImagePreview(event)">
+    <span class="img-modal-close" onclick="closeImagePreview(event)">&times;</span>
+    <img class="img-modal-content" id="imgPreview" alt="Preview" />
+</div>
+
+<script>
+
+function toggleBookingsDropdown(event) {
+  event.preventDefault();
+  const dropdown = document.getElementById("bookings-dropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+function showSection(id) {
+  const sections = document.querySelectorAll('.user-content > div');
+  sections.forEach(sec => {
+    sec.classList.remove('active-section');
+    sec.classList.add('hidden-section');
+  });
+  const active = document.getElementById(id);
+  active.classList.remove('hidden-section');
+  active.classList.add('active-section');
+}
+
+function openModal() {
+  document.getElementById("imageModal").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("imageModal").style.display = "none";
+}
+
+function toggleProfileOptions() {
+  const options = document.getElementById('profileOptions');
+  options.style.display = options.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function handleImageUpload(input) {
+  const file = input.files[0];
+  if (file) {
+     const reader = new FileReader();
+     reader.onload = function (e) {
+     document.getElementById('userProfileImage').src = e.target.result;
+     };
+  reader.readAsDataURL(file);
+
+  setTimeout(() => {
+     document.getElementById('uploadForm').submit();
+     }, 300);
+  }
+}
+
+function openImagePreview(src) {
+  const modal = document.getElementById('imagePreviewModal');
+  const img = document.getElementById('imgPreview');
+  if (modal && img) {
+       img.src = src;
+       modal.classList.add('active');
+  }
+}
+
+function closeImagePreview(event) {
+  const isBackdropClick = event.target.id === 'imagePreviewModal';
+  const isCloseClick = event.target.classList.contains('img-modal-close');
+  if (isBackdropClick || isCloseClick) {
+     document.getElementById('imagePreviewModal').classList.remove('active');
+  }
+}
+
+function showEditForm() {
+   document.getElementById('profileDetails').style.display = 'none';
+   document.getElementById('resetPassword').style.display = 'none';
+   document.getElementById('editProfileForm').style.display = 'block';
+}
+
+function cancelEditForm() {
+  document.getElementById('editProfileForm').style.display = 'none';
+  document.getElementById('resetPassword').style.display = 'none';
+  document.getElementById('profileDetails').style.display = 'block';
+}
+
+function showResetPasswordForm() {
+  document.getElementById('profileDetails').style.display = 'none';
+  document.getElementById('resetPassword').style.display = 'block';
+  document.getElementById('editProfileForm').style.display = 'none';
+}
+
+function cancelResetPasswordForm() {
+  document.getElementById('editProfileForm').style.display = 'none';
+  document.getElementById('resetPassword').style.display = 'none';
+  document.getElementById('profileDetails').style.display = 'block';
+}
+function submitDeleteImageForm() {
+  document.getElementById("deleteImageForm").submit();
+}
+
+</script>
+
+<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/User/HomePage/js/jquery.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery-migrate-3.0.1.min.js}"></script>
+<script th:src="@{/User/HomePage/js/popper.min.js}"></script>
+<script th:src="@{/User/HomePage/js/bootstrap.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.easing.1.3.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.waypoints.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.stellar.min.js}"></script>
+<script th:src="@{/User/HomePage/js/owl.carousel.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.magnific-popup.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.animateNumber.min.js}"></script>
+<script th:src="@{/User/HomePage/js/bootstrap-datepicker.js}"></script>
+<script th:src="@{/User/HomePage/js/scrollax.min.js}"></script>
+<script th:src="@{/User/HomePage/js/main.js}"></script>
+
+</body>
+</html>

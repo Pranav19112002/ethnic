@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>All Notifications</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, sans-serif;
+            background-color: #111;
+            color: #f5f5f5;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: #fff;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            background: transparent;
+            border: 1px solid #555;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            color: #f5f5f5;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn:hover {
+            background: #fff;
+            color: #111;
+        }
+
+        .notification {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            background: #1a1a1a;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: 1px solid #333;
+            transition: background 0.3s ease;
+            animation: fadeInUp 0.4s ease;
+        }
+        .notification.read {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+
+        .notification.unread {
+            border-left: 4px solid #fff;
+        }
+        .notification:hover {
+            background: #222;
+        }
+
+        .notification img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .content {
+            flex: 1;
+        }
+        .content strong {
+            font-size: 1rem;
+            color: #fff;
+        }
+        .content p {
+            margin: 0.25rem 0;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .meta {
+            font-size: 0.75rem;
+            color: #777;
+        }
+        .badge-new {
+            background: #fff;
+            color: #111;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+            font-size: 0.7rem;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Notifications</h1>
+
+    <div class="actions">
+        <button class="btn" onclick="markAllAsRead()">Mark All Read</button>
+        <button class="btn" onclick="clearAll()">Clear All</button>
+    </div>
+
+    <div th:each="message : ${messages}"
+         th:class="'notification ' + (${message.isRead} ? 'read' : 'unread')"
+         th:onclick="'markRead(' + ${message.id} + ')'"
+         style="cursor: pointer;">
+
+    <img th:src="${message.village?.villageProfileImage != null ? '/uploads/village/' + message.village.villageProfileImage : '/Admin/assets/images/user/default.jpg'}"
+             alt="Village Image">
+
+        <div class="content">
+            <strong th:text="${message.village?.villageName ?: 'Unknown Village'}">Village Name</strong>
+            <span class="meta">
+                <i class="icon feather icon-clock"></i>
+                <span th:text="${message.timestamp != null ? #temporals.format(message.timestamp, 'yyyy-MM-dd HH:mm') : '—'}"></span>
+                <span th:if="${!message.isRead and #temporals.day(message.timestamp) == #temporals.day(#temporals.createNow())}"
+                      class="badge-new">New</span>
+            </span>
+            <p th:text="${message.message}">Message content goes here...</p>
+        </div>
+    </div>
+    <div th:if="${#lists.isEmpty(messages)}" style="text-align:center; color:gray; margin-top:2rem;">
+        No notifications yet.
+    </div>
+</div>
+
+<script>
+    function markAllAsRead() {
+    fetch("/admin/inbox/markAllRead", { method: "POST" })
+        .then(() => location.reload())
+        .catch(() => Swal.fire("Error", "Failed to mark all as read.", "error"));
+}
+
+    function markRead(id) {
+    fetch(`/admin/inbox/markRead/${id}`, { method: "POST" })
+        .then(() => location.reload())
+        .catch(() => Swal.fire("Error", "Failed to mark message as read.", "error"));
+}
+
+
+    function clearAll() {
+    Swal.fire({
+        title: "Clear All Notifications?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, clear all",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch("/admin/inbox/clearAll", { method: "DELETE" })
+                .then(() => location.reload())
+                .catch(() => Swal.fire("Error", "Failed to clear notifications.", "error"));
+        }
+    });
+}
+
+</script>
+</body>
+</html>

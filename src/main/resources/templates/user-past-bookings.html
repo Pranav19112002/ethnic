@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>User Past Bookings</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Arizonia&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/animate.css}">
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.carousel.min.css}">
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.theme.default.min.css}">
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/bootstrap-datepicker.css}">
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/jquery.timepicker.css}">
+
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/flaticon.css}">
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/style.css}">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script src="https://js.stripe.com/v3/"></script>
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+  <style>
+    .navbar-nav {
+        display: flex;
+        align-items: center; /* Ensures all items are vertically aligned */
+    }
+
+    .login-btn {
+        padding: 8px 15px;
+        font-size: 16px;
+        border-radius: 5px;
+        color: white;
+        border: 2px solid #ffc107;
+        text-transform: uppercase;
+        transition: background-color 0.3s, color 0.3s;
+        background-color: transparent;
+        text-decoration: none;
+        display: inline-block;
+        margin-left: 15px;
+    }
+
+    .login-btn:hover {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 0.95rem;
+    padding: 0;
+    border-radius: 0 0 6px 6px;
+    }
+
+    .dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    color: #333;
+    background-color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+    background-color: #f1f1f1;
+    color: #006600;
+    }
+    .user-sidebar {
+      width: 250px;
+      background: #ffffff;
+      height: calc(100vh - 70px); /* navbar height accounted */
+      position: fixed;
+      top: 91px; /* distance from top navbar */
+      left: 0;
+      color: #2e8b57;
+      overflow-y: auto;
+      padding-top: 20px;
+      z-index: 1000;
+      border-right: 1px solid #dee2e6;
+    }
+
+    .dropdown-submenu {
+    display: none;
+    flex-direction: column;
+    margin-left: 0;
+    padding-left: 20px;
+    }
+
+    .dropdown-submenu .dropdown-item {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    text-align: left;
+    color: #2e8b57;
+    text-decoration: none;
+    line-height: 1.4;
+    }
+
+    .dropdown-submenu .dropdown-item:hover {
+    background-color: #e6f4ea;
+    color: #216c4b;
+    }
+
+
+
+    .user-content {
+      margin-left: 250px;
+      flex-grow: 1;
+      overflow-y: auto;
+      min-height: 100vh;
+      background: #f8f9fa;
+    }
+
+    .profile-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #2e8b57;
+    }
+
+    .nav-link {
+      color: #2e8b57;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .nav-link:hover {
+      background-color: #e6f4ea;
+      color: #216c4b;
+      border-radius: 5px;
+    }
+
+    .hidden-section {
+      display: none;
+    }
+
+    .active-section {
+      display: block;
+    }
+
+
+    .booking-table {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    font-size: 15px;
+    overflow: hidden;
+    border: none;
+    }
+
+    .booking-table th {
+    background-color: #f1f3f5;
+    color: #495057;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+    padding: 12px;
+    }
+
+    .booking-table td {
+    background-color: #ffffff;
+    color: #343a40;
+    border-bottom: 1px solid #f1f3f5;
+    padding: 10px 12px;
+    }
+
+    .booking-table tbody tr:hover:not(.timer-row) {
+    background-color: #f8f9fa;
+    }
+
+    .booking-table button {
+    font-size: 14px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .booking-table .btn-success {
+    background-color: #009966;
+    color: #fff;
+    border: none;
+    }
+
+    .booking-table .btn-success:hover {
+    background-color: #00794d;
+    }
+
+    .booking-table .btn-outline-primary {
+    border: 1px solid #009966;
+    color: #009966;
+    background-color: transparent;
+    }
+
+    .booking-table .btn-outline-primary:hover {
+    background-color: #009966;
+    color: #fff;
+    }
+
+
+    .filter-bar {
+    background-color: #ffffff;
+    border-left: 5px solid #2e8b57;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(46, 139, 87, 0.1);
+    padding: 16px;
+    }
+
+    .filter-bar label {
+    font-weight: 600;
+    color: #216c4b;
+    }
+
+    .filter-bar input[type="text"],
+    .filter-bar input[type="date"] {
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 6px 10px;
+    transition: border-color 0.3s ease;
+    }
+
+    .filter-bar input:focus {
+    border-color: #2e8b57;
+    box-shadow: 0 0 5px rgba(46, 139, 87, 0.2);
+    }
+
+    .form-check-label {
+    color: #216c4b;
+    font-weight: 500;
+    }
+
+    .pulse {
+    animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0px rgba(255,0,0,0.3); }
+    50% { box-shadow: 0 0 10px rgba(255,0,0,0.6); }
+    }
+
+
+    .booking-history-row {
+    border-top: 2px solid #f1f3f5;
+    }
+
+    .booking-history-row:first-child {
+    border-top: none;
+    }
+
+    .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+    background: #fff;
+    border-radius: 10px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-title {
+    margin-bottom: 1.2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    }
+
+    .form-group {
+    margin-bottom: 1.2rem;
+    }
+
+    .star-rating label {
+    font-size: 1.5rem;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    }
+
+    .star-rating input:checked ~ label {
+    color: #ffc107;
+    }
+
+    textarea {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    }
+
+    .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    }
+
+    .btn-light, .btn-primary {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    }
+
+    .btn-light {
+    background-color: #f0f0f0;
+    }
+
+    .btn-primary {
+    background-color: #d9534f;
+    color: white;
+    }
+
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Ethnic Village<span>Website</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active"><a th:href="@{/}" class="nav-link">Home</a></li>
+                <li class="nav-item"><a th:href="@{/about}" class="nav-link">About</a></li>
+                <li class="nav-item"><a th:href="@{/villages}" class="nav-link">Villages</a></li>
+                <li class="nav-item"><a th:href="@{/stays}" class="nav-link">Stays</a></li>
+                <li class="nav-item"><a th:href="@{/contact}" class="nav-link">Contact</a></li>
+                <li class="nav-item" th:if="${user == null}">
+                    <a th:href="@{/loginPage}" class="btn btn-outline-warning login-btn">Login</a>
+                </li>
+
+                <li class="nav-item dropdown" th:if="${user != null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span style="color: #ffc107; font-weight: bold; font-size: 1.2rem;">
+                            User:
+                            <span th:text="${user.userName}" style="color: #00ff00;"></span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/profile}">👤 Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/bookingsHistory/current}">🧾 Bookings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center" th:href="@{/user/notifications}">
+                            ✉️ Messages
+                            <span class="badge badge-pill badge-danger ml-2" th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/logout}">🚪 Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="d-flex">
+    <div class="user-sidebar p-4 text-center">
+        <img th:src="@{'/uploads/user/' + ${user.userProfilePicName}}" alt="Profile" class="profile-img mb-3">
+        <p class="text-muted" th:text="'ID: ' + ${user.userId}">ID: 12</p>
+        <h5 class="text-dark username-display">User: <span th:text="${user.userName}">Pranav</span></h5>
+
+        <nav class="nav flex-column mt-4">
+            <a th:href="@{/user/profile}" class="nav-link">👤 Profile</a>
+
+            <a href="#" class="nav-link" onclick="toggleBookingsDropdown(event)">📦 Bookings ▾</a>
+
+            <div id="bookings-dropdown" class="dropdown-submenu">
+                <a th:href="@{/user/bookingsHistory/current}" class="dropdown-item">🟢 Current</a>
+                <a th:href="@{/user/bookingsHistory/pending}" class="dropdown-item">⏳ Pending</a>
+                <a th:href="@{/user/bookingsHistory/cancelled}" class="dropdown-item">❌ Cancelled</a>
+                <a th:href="@{/user/bookingsHistory/past}" class="dropdown-item">📚 Past</a>
+            </div>
+
+            <a th:href="@{/user/paymentsHistory}" class="nav-link">💰 Payments</a>
+
+            <a th:href="@{/user/notifications}" class="nav-link d-flex justify-content-between align-items-center">
+                ✉️ Inbox
+                <span th:if="${unreadCount > 0}" class="badge badge-warning ml-2" th:text="${unreadCount}"></span>
+            </a>
+
+            <a th:href="@{/user/feedback}" class="nav-link">🗣️ Feedback</a>
+
+            <a th:href="@{/user/logout}" class="nav-link">🚪 Logout</a>
+        </nav>
+    </div>
+
+
+  <div class="user-content p-4">
+    <h3 class="mb-4">📖 Past Bookings</h3>
+
+    <section class="mb-5">
+      <form th:action="@{/user/bookingsHistory/past}" method="get" class="filter-bar mb-4 p-4 rounded shadow-sm">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label for="pastFilterDate" class="form-label">Booking Date</label>
+            <input type="date" name="filterDate" id="pastFilterDate" class="form-control"
+                   th:value="${filterDate}">
+          </div>
+          <div class="col-md-3">
+            <label for="pastFilterActivity" class="form-label">Activity Name</label>
+            <input type="text" name="filterActivity" id="pastFilterActivity" class="form-control"
+                   th:value="${filterActivity}">
+          </div>
+          <div class="col-md-3">
+            <label for="pastFilterVillage" class="form-label">Village Name</label>
+            <input type="text" name="filterVillage" id="pastFilterVillage" class="form-control"
+                   th:value="${filterVillage}">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label d-block invisible">Actions</label>
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-success w-50">
+                🔍 Search
+              </button>
+              <a th:href="@{/user/bookingsHistory/past}" class="btn btn-outline-secondary w-50">
+                ❌ Clear
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <table class="table booking-table table-bordered table-hover rounded">
+        <thead class="table-success">
+        <tr>
+          <th>Booking Date</th>
+          <th>Activity</th>
+          <th>Village</th>
+          <th>Amount</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="booking : ${endedBookings}">
+          <tr>
+            <td th:text="${booking.bookingDate}"></td>
+            <td th:text="${booking.activity.activityName}"></td>
+            <td th:text="${booking.village.villageName}"></td>
+            <td>₹ <span th:text="${booking.totalAmount}"></span></td>
+            <td>
+              <a th:href="@{|/user/post-booking?bookingId=${booking.bookingId}|}"
+                 class="btn btn-outline-secondary btn-sm">
+                🔍 View
+              </a>
+              <button type="button"
+                      th:if="${booking.status == 'ended' and !booking.hasFeedback}"
+                      class="btn btn-outline-primary btn-sm"
+                      th:attr="onclick=|openFeedbackModal('${booking.bookingId}')|">
+                📝 Add Feedback
+              </button>
+
+              <span th:if="${booking.hasFeedback}" class="text-muted ms-2">
+                          ✅ Feedback Submitted
+                        </span>
+            </td>
+          </tr>
+          <tr th:if="${booking.bookingFeedback != null}">
+            <td colspan="6" class="ps-3 text-muted">
+              ⭐ Rating: <span th:text="${booking.bookingFeedback.rating}"></span> <br>
+              📝 <span th:text="${booking.bookingFeedback.feedback}"></span> <br>
+              🕒 <small th:text="${#temporals.format(booking.bookingFeedback.submittedAt, 'dd MMM yyyy HH:mm')}"></small>
+            </td>
+          </tr>
+        </th:block>
+        <th:block th:if="${#lists.isEmpty(endedBookings)}">
+            <tr>
+                <td colspan="8" style="text-align: center; color: red;">No bookings found</td>
+            </tr>
+        </th:block>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>
+
+
+<div id="feedbackModal" class="modal-backdrop">
+  <div class="modal-content">
+    <h2 class="modal-title">Share Your Feedback</h2>
+    <form method="post" th:action="@{/user/submit-bookings-feedback}">
+      <input type="hidden" name="bookingId" id="feedbackBookingId">
+
+      <div class="form-group">
+        <label>Rate your experience:</label>
+        <div class="star-rating">
+          <input type="radio" name="rating" id="star5" value="5"><label for="star5">★</label>
+          <input type="radio" name="rating" id="star4" value="4"><label for="star4">★</label>
+          <input type="radio" name="rating" id="star3" value="3"><label for="star3">★</label>
+          <input type="radio" name="rating" id="star2" value="2"><label for="star2">★</label>
+          <input type="radio" name="rating" id="star1" value="1"><label for="star1">★</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="feedbackText">Your Thoughts:</label>
+        <textarea id="feedbackText" name="feedback" maxlength="300" rows="4" required></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" onclick="closeFeedbackModal()" class="btn-light">Cancel</button>
+        <button type="submit" class="btn-primary">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+<script>
+  function toggleBookingsDropdown(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById("bookings-dropdown");
+    if (dropdown) {
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    window.openFeedbackModal = function (bookingId) {
+      document.getElementById("feedbackBookingId").value = bookingId;
+      document.getElementById("feedbackModal").style.display = "flex";
+    };
+
+    window.closeFeedbackModal = function () {
+      document.getElementById("feedbackModal").style.display = "none";
+    };
+
+    const feedbackSuccess = /*[[${feedbackSuccess}]]*/ false;
+    if (feedbackSuccess) {
+      Swal.fire({
+        icon: "success",
+        title: "Thank you!",
+        text: "Your feedback has been submitted.",
+        confirmButtonColor: "#009966"
+      });
+    }
+  });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/User/HomePage/js/jquery.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery-migrate-3.0.1.min.js}"></script>
+<script th:src="@{/User/HomePage/js/popper.min.js}"></script>
+<script th:src="@{/User/HomePage/js/bootstrap.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.easing.1.3.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.waypoints.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.stellar.min.js}"></script>
+<script th:src="@{/User/HomePage/js/owl.carousel.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.magnific-popup.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.animateNumber.min.js}"></script>
+<script th:src="@{/User/HomePage/js/bootstrap-datepicker.js}"></script>
+<script th:src="@{/User/HomePage/js/scrollax.min.js}"></script>
+<script th:src="@{/User/HomePage/js/main.js}"></script>
+</body>
+</html>

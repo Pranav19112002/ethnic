@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Activity Ticket</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 30px;
+            background: #f4f4f4;
+        }
+
+        .ticket {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            border: 2px dashed #28a745;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.2);
+        }
+
+        .ticket-header {
+            text-align: center;
+            color: #28a745;
+        }
+
+        .ticket-header h2 {
+            margin-bottom: 5px;
+        }
+
+        .ticket-body {
+            margin-top: 20px;
+        }
+
+        .ticket-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .ticket-footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .qr-code {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .qr-code img {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+<div class="ticket">
+    <div class="ticket-header">
+        <h2>🎫 Ethnic Village Booking Ticket</h2>
+        <p>Thank you for your booking!</p>
+    </div>
+
+    <div class="ticket-body">
+        <div class="ticket-row">
+            <strong>Booking ID:</strong> <span th:text="${activityBooking.bookingId}"></span>
+        </div>
+        <div class="ticket-row">
+            <strong>Name:</strong> <span th:text="${user.userName}"></span>
+        </div>
+        <div class="ticket-row">
+            <strong>Village:</strong> <span th:text="${village.villageName}"></span>
+        </div>
+        <div class="ticket-row">
+            <strong>Activity:</strong> <span th:text="${activity.activityName}"></span>
+        </div>
+        <div class="ticket-row">
+            <strong>Date:</strong> <span th:text="${activityBooking.bookingDate}"></span>
+        </div>
+        <div class="ticket-row">
+            <strong>Time Slot:</strong> <span th:text="${#temporals.format(activityBooking.timeSlot, 'hh:mm a')}"></span>
+        </div>
+        <div class="ticket-row">
+            <strong>Persons:</strong> <span th:text="${activityBooking.numberOfPeople}"></span>
+        </div>
+        <div class="ticket-row">
+            <strong>Total Paid:</strong> ₹<span th:text="${activityBooking.totalAmount}"></span>
+        </div>
+    </div>
+
+    <div class="qr-code">
+        <img src="https://via.placeholder.com/150?text=QR+Code" alt="QR Code" />
+    </div>
+
+    <div class="ticket-footer">
+        <p>📍 Show this ticket at the village entrance</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>User Pending Bookings</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Arizonia&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/animate.css}">
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.carousel.min.css}">
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.theme.default.min.css}">
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/bootstrap-datepicker.css}">
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/jquery.timepicker.css}">
+
+
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/flaticon.css}">
+  <link rel="stylesheet" th:href="@{/User/HomePage/css/style.css}">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script src="https://js.stripe.com/v3/"></script>
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+  <style>
+    .navbar-nav {
+        display: flex;
+        align-items: center;
+    }
+
+    .login-btn {
+        padding: 8px 15px;
+        font-size: 16px;
+        border-radius: 5px;
+        color: white;
+        border: 2px solid #ffc107;
+        text-transform: uppercase;
+        transition: background-color 0.3s, color 0.3s;
+        background-color: transparent;
+        text-decoration: none;
+        display: inline-block;
+        margin-left: 15px;
+    }
+
+    .login-btn:hover {
+        background-color: #ffc107;
+        color: black;
+    }
+
+   .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 0.95rem;
+    padding: 0;
+    border-radius: 0 0 6px 6px;
+    }
+
+    .dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    color: #333;
+    background-color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+    background-color: #f1f1f1;
+    color: #006600;
+    }
+    .user-sidebar {
+      width: 250px;
+      background: #ffffff;
+      height: calc(100vh - 70px); /* navbar height accounted */
+      position: fixed;
+      top: 91px; /* distance from top navbar */
+      left: 0;
+      color: #2e8b57;
+      overflow-y: auto;
+      padding-top: 20px;
+      z-index: 1000;
+      border-right: 1px solid #dee2e6;
+    }
+
+    .dropdown-submenu {
+    display: none;
+    flex-direction: column;
+    margin-left: 0;
+    padding-left: 20px;
+    }
+
+    .dropdown-submenu .dropdown-item {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    text-align: left;
+    color: #2e8b57;
+    text-decoration: none;
+    line-height: 1.4;
+    }
+
+    .dropdown-submenu .dropdown-item:hover {
+    background-color: #e6f4ea;
+    color: #216c4b;
+    }
+
+
+
+    .user-content {
+      margin-left: 250px;
+      flex-grow: 1;
+      overflow-y: auto;
+      min-height: 100vh;
+      background: #f8f9fa;
+    }
+
+    .profile-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #2e8b57;
+    }
+
+    .nav-link {
+      color: #2e8b57;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .nav-link:hover {
+      background-color: #e6f4ea;
+      color: #216c4b;
+      border-radius: 5px;
+    }
+
+    .hidden-section {
+      display: none;
+    }
+
+    .active-section {
+      display: block;
+    }
+
+
+    .booking-table {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    font-size: 15px;
+    overflow: hidden;
+    border: none;
+    }
+
+    .booking-table th {
+    background-color: #f1f3f5;
+    color: #495057;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+    padding: 12px;
+    }
+
+    .booking-table td {
+    background-color: #ffffff;
+    color: #343a40;
+    border-bottom: 1px solid #f1f3f5;
+    padding: 10px 12px;
+    }
+
+    .booking-table tbody tr:hover:not(.timer-row) {
+    background-color: #f8f9fa;
+    }
+
+    .booking-table button {
+    font-size: 14px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .booking-table .btn-success {
+    background-color: #009966;
+    color: #fff;
+    border: none;
+    }
+
+    .booking-table .btn-success:hover {
+    background-color: #00794d;
+    }
+
+    .booking-table .btn-outline-primary {
+    border: 1px solid #009966;
+    color: #009966;
+    background-color: transparent;
+    }
+
+    .booking-table .btn-outline-primary:hover {
+    background-color: #009966;
+    color: #fff;
+    }
+
+    .filter-bar {
+    background-color: #ffffff;
+    border-left: 5px solid #2e8b57;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(46, 139, 87, 0.1);
+    padding: 16px;
+    }
+
+    .filter-bar label {
+    font-weight: 600;
+    color: #216c4b;
+    }
+
+    .filter-bar input[type="text"],
+    .filter-bar input[type="date"] {
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 6px 10px;
+    transition: border-color 0.3s ease;
+    }
+
+    .filter-bar input:focus {
+    border-color: #2e8b57;
+    box-shadow: 0 0 5px rgba(46, 139, 87, 0.2);
+    }
+
+    .form-check-label {
+    color: #216c4b;
+    font-weight: 500;
+    }
+
+    .timer-row td {
+    background-color: #fffbe6 !important;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-top: none;
+    }
+
+    .countdown-badge {
+    font-weight: 600;
+    font-size: 14px;
+    padding: 6px 12px;
+    background-color: #ffd43b;
+    color: #212529;
+    border-radius: 8px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .bg-orange {
+    background-color: #fd7e14 !important;
+    }
+
+    .bg-danger {
+    background-color: #dc3545 !important;
+    color: #fff !important;
+    }
+
+    .pulse {
+    animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0px rgba(255,0,0,0.3); }
+    50% { box-shadow: 0 0 10px rgba(255,0,0,0.6); }
+    }
+
+    .custom-modal-backdrop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    }
+
+    .custom-modal {
+    background-color: #fff;
+    width: 90%;
+    max-width: 480px;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    animation: slideDown 0.3s ease-out;
+    font-family: 'Segoe UI', sans-serif;
+    }
+
+    @keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+    }
+
+    .custom-modal-actions {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    }
+
+    .btn-light, .btn-danger {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    }
+
+    .btn-light {
+    background-color: #e9ecef;
+    color: #212529;
+    }
+
+    .btn-light:hover {
+    background-color: #dee2e6;
+    }
+
+    .btn-danger {
+    background-color: #f03e3e;
+    color: #fff;
+    }
+
+    .btn-danger:hover {
+    background-color: #c92a2a;
+    }
+
+    #customCancelReason {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    margin-top: 8px;
+    padding: 8px;
+    font-size: 14px;
+    resize: none;
+    transition: border-color 0.3s ease;
+    }
+
+    #customCancelReason:focus {
+    border-color: #f03e3e;
+    outline: none;
+    }
+
+        .booking-history-row {
+    border-top: 2px solid #f1f3f5;
+    }
+
+    .booking-history-row:first-child {
+    border-top: none; /* avoid double line at the very top */
+    }
+
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Ethnic Village<span>Website</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active"><a th:href="@{/}" class="nav-link">Home</a></li>
+                <li class="nav-item"><a th:href="@{/about}" class="nav-link">About</a></li>
+                <li class="nav-item"><a th:href="@{/villages}" class="nav-link">Villages</a></li>
+                <li class="nav-item"><a th:href="@{/stays}" class="nav-link">Stays</a></li>
+                <li class="nav-item"><a th:href="@{/contact}" class="nav-link">Contact</a></li>
+                <li class="nav-item" th:if="${user == null}">
+                    <a th:href="@{/loginPage}" class="btn btn-outline-warning login-btn">Login</a>
+                </li>
+
+                <li class="nav-item dropdown" th:if="${user != null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span style="color: #ffc107; font-weight: bold; font-size: 1.2rem;">
+                            User:
+                            <span th:text="${user.userName}" style="color: #00ff00;"></span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/profile}">👤 Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/bookingsHistory/current}">🧾 Bookings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center" th:href="@{/user/notifications}">
+                            ✉️ Messages
+                            <span class="badge badge-pill badge-danger ml-2" th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/logout}">🚪 Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="d-flex">
+    <div class="user-sidebar p-4 text-center">
+        <img th:src="@{'/uploads/user/' + ${user.userProfilePicName}}" alt="Profile" class="profile-img mb-3">
+        <p class="text-muted" th:text="'ID: ' + ${user.userId}">ID: 12</p>
+        <h5 class="text-dark username-display">User: <span th:text="${user.userName}">Pranav</span></h5>
+
+        <nav class="nav flex-column mt-4">
+            <a th:href="@{/user/profile}" class="nav-link">👤 Profile</a>
+
+            <a href="#" class="nav-link" onclick="toggleBookingsDropdown(event)">📦 Bookings ▾</a>
+
+            <div id="bookings-dropdown" class="dropdown-submenu">
+                <a th:href="@{/user/bookingsHistory/current}" class="dropdown-item">🟢 Current</a>
+                <a th:href="@{/user/bookingsHistory/pending}" class="dropdown-item">⏳ Pending</a>
+                <a th:href="@{/user/bookingsHistory/cancelled}" class="dropdown-item">❌ Cancelled</a>
+                <a th:href="@{/user/bookingsHistory/past}" class="dropdown-item">📚 Past</a>
+            </div>
+
+            <a th:href="@{/user/paymentsHistory}" class="nav-link">💰 Payments</a>
+
+            <a th:href="@{/user/notifications}" class="nav-link d-flex justify-content-between align-items-center">
+                ✉️ Inbox
+                <span th:if="${unreadCount > 0}" class="badge badge-warning ml-2" th:text="${unreadCount}"></span>
+            </a>
+
+            <a th:href="@{/user/feedback}" class="nav-link">🗣️ Feedback</a>
+
+            <a th:href="@{/user/logout}" class="nav-link">🚪 Logout</a>
+        </nav>
+    </div>
+
+
+  <div class="user-content p-4">
+    <h3 class="mb-4">⏳ Pending Payment</h3>
+
+    <section class="mb-5">
+      <form th:action="@{/user/bookingsHistory/pending}" method="get" class="filter-bar mb-4 p-4 rounded shadow-sm">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label for="pendingFilterDate" class="form-label">Booking Date</label>
+            <input type="date" name="filterDate" id="pendingFilterDate" class="form-control"
+                   th:value="${filterDate}">
+          </div>
+          <div class="col-md-3">
+            <label for="pendingFilterActivity" class="form-label">Activity Name</label>
+            <input type="text" name="filterActivity" id="pendingFilterActivity" class="form-control"
+                   th:value="${filterActivity}">
+          </div>
+          <div class="col-md-3">
+            <label for="pendingFilterVillage" class="form-label">Village Name</label>
+            <input type="text" name="filterVillage" id="pendingFilterVillage" class="form-control"
+                   th:value="${filterVillage}">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label d-block invisible">Actions</label>
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-success w-50">
+                🔍 Search
+              </button>
+              <a th:href="@{/user/bookingsHistory/pending}" class="btn btn-outline-secondary w-50">
+                ❌ Clear
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <table class="table booking-table table-bordered table-hover rounded">
+        <thead class="table-success">
+        <tr>
+          <th>Booking Date</th>
+          <th>Activity</th>
+          <th>Village</th>
+          <th>Amount</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+         <th:block th:each="booking : ${pendingBookings}">
+          <tr>
+            <td th:text="${booking.bookingDate}"></td>
+            <td th:text="${booking.activity.activityName}"></td>
+            <td th:text="${booking.village.villageName}"></td>
+            <td>₹ <span th:text="${booking.totalAmount}"></span></td>
+            <td>
+              <button type="button"
+                      class="btn btn-success btn-sm"
+                      th:attr="onclick=|redirectToStripeCheckout('${booking.bookingId}')|"
+                      id="payBtn-${booking.bookingId}">
+                💳 Pay
+              </button>
+
+              <button type="button"
+                      class="btn btn-outline-danger btn-sm me-2"
+                      th:attr="onclick=|openCustomModal('${booking.bookingId}')|">
+                ❌ Cancel
+              </button>
+
+              <a th:href="@{|/user/post-booking?bookingId=${booking.bookingId}|}" class="btn btn-outline-secondary btn-sm">🔍 View</a>
+            </td>
+          </tr>
+
+          <tr class="timer-row">
+            <td colspan="5" class="text-end pe-3 py-2">
+              <span class="text-muted me-2" th:id="'time-label-' + ${booking.bookingId}">
+                    Time Remaining:
+              </span>
+              <span class="badge countdown-badge"
+                    th:id="'countdown-' + ${booking.bookingId}"
+                    th:data-expiry="${booking.formattedExpiry}"> --:--:--
+              </span>
+            </td>
+          </tr>
+          </th:block>
+
+         <th:block th:if="${#lists.isEmpty(pendingBookings)}">
+             <tr>
+                 <td colspan="8" style="text-align: center; color: red;">No bookings found</td>
+             </tr>
+         </th:block>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>
+
+<div id="customModal" class="custom-modal-backdrop">
+  <div class="custom-modal">
+    <h2>Confirm Cancellation</h2>
+    <p>Are you sure you want to cancel this booking?</p>
+    <form method="post" th:action="@{/user/cancel-booking}">
+      <input type="hidden" name="bookingId" id="customModalBookingId">
+      <label for="customCancelReason">Reason (max 100 characters):</label>
+      <textarea id="customCancelReason" name="cancelReason" maxlength="100" rows="3" required></textarea>
+      <div class="custom-modal-actions">
+        <button type="button" onclick="closeCustomModal()" class="btn-light">No</button>
+        <button type="submit" class="btn-danger">Yes, Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+<script>
+function toggleBookingsDropdown(event) {
+  event.preventDefault();
+  const dropdown = document.getElementById("bookings-dropdown");
+  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".countdown-badge").forEach(badge => {
+    const expiry = new Date(badge.getAttribute("data-expiry"));
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = expiry - now;
+
+      if (diff <= 0) {
+        badge.textContent = "❌ Expired";
+        badge.classList.remove("bg-warning");
+        badge.classList.add("bg-danger");
+        return;
+      }
+
+      const h = String(Math.floor(diff / 1000 / 3600)).padStart(2, '0');
+      const m = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, '0');
+      const s = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+      badge.textContent = `${h}:${m}:${s}`;
+
+
+      if (diff < 900000) badge.classList.add("pulse", "bg-danger");
+      else if (diff < 3600000) badge.classList.add("bg-orange");
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000); // refresh every second
+  });
+});
+
+
+function openCustomModal(bookingId) {
+  document.getElementById("customModalBookingId").value = bookingId;
+  document.getElementById("customModal").style.display = "flex";
+}
+
+function closeCustomModal() {
+  document.getElementById("customModal").style.display = "none";
+}
+
+window.addEventListener("click", function (event) {
+  const modal = document.getElementById("customModal");
+  if (event.target === modal) {
+    closeCustomModal();
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+   /* Success message */
+   [[${cancelSuccess} ? 'Swal.fire({ icon: "success", title: "Cancelled", text: "Booking cancelled successfully!", confirmButtonColor: "#009966" });' : '']]
+
+   /* Failure message */
+   [[${cancelFailed} ? 'Swal.fire({ icon: "error", title: "Oops!", text: "Cancellation failed. Please try again later.", confirmButtonColor: "#dc3545" });' : '']]
+});
+
+ const stripe = Stripe('pk_test_51RgdZCBTpRiAP9KcugmnWA45gY0A8QAKawhjD1rgp758UIxjbZ8lKR57coGMwrxa7wa2QJ1swRjXGAwIjTdXAiG5003Vb8uDDJ');
+
+function redirectToStripeCheckout(bookingId) {
+  fetch(`/user/validate-and-cancel-if-overbooked?bookingId=${bookingId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.cancelled) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Booking Cancelled',
+          text: data.message,
+          confirmButtonText: 'Go to Cancelled Bookings',
+          confirmButtonColor: '#d33'
+        }).then(() => {
+          window.location.href = '/user/bookingsHistory/cancelled';
+        });
+      } else {
+        // Proceed to Stripe session creation
+        fetch(`/user/create-activity-checkout-session?bookingId=${bookingId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log("Stripe session ID:", data.id);
+          return stripe.redirectToCheckout({ sessionId: data.id });
+        })
+        .catch(err => {
+          console.error("❌ Stripe redirect error:", err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Payment Failed',
+            text: 'Payment initiation failed. Please try again.',
+            confirmButtonColor: '#3085d6'
+          });
+        });
+      }
+    });
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/User/HomePage/js/jquery.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery-migrate-3.0.1.min.js}"></script>
+<script th:src="@{/User/HomePage/js/popper.min.js}"></script>
+<script th:src="@{/User/HomePage/js/bootstrap.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.easing.1.3.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.waypoints.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.stellar.min.js}"></script>
+<script th:src="@{/User/HomePage/js/owl.carousel.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.magnific-popup.min.js}"></script>
+<script th:src="@{/User/HomePage/js/jquery.animateNumber.min.js}"></script>
+<script th:src="@{/User/HomePage/js/bootstrap-datepicker.js}"></script>
+<script th:src="@{/User/HomePage/js/scrollax.min.js}"></script>
+<script th:src="@{/User/HomePage/js/main.js}"></script>
+</body>
+</html>

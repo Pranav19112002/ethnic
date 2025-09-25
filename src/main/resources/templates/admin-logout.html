@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Logout Confirmation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" th:href="@{/Village/VillageAdmin/assets/images/favicon.ico}" type="image/x-icon">
+    <style>
+        body {
+          background-color: #000;
+          color: #fff;
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .logout-box {
+          background-color: #1a1a1a;
+          padding: 40px;
+          border-radius: 12px;
+          box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+          text-align: center;
+        }
+        .logout-box h2 {
+          margin-bottom: 20px;
+          font-weight: bold;
+        }
+        .btn-logout {
+          background-color: #ef4444;
+          border: none;
+        }
+        .btn-logout:hover {
+          background-color: #dc2626;
+        }
+        .btn-cancel {
+          border: 1px solid #fff;
+          color: #fff;
+        }
+        .btn-cancel:hover {
+          background-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="logout-box">
+    <h2>Are you sure you want to logout?</h2>
+    <form th:action="@{/admin/logoutNow}" method="POST" class="d-inline">
+        <button type="submit" class="btn btn-logout px-4 mr-2">Logout</button>
+    </form>
+    <a th:href="@{/admin/home}" class="btn btn-cancel px-4">Cancel</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

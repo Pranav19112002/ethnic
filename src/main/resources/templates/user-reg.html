@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>User-Register</title>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="CodedThemes">
+    <meta name="keywords" content=" Admin , Responsive, Landing, Bootstrap, App, Template, Mobile, iOS, Android, apple, creative app">
+    <meta name="author" content="CodedThemes">
+    <link rel="icon" th:href="@{/Village/VillageAdmin/assets/images/favicon.ico}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,800" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" th:href="@{/Village/VillageAdmin/assets/css/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/Village/VillageAdmin/assets/icon/themify-icons/themify-icons.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/Village/VillageAdmin/assets/icon/icofont/css/icofont.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/Village/VillageAdmin/assets/css/style.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <style>
+        .theme-loader { display: none; transition: opacity 0.3s ease-in-out; }
+        .theme-loader.show { display: block; opacity: 1; }
+    </style>
+
+</head>
+
+<body class="fix-menu">
+<div class="theme-loader">
+    <div class="ball-scale">
+        <div class='contain'>
+            <div class="ring"><div class="frame"></div></div>
+            <div class="ring"><div class="frame"></div></div>
+            <div class="ring"><div class="frame"></div></div>
+            <div class="ring"><div class="frame"></div></div>
+            <div class="ring"><div class="frame"></div></div>
+            <div class="ring"><div class="frame"></div></div>
+            <div class="ring"><div class="frame"></div></div>
+            <div class="ring"><div class="frame"></div></div>
+            <div class="ring"><div class="frame"></div></div>
+            <div class="ring"><div class="frame"></div></div>
+        </div>
+    </div>
+</div>
+<section class="login p-fixed d-flex text-center bg-primary common-img-bg-userreg">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="login-card card-block auth-body mr-auto ml-auto">
+
+                    <form th:action="@{/user/sendOtp}" th:object="${userDto}" method="post" th:if="${step == 'email'}" onsubmit="showLoader()">
+                        <div class="auth-box">
+                            <h3 class="txt-primary">Verify Email</h3>
+                            <div class="input-group">
+                                <input type="email" name="userEmail" th:field="*{userEmail}" class="form-control" placeholder="Enter Email Address" required />
+                            </div>
+                            <p th:if="${#fields.hasErrors('userEmail')}" th:errors="*{userEmail}" style="color: red;"></p>
+                            <button type="submit" class="btn btn-primary btn-block">Send OTP</button>
+                            <button type="button" class="btn btn-block" style="background-color: #4a90e2; color: white; border: none;"
+                                    onmouseover="this.style.backgroundColor='#357ABD'"
+                                    onmouseout="this.style.backgroundColor='#4a90e2'"
+                                    onclick="window.history.back()">Back</button>
+
+                            <p th:if="${error}" th:text="${error}" style="color: red;"></p>
+                        </div>
+                    </form>
+
+                    <form th:action="@{/user/verifyOtp}" method="post" th:if="${step == 'otp'}" onsubmit="showLoader()">
+                        <div class="auth-box">
+                            <h3 class="txt-primary">Enter OTP</h3>
+                            <input type="hidden" name="userEmail" th:value="${userEmail}" />
+                            <div class="input-group">
+                                <input type="text" name="otp" class="form-control" placeholder="Enter 6-digit OTP" required />
+                            </div>
+                            <p th:if="${error}" th:text="${error}" style="color: red;"></p>
+
+                            <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>
+
+                            <div class="text-center m-t-10">
+                                <button id="resendBtn" class="btn btn-link" disabled onclick="document.getElementById('resendForm').submit()">Resend OTP (<span id="timer">30</span>s)</button>
+                                <button type="button" class="btn btn-block" style="background-color: #4a90e2; color: white; border: none;"
+                                        onmouseover="this.style.backgroundColor='#357ABD'"
+                                        onmouseout="this.style.backgroundColor='#4a90e2'"
+                                        onclick="window.history.back()">Back</button>
+
+                            </div>
+                        </div>
+                    </form>
+
+                    <form id="resendForm" th:action="@{/user/resendOtp}" method="post" style="display: none;">
+                        <input type="hidden" name="userEmail" th:value="${userEmail}" />
+                    </form>
+
+                    <form class="md-float-material" th:action="@{/user/saveUser}" th:object="${userDto}" method="post" th:if="${step == 'form'}" onsubmit="showLoader()">
+                        <div class="auth-box">
+                            <h3 class="txt-primary">Sign Up</h3>
+
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:field="*{userName}" placeholder="Enter Your Name" required>
+                            </div>
+                            <p th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}" style="color: red;"></p>
+
+                            <div class="input-group">
+                                <input type="email" class="form-control" th:field="*{userEmail}" readonly />
+                            </div>
+                            <p th:if="${#fields.hasErrors('userEmail')}" th:errors="*{userEmail}" style="color: red;"></p>
+
+                            <div class="input-group">
+                                <input type="text" class="form-control" th:field="*{userPhone}" placeholder="Enter Your Contact number" required>
+                            </div>
+                            <p th:if="${#fields.hasErrors('userPhone')}" th:errors="*{userPhone}" style="color: red;"></p>
+
+                            <div class="input-group">
+                                <input type="password" class="form-control" th:field="*{userPassword}" placeholder="Password" required>
+                            </div>
+                            <p th:if="${#fields.hasErrors('userPassword')}" th:errors="*{userPassword}" style="color: red;"></p>
+
+                            <p th:if="${errorMsg}" th:text="${errorMsg}" style="color: red;"></p>
+
+                            <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                            <button type="button" class="btn btn-block" style="background-color: #4a90e2; color: white; border: none;"
+                                    onmouseover="this.style.backgroundColor='#357ABD'"
+                                    onmouseout="this.style.backgroundColor='#4a90e2'"
+                                    onclick="window.history.back()">Back</button>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function showLoader() {
+        document.querySelector('.theme-loader').style.display = 'block';
+    }
+
+    window.addEventListener("load", () => {
+        document.querySelector('.theme-loader').style.display = 'none';
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+        const step = /*[[${step}]]*/ 'none';
+        const error = /*[[${error}]]*/ '';
+        const errorMsg = /*[[${errorMsg}]]*/ '';
+        const resent = /*[[${resent}]]*/ false;
+
+        if (step === 'otp' && !error && !resent) {
+            Swal.fire({
+                icon: 'success',
+                title: 'OTP Sent',
+                text: 'Check your email for the verification code.',
+                timer: 2500,
+                showConfirmButton: false
+            });
+        }
+
+        if (resent) {
+            Swal.fire({
+                icon: 'info',
+                title: 'OTP Resent',
+                text: 'A new OTP has been sent to your email.',
+                timer: 2500,
+                showConfirmButton: false
+            });
+        }
+
+        if (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid OTP',
+                text: error,
+            });
+        }
+
+        if (errorMsg) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: errorMsg,
+        });
+    }
+
+    const resendBtn = document.getElementById("resendBtn");
+    const timerSpan = document.getElementById("timer");
+
+    if (resendBtn && timerSpan) {
+        let countdown = 30;
+        resendBtn.disabled = true;
+
+        const interval = setInterval(() => {
+            countdown--;
+            timerSpan.textContent = countdown;
+            if (countdown <= 0) {
+                resendBtn.disabled = false;
+                resendBtn.textContent = "Resend OTP";
+                clearInterval(interval);
+            }
+        }, 1000);
+    }
+});
+</script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/popper.js/popper.min.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/modernizr/modernizr.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/modernizr/css-scrollbars.js"></script>
+<script type="text/javascript" src="/Village/VillageAdmin/assets/js/common-pages.js"></script>
+</body>
+
+</html>

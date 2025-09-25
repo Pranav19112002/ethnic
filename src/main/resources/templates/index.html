@@ -1,0 +1,1022 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ethnic Village</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arizonia&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/animate.css}">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.theme.default.min.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/homepage/css/magnific-popup.css}">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/bootstrap-datepicker.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/jquery.timepicker.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/flaticon.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/style.css}">
+
+    <style>
+        .navbar-nav {
+            display: flex;
+            align-items: center; /* Ensures all items are vertically aligned */
+        }
+
+        .login-btn {
+            padding: 8px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            color: orange;
+            border: 2px solid #ffc107;
+            text-transform: uppercase;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: transparent;
+            text-decoration: none;
+            display: inline-block; /* Ensures button behaves like other navbar items */
+            margin-left: 15px; /* Adds space between menu items and button */
+        }
+
+        .login-btn:hover {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        /* Base dropdown */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 0.95rem;
+  padding: 0;
+  border-radius: 0 0 6px 6px;
+}
+
+/* Dropdown item */
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  color: #333;
+  background-color: #fff;
+  text-decoration: none;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Hover effect */
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+  color: #006600;
+}
+
+/* Active/selected effect */
+.dropdown-item.active,
+.dropdown-item:focus {
+  background-color: #e6f7e6;
+  color: #006600;
+  font-weight: 600;
+}
+
+/* Scrollbar visibility (optional) */
+.dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+.dropdown-menu::-webkit-scrollbar-track {
+  background-color: #f9f9f9;
+}
+
+#feedbackModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+
+
+/* Modal box */
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  text-align: center;
+  animation: slideUp 0.4s ease;
+}
+
+/* Header */
+.modal-content h4 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Stars */
+.stars {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.stars span {
+  font-size: 2rem;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.2s ease;
+}
+
+.stars span:hover,
+.stars span.active {
+  color: #ffc107;
+}
+
+/* Textarea */
+#feedbackComment {
+  width: 100%;
+  height: 100px;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  resize: none;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Button */
+.modal-content button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+  background-color: #218838;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.user-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+        .close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}
+
+    </style>
+</head>
+<body>
+<span id="isLoggedInFlag" style="display: none;" data-logged-in="true"></span>
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Ethnic Village<span>Website</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active"><a th:href="@{/}" class="nav-link">Home</a></li>
+                <li class="nav-item"><a th:href="@{/about}" class="nav-link">About</a></li>
+                <li class="nav-item"><a th:href="@{/villages}" class="nav-link">Villages</a></li>
+                <li class="nav-item"><a th:href="@{/stays}" class="nav-link">Stays</a></li>
+                <li class="nav-item"><a th:href="@{/contact}" class="nav-link">Contact</a></li>
+                <li class="nav-item" th:if="${user == null}">
+                    <a th:href="@{/loginPage}" class="btn btn-outline-warning login-btn">Login</a>
+                </li>
+
+                <li class="nav-item dropdown" th:if="${user != null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span style="color: #ffc107; font-weight: bold; font-size: 1.2rem;">
+                            User:
+                            <span th:text="${user.userName}" style="color: #00ff00;"></span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/profile}">👤 Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/bookingsHistory/current}">🧾 Bookings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center" th:href="@{/user/notifications}">
+                            ✉️ Messages
+                            <span class="badge badge-pill badge-danger ml-2" th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/logout}">🚪 Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="hero-wrap js-fullheight" style="background-image: url('User/HomePage/images/bg_5.jpg');">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-center" data-scrollax-parent="true">
+            <div class="col-md-7 ftco-animate">
+                <span class="subheading">Welcome to Ethnic Village</span>
+                <h1 class="mb-4">Search Villages. Book Activities. Experience Culture.</h1>
+                <p class="caps">From serene stays to vibrant traditions — explore rural India like never before</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section ftco-no-pb ftco-no-pt">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ftco-search d-flex justify-content-center">
+                    <div class="row">
+                        <div class="col-md-12 nav-link-wrap">
+                            <div class="nav nav-pills text-center" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                <a class="nav-link active mr-md-1" id="v-pills-1-tab" data-toggle="pill" href="#v-pills-1" role="tab" aria-controls="v-pills-1" aria-selected="true">Search Activity</a>
+                            </div>
+                        </div>
+                        <div class="col-md-12 tab-wrap">
+
+                            <div class="tab-content" id="v-pills-tabContent">
+
+                                <div class="tab-pane fade show active" id="v-pills-1" role="tabpanel" aria-labelledby="v-pills-nextgen-tab">
+                                    <form action="#" id="bookingForm" class="search-property-1">
+                                        <div class="row no-gutters">
+                                            <div class="col-md d-flex">
+                                                <div class="form-group p-4 border-0">
+                                                    <label for="#">Destination</label>
+                                                    <div class="form-field">
+                                                        <div class="icon"><span class="fa fa-search"></span></div>
+                                                        <input
+                                                                type="text"
+                                                                id="destinationInput"
+                                                                class="form-control"
+                                                                placeholder="Search location (optional)"
+                                                                autocomplete="off"
+                                                        />
+                                                        <div
+                                                                id="destinationDropdown"
+                                                                class="dropdown-menu show w-100"
+                                                                style="display: none; position: absolute; top: 100%; left: 0; z-index: 1000;"
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md d-flex">
+                                                <div class="form-group p-4">
+                                                    <label for="villageInput">Village</label>
+                                                    <div class="form-field position-relative">
+                                                        <div class="icon"><span class="fa fa-search"></span></div>
+                                                        <input
+                                                                type="text"
+                                                                id="villageInput"
+                                                                class="form-control"
+                                                                placeholder="Search village"
+                                                                autocomplete="off"
+                                                                disabled
+                                                        />
+                                                        <div
+                                                                id="villageDropdown"
+                                                                class="dropdown-menu show w-100"
+                                                                style="display: none; position: absolute; top: 100%; left: 0; z-index: 1000;"
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md d-flex">
+                                                <div class="form-group p-4">
+                                                    <label for="priceLimit">Price Limit</label>
+                                                    <div class="form-field">
+                                                        <div class="select-wrap">
+                                                            <div class="icon"><span class="fa fa-chevron-down"></span></div>
+                                                            <select id="priceLimit" name="priceLimit" class="form-control" disabled>
+                                                                <option value="">Select price</option>
+                                                                <option value="100">$100</option>
+                                                                <option value="10000">$10,000</option>
+                                                                <option value="50000">$50,000</option>
+                                                                <option value="100000">$100,000</option>
+                                                                <option value="200000">$200,000</option>
+                                                                <option value="300000">$300,000</option>
+                                                                <option value="400000">$400,000</option>
+                                                                <option value="500000">$500,000</option>
+                                                                <option value="600000">$600,000</option>
+                                                                <option value="700000">$700,000</option>
+                                                                <option value="800000">$800,000</option>
+                                                                <option value="900000">$900,000</option>
+                                                                <option value="1000000">$1,000,000</option>
+                                                                <option value="2000000">$2,000,000</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md d-flex">
+                                                <div class="form-group p-4">
+                                                    <label for="activityInput">Activity</label>
+                                                    <div class="form-field">
+                                                        <div class="select-wrap">
+                                                            <div class="icon"><span class="fa fa-chevron-down"></span></div>
+                                                            <input type="text" id="activityInput" name="activityInput" class="form-control" placeholder="Select activity"  autocomplete="off" disabled />
+                                                            <div id="activityDropdown" class="dropdown-menu show" style="width: 100%; max-height: 200px; overflow-y: auto;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md d-flex">
+                                                <div class="form-group d-flex w-100 border-0">
+                                                    <div class="form-field w-100 align-items-center d-flex">
+                                                        <input
+                                                                type="button"
+                                                                value="Search"
+                                                                class="align-self-stretch form-control btn btn-primary"
+                                                                disabled
+                                                                id="searchBtn"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section services-section">
+    <div class="container">
+        <div class="row d-flex">
+            <div class="col-md-6 order-md-last heading-section pl-md-5 ftco-animate d-flex align-items-center">
+                <div class="w-100">
+                    <span class="subheading">Welcome to Ethnic Village</span>
+                    <h2 class="mb-4">Begin Your Journey into Village Life</h2>
+                    <p>From serene homestays to vibrant local traditions, Ethnic Village connects you with the heart of rural India. Discover places where culture breathes and stories unfold.</p>
+                    <p>Search for your favorite village, explore unique activities, and book unforgettable experiences — all in one place. Whether you're seeking peace, adventure, or connection, it starts here.</p>
+                    <p><a href="/search-village" class="btn btn-primary py-3 px-4">Search Villages & Activities</a></p>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12 col-lg-6 d-flex align-self-stretch ftco-animate">
+                        <div class="services services-1 color-1 d-block img" style="background-image: url(User/HomePage/images/services-1.jpg);">
+                            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-paragliding"></span></div>
+                            <div class="media-body">
+                                <h3 class="heading mb-3">Village Activities</h3>
+                                <p>Book authentic experiences like pottery, farming, folk performances, and more — curated by local hosts.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 col-lg-6 d-flex align-self-stretch ftco-animate">
+                        <div class="services services-1 color-2 d-block img" style="background-image: url(User/HomePage/images/services-2.jpg);">
+                            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-route"></span></div>
+                            <div class="media-body">
+                                <h3 class="heading mb-3">Stay Discovery</h3>
+                                <p>Explore serene village stays — from traditional homestays to eco-friendly cottages, all with local charm.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 col-lg-6 d-flex align-self-stretch ftco-animate">
+                        <div class="services services-1 color-3 d-block img" style="background-image: url(User/HomePage/images/services-3.jpg);">
+                            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-tour-guide"></span></div>
+                            <div class="media-body">
+                                <h3 class="heading mb-3">Local Hosts</h3>
+                                <p>Meet passionate villagers who guide you through their traditions, stories, and hidden gems.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 col-lg-6 d-flex align-self-stretch ftco-animate">
+                        <div class="services services-1 color-4 d-block img" style="background-image: url(User/HomePage/images/services-4.jpg);">
+                            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-map"></span></div>
+                            <div class="media-body">
+                                <h3 class="heading mb-3">Village Navigation</h3>
+                                <p>Get help with directions, local transport, and curated routes to make your village journey seamless.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center pb-4">
+            <div class="col-md-12 heading-section text-center ftco-animate">
+                <span class="subheading">Destination</span>
+                <h2 class="mb-4">Tour Destination</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 ftco-animate" th:each="activity, iterStat : ${activities}" th:if="${iterStat.index < 6}">>
+                <div class="project-wrap">
+                    <a th:href="@{'/activity/' + ${activity.activityId}}" class="img"
+                       th:style="${#lists.isEmpty(activity.activityPhotosNames)} ?
+                         'background-image: url(/assets/default-activity.jpg);' :
+                         'background-image: url(/uploads/activity/' + ${activity.activityPhotosNames[0]} + ');'">
+                        <span class="price" th:text="'₹' + ${activity.price} + '/person'">₹550/person</span>
+                    </a>
+
+                    <div class="text p-4">
+                        <span class="days" th:text="${activity.village.villageName}">Village Name</span>
+                        <h3><a th:href="@{'/activity/' + ${activity.activityId}}" th:text="${activity.activityName}">Activity Name</a></h3>
+                        <p class="location">
+                            <span class="fa fa-map-marker"></span>
+                            <span th:text="${activity.village.villageLocation}">Location</span>
+                        </p>
+                        <ul>
+                            <li><span class="flaticon-shower"></span>2</li>
+                            <li><span class="flaticon-king-size"></span>3</li>
+                            <li><span class="flaticon-mountains"></span>Outdoor</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section ftco-about img"style="background-image: url(User/HomePage/images/bg_4.jpg);">
+    <div class="overlay"></div>
+    <div class="container py-md-5">
+        <div class="row py-md-5">
+            <div class="col-md d-flex align-items-center justify-content-center">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section ftco-about ftco-no-pt img">
+    <div class="container">
+        <div class="row d-flex">
+            <div class="col-md-12 about-intro">
+                <div class="row">
+                    <div class="col-md-6 d-flex align-items-stretch">
+                        <div class="img d-flex w-100 align-items-center justify-content-center" style="background-image:url(User/HomePage/images/about-1.jpg);">
+                        </div>
+                    </div>
+                    <div class="col-md-6 pl-md-5 py-5">
+                        <div class="row justify-content-start pb-3">
+                            <div class="col-md-12 heading-section ftco-animate">
+                                <span class="subheading">About Us</span>
+                                <h2 class="mb-4">Experience Culture, Community & Comfort</h2>
+                                <p>Ethnic Village is your gateway to discovering the soul of rural India. We connect travelers with approved village hosts, immersive activities, and serene stays — all curated for safety, authenticity, and cultural richness.</p>
+                                <p>Whether you're booking a pottery workshop in a hillside hamlet or staying in a bamboo cottage by the backwaters, every experience is designed to be memorable, meaningful, and rooted in tradition.</p>
+                                <p><a href="/search-village" class="btn btn-primary">Search Villages & Book Activities</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section testimony-section bg-bottom" style="background-image: url(User/HomePage/images/bg_1.jpg);">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center pb-4">
+            <div class="col-md-7 text-center heading-section heading-section-white ftco-animate">
+                <span class="subheading">Ethnic Village</span>
+                <h2 class="mb-4">Tourist Feedback</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4" th:each="feedback, stat : ${feedbacks}" th:if="${stat.index < 15}">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="user-img me-3"
+                                 th:style="${feedback.user.userProfilePicName != null} ?
+                             'background-image: url(/uploads/user/' + ${feedback.user.userProfilePicName} + ');' :
+                             'background-image: url(/assets/default-user.jpg);'">
+                            </div>
+                            <div>
+                                <h5 class="mb-0" th:text="${feedback.user.userName}">User Name</h5>
+                                <small class="text-muted text-truncate d-block" style="max-width: 200px;" th:text="${feedback.user.userEmail}">user@email.com</small>
+                            </div>
+                        </div>
+                        <p class="star mb-2">
+                            <span class="fa fa-star text-warning" th:each="i : ${#numbers.sequence(1, feedback.rating)}"></span>
+                        </p>
+                        <p class="text-muted" th:text="${feedback.comment}">Feedback comment</p>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(feedbacks)}" class="text-center text-light">
+                    <p>No feedback available yet. Be the first to share your experience!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<br><br><br>
+<section class="ftco-intro ftco-section ftco-no-pt">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12 text-center">
+                <div class="img"  style="background-image: url(User/HomePage/images/bg_2.jpg);">
+                    <div class="overlay"></div>
+                    <h2>Register Village Now</h2>
+                    <p>Register village with proper data</p>
+                    <p class="mb-0"><a th:href="@{/village/register}" class="btn btn-primary px-4 py-3">Village Register Form</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="ftco-footer bg-bottom ftco-no-pt" style="background-image: url(User/HomePage/images/bg_3.jpg);">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row mb-5">
+            <!-- About Ethnic Village -->
+            <div class="col-md pt-5">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">About Ethnic Village</h2>
+                    <p>Ethnic Village connects travelers with authentic village stays and cultural experiences across India. From pottery workshops to folk performances, we help you discover the soul of rural life.</p>
+                    <ul class="ftco-footer-social list-unstyled mt-3">
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-twitter"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-facebook"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-instagram"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4 ml-md-5">
+                    <h2 class="ftco-heading-2">Quick Links</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="/enquiry" class="py-2 d-block">Online Enquiry</a></li>
+                        <li><a href="/faq" class="py-2 d-block">FAQs</a></li>
+                        <li><a href="/terms" class="py-2 d-block">Booking Terms</a></li>
+                        <li><a href="/privacy" class="py-2 d-block">Privacy Policy</a></li>
+                        <li><a href="/refund" class="py-2 d-block">Refund Policy</a></li>
+                        <li><a href="/contact" class="py-2 d-block">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Explore Experiences -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">Explore Experiences</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="/activities?type=adventure" class="py-2 d-block">Adventure</a></li>
+                        <li><a href="/activities?type=craft" class="py-2 d-block">Craft & Pottery</a></li>
+                        <li><a href="/activities?type=food" class="py-2 d-block">Local Cuisine</a></li>
+                        <li><a href="/activities?type=festivals" class="py-2 d-block">Festivals</a></li>
+                        <li><a href="/activities?type=nature" class="py-2 d-block">Nature Trails</a></li>
+                        <li><a href="/activities?type=heritage" class="py-2 d-block">Heritage Walks</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">Contact Us</h2>
+                    <div class="block-23 mb-3">
+                        <ul>
+                            <li><span class="icon fa fa-map-marker"></span><span class="text">Ethnic Village HQ, Kanayannur, Kerala, India</span></li>
+                            <li><a href="tel:+919876543210"><span class="icon fa fa-phone"></span><span class="text">+91 98765 43210</span></a></li>
+                            <li><a href="mailto:support@ethnicvillage.in"><span class="icon fa fa-paper-plane"></span><span class="text">support@ethnicvillage.in</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+<input type="hidden" id="feedbackGivenFlag" th:value="${feedbackGiven}" />
+
+<div id="feedbackModal" class="modal" th:if="${!feedbackGiven}" style="display: none;">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeModal()">×</span>
+        <h4>🌟 Rate Your Experience</h4>
+        <div class="stars">
+            <span onclick="setRating(1)">★</span>
+            <span onclick="setRating(2)">★</span>
+            <span onclick="setRating(3)">★</span>
+            <span onclick="setRating(4)">★</span>
+            <span onclick="setRating(5)">★</span>
+        </div>
+        <textarea id="feedbackComment" placeholder="Optional comment..."></textarea>
+        <button onclick="submitFeedback()">Submit</button>
+    </div>
+</div>
+
+
+
+<script>
+    const isUserLoggedIn = document.getElementById("isLoggedInFlag")?.dataset.loggedIn === "true";
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+      const destinationInput = document.getElementById("destinationInput");
+      const destinationDropdown = document.getElementById("destinationDropdown");
+
+      const villageInput = document.getElementById("villageInput");
+      const villageDropdown = document.getElementById("villageDropdown");
+
+      setEnabled(villageInput, true);
+
+      const activityInput = document.getElementById("activityInput");
+      const activityDropdown = document.getElementById("activityDropdown");
+
+      const priceLimit = document.getElementById("priceLimit");
+      const searchBtn = document.getElementById("searchBtn");
+
+      let allActivities = [];
+
+      let selectedActivityId = null;
+      let selectedVillageId = null;
+
+
+      function clearDropdown(dropdown) {
+        dropdown.innerHTML = "";
+        dropdown.style.display = "none";
+      }
+
+      function setEnabled(elem, enabled) {
+        elem.disabled = !enabled;
+      }
+
+      // ---------------- DESTINATION ----------------
+      async function fetchAndDisplayLocations(query = "") {
+        clearDropdown(destinationDropdown);
+        try {
+          const res = await fetch(`/home/locations/search?query=${encodeURIComponent(query)}`);
+          const locations = await res.json();
+
+          locations.forEach(loc => {
+            const item = document.createElement("a");
+            item.classList.add("dropdown-item");
+            item.textContent = loc;
+            item.href = "#";
+            item.addEventListener("click", (e) => {
+              e.preventDefault();
+              destinationInput.value = loc;
+              clearDropdown(destinationDropdown);
+
+              setEnabled(villageInput, true);
+              villageInput.value = "";
+              clearDropdown(villageDropdown);
+
+               window.selectedVillageId = null;
+
+              priceLimit.value = "";
+              activityInput.value = "";
+              clearDropdown(activityDropdown);
+
+               window.selectedActivityId = null;
+
+              setEnabled(priceLimit, false);
+              setEnabled(activityInput, false);
+              setEnabled(searchBtn, false);
+            });
+            destinationDropdown.appendChild(item);
+          });
+          destinationDropdown.style.display = "block";
+        } catch (err) {
+          console.error("Error fetching locations:", err);
+        }
+      }
+
+      destinationInput.addEventListener("input", () => {
+        const query = destinationInput.value.trim();
+
+        // Clear everything on typing new location
+              selectedVillageId = null;
+              selectedActivityId = null;
+              villageInput.value = "";
+              activityInput.value = "";
+              clearDropdown(villageDropdown);
+              clearDropdown(activityDropdown);
+              setEnabled(priceLimit, false);
+              setEnabled(activityInput, false);
+              setEnabled(searchBtn, false);
+
+
+        setEnabled(villageInput, true); // Always enable village search
+        fetchAndDisplayLocations(query);
+      });
+
+      destinationInput.addEventListener("focus", () => {
+        fetchAndDisplayLocations("");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!destinationInput.contains(e.target) && !destinationDropdown.contains(e.target)) {
+          clearDropdown(destinationDropdown);
+        }
+      });
+
+      // ---------------- VILLAGE ----------------
+      async function fetchAndDisplayVillages(query = "") {
+        clearDropdown(villageDropdown);
+        const locationFilter = destinationInput.value.trim();
+
+        try {
+          const url = locationFilter
+            ? `/home/villages/search?location=${encodeURIComponent(locationFilter)}&village=${encodeURIComponent(query)}`
+            : `/home/villages/search?village=${encodeURIComponent(query)}`;
+
+          const res = await fetch(url);
+          const villages = await res.json();
+
+          villages.forEach(vill => {
+            const item = document.createElement("a");
+            item.classList.add("dropdown-item");
+            item.textContent = vill.villageName;
+            item.href = "#";
+            item.addEventListener("click", (e) => {
+              e.preventDefault();
+              villageInput.value = vill.villageName;
+              selectedVillageId = vill.villageId;
+              selectedActivityId = null;
+              clearDropdown(villageDropdown);
+
+              setEnabled(priceLimit, true);
+              priceLimit.value = "";
+
+              activityInput.value = "";
+              clearDropdown(activityDropdown);
+              setEnabled(activityInput, false);
+              setEnabled(searchBtn, false);
+
+              fetchActivitiesForVillage(vill.villageName);
+            });
+            villageDropdown.appendChild(item);
+          });
+          villageDropdown.style.display = "block";
+        } catch (err) {
+          console.error("Error fetching villages:", err);
+        }
+      }
+
+      villageInput.addEventListener("input", () => {
+        const query = villageInput.value.trim();
+        if (!query) {
+          priceLimit.value = "";
+          setEnabled(priceLimit, false);
+          activityInput.value = "";
+          clearDropdown(activityDropdown);
+          setEnabled(activityInput, false);
+          setEnabled(searchBtn, false);
+          return;
+        }
+        fetchAndDisplayVillages(query);
+      });
+
+      villageInput.addEventListener("focus", () => {
+        fetchAndDisplayVillages("");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!villageInput.contains(e.target) && !villageDropdown.contains(e.target)) {
+          clearDropdown(villageDropdown);
+        }
+      });
+
+      // ---------------- ACTIVITY ----------------
+      function fetchActivitiesForVillage(villageName) {
+        fetch(`/home/activities/byVillage?villageName=${encodeURIComponent(villageName)}`)
+          .then(res => res.json())
+          .then(data => {
+            allActivities = data.sort((a, b) => a.activityName.localeCompare(b.activityName));
+            setEnabled(activityInput, true);
+            clearDropdown(activityDropdown);
+          })
+          .catch(err => {
+            console.error("Error fetching activities:", err);
+            allActivities = [];
+            setEnabled(activityInput, false);
+          });
+      }
+
+      activityInput.addEventListener("input", () => {
+        const query = activityInput.value.trim().toLowerCase();
+        const maxPrice = parseFloat(priceLimit.value) || Infinity;
+
+        const filtered = allActivities.filter(a =>
+          a.activityName.toLowerCase().startsWith(query) &&
+          a.price <= maxPrice
+        );
+
+        renderActivityDropdown(filtered);
+      });
+
+      activityInput.addEventListener("focus", () => {
+        const maxPrice = parseFloat(priceLimit.value) || Infinity;
+
+        const filtered = allActivities.filter(a => a.price <= maxPrice);
+        renderActivityDropdown(filtered);
+      });
+
+      function renderActivityDropdown(list) {
+        clearDropdown(activityDropdown);
+        if (list.length === 0) return;
+
+        list.forEach(act => {
+          const item = document.createElement("a");
+          item.classList.add("dropdown-item");
+          item.textContent = `${act.activityName} - ₹${act.price}`;
+          item.href = "#";
+          item.addEventListener("click", (e) => {
+            e.preventDefault();
+            activityInput.value = act.activityName;
+            selectedActivityId = act.activityId;
+            clearDropdown(activityDropdown);
+            setEnabled(searchBtn, true);
+          });
+          activityDropdown.appendChild(item);
+        });
+        activityDropdown.style.display = "block";
+      }
+
+      document.addEventListener("click", (e) => {
+        if (!activityInput.contains(e.target) && !activityDropdown.contains(e.target)) {
+          clearDropdown(activityDropdown);
+        }
+      });
+
+      // ---------------- PRICE FILTER ----------------
+      priceLimit.addEventListener("change", () => {
+        const maxPrice = parseFloat(priceLimit.value);
+        const filtered = allActivities.filter(a => a.price <= maxPrice);
+        activityInput.value = "";
+        selectedActivityId = null; // ✅ Clear selected activity ID
+         setEnabled(searchBtn, false);
+        renderActivityDropdown(filtered);
+      });
+
+      searchBtn.addEventListener("click", () => {
+  if (!selectedVillageId || !selectedActivityId) {
+    alert("Please select valid village and activity.");
+    return;
+  }
+
+  // Redirect directly
+  window.location.href = `/user/bookingPage?villageId=${selectedVillageId}&activityId=${selectedActivityId}`;
+});
+    });
+
+ let selectedRating = 0;
+
+function setRating(rating) {
+  selectedRating = rating;
+  document.querySelectorAll('.stars span').forEach((star, index) => {
+    star.style.color = index < rating ? '#ffc107' : '#ccc';
+  });
+}
+
+function submitFeedback() {
+  const comment = document.getElementById('feedbackComment').value;
+  fetch('/user/submit-feedback', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ rating: selectedRating, comment: comment })
+  }).then(() => {
+    closeModal();
+  });
+}
+
+function closeModal() {
+  const modal = document.getElementById('feedbackModal');
+  if (modal) modal.style.display = 'none';
+}
+
+window.addEventListener('load', () => {
+  const feedbackGiven = document.getElementById('feedbackGivenFlag')?.value === 'true';
+  if (!feedbackGiven) {
+    setTimeout(() => {
+      const modal = document.getElementById('feedbackModal');
+      if (modal) modal.style.display = 'block';
+    }, 60000); // 1 minute
+  }
+});
+
+</script>
+
+<script th:inline="javascript">
+    window.onload = function () {
+      const registrationSuccess = [[${registrationSuccess} ? true : false]];
+      console.log("✅ Page fully loaded. registrationSuccess =", registrationSuccess);
+
+      if (registrationSuccess) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registration Submitted',
+          text: 'Village registration request submitted successfully.',
+          confirmButtonColor: '#3085d6',
+          customClass: {
+            popup: 'swal2-popup-custom'
+          }
+        });
+      }
+
+      const loader = document.getElementById("ftco-loader");
+      if (loader) {
+        loader.classList.remove("show");
+        loader.style.display = "none";
+        console.log("✅ Loader hidden");
+      } else {
+        console.warn("⚠️ Loader element not found");
+      }
+    };
+</script>
+
+
+
+
+<script src="User/HomePage/js/jquery.min.js"></script>
+<script src="User/HomePage/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="User/HomePage/js/popper.min.js"></script>
+<script src="User/HomePage/js/bootstrap.min.js"></script>
+<script src="User/HomePage/js/jquery.easing.1.3.js"></script>
+<script src="User/HomePage/js/jquery.waypoints.min.js"></script>
+<script src="User/HomePage/js/jquery.stellar.min.js"></script>
+<script src="User/HomePage/js/owl.carousel.min.js"></script>
+<script src="User/HomePage/js/jquery.magnific-popup.min.js"></script>
+<script src="User/HomePage/js/jquery.animateNumber.min.js"></script>
+<script src="User/HomePage/js/bootstrap-datepicker.js"></script>
+<script src="User/HomePage/js/scrollax.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+<script src="User/HomePage/js/google-map.js"></script>
+<script src="User/HomePage/js/main.js"></script>
+
+</body>
+</html>

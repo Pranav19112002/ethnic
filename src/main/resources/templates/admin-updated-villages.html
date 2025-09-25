@@ -1,0 +1,559 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Admin-Updated-Villages</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="">
+    <meta name="author" content="Phoenixcoded" />
+    <link rel="icon" th:href="@{/Village/VillageAdmin/assets/images/favicon.ico}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/Admin/assets/css/style.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .forms-container {
+             display: flex;
+             justify-content: flex-end;
+             align-items: center;
+             gap: 12px;
+             padding: 12px;
+             margin-bottom: 12px;
+             background: #f8f9fa;
+             border-radius: 8px;
+             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+         }
+
+
+         .forms-container select,
+         .forms-container input {
+             padding: 10px;
+             font-size: 16px;
+             border: 2px solid #6c757d;
+             border-radius: 6px;
+             outline: none;
+             transition: 0.3s ease-in-out;
+         }
+
+         .forms-container select:focus,
+        .forms-container input:focus {
+            border-color: #333;
+            box-shadow: 0 0 8px rgba(100, 100, 100, 0.6);
+            outline: none;
+        }
+
+
+        .forms-container button {
+            padding: 10px 18px;
+            background: #1f1f1f;
+            color: white;
+            font-size: 16px;
+            border: 2px solid #2c2c2c;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+
+        .forms-container button:hover {
+            background: #333333;
+            border-color: #333333;
+        }
+
+         @media (max-width: 768px) {
+            .forms-container {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+
+            .forms-container form {
+                width: 100%;
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .forms-container input,
+            .forms-container select {
+                width: 100%;
+            }
+        }
+
+
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .modal.show {
+                display: block;
+                opacity: 1;
+            }
+
+            .modal-content {
+                background-color: white;
+                margin: 15% auto;
+                padding: 20px;
+                width: 40%;
+                border-radius: 8px;
+                text-align: center;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                position: relative;
+                cursor: default;
+            }
+
+            .close {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 24px;
+                cursor: pointer;
+            }
+
+            .approve-btn,
+            .reject-btn {
+                padding: 10px 15px;
+                margin: 10px;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+
+            .approve-btn {
+                background-color: #28a745;
+                color: white;
+            }
+
+            .reject-btn {
+                background-color: #dc3545;
+                color: white;
+            }
+
+            .updated-status {
+                font-weight: bold;
+                transition: color 0.5s ease;
+            }
+
+                .notification.unread {
+                background-color: #f5f5f5;
+                border-left: 4px solid #28a745;
+            }
+            .notification.read {
+                opacity: 0.7;
+            }
+               .noti-head {
+            background-color: #000;
+            color: #fff;
+            padding: 10px;
+            }
+
+            .noti-head a {
+                color: #fff !important;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .noti-head a:hover {
+                text-decoration: underline;
+            }
+
+            .notification-item {
+                padding: 10px;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .notification-item.unread {
+                background-color: #f9f9f9;
+                font-weight: bold;
+            }
+
+            .notification-item.read {
+                background-color: #e0e0e0;
+                font-weight: normal;
+            }
+    </style>
+
+</head>
+<body class="">
+<div class="loader-bg">
+    <div class="loader-track">
+        <div class="loader-fill"></div>
+    </div>
+</div>
+<nav class="pcoded-navbar  ">
+    <div class="navbar-wrapper  ">
+        <div class="navbar-content scroll-div " >
+
+            <div class="">
+                <div class="main-menu-header">
+                    <img class="img-radius" th:src="@{'/uploads/admin/' + ${admin.adminProfileImage}}" alt="Admin">
+                    <div class="user-details">
+                        <span th:text="${admin.adminName}"></span>
+                        <div id="more-details">Administrator<i class="fa fa-chevron-down m-l-5"></i></div>
+                    </div>
+                </div>
+                <div class="collapse" id="nav-user-link">
+                    <ul class="list-unstyled">
+                        <li class="list-group-item"><a th:href="@{/admin/profile}"><i class="feather icon-user m-r-5"></i>View Profile</a></li>
+                        <li class="list-group-item"><a th:href="@{/admin/logout}"><i class="feather icon-log-out m-r-5"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <ul class="nav pcoded-inner-navbar ">
+                <li class="nav-item pcoded-menu-caption">
+                    <label>Home</label>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/home}" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
+                </li>
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-layout"></i></span><span class="pcoded-mtext">Village</span></a>
+                    <ul class="pcoded-submenu">
+                        <li><a th:href="@{/admin/requests}" >Requests</a></li>
+                        <li><a th:href="@{/admin/viewAllVillages}" >View All</a></li>
+                        <li><a th:href="@{/admin/viewPendingVillageEditRequests}" >Update-Requests</a></li>
+                        <li><a th:href="@{/admin/updatedVillages}" >All Update Reqs</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item pcoded-menu-caption">
+                    <label>Cultural Activities</label>
+                </li>
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-box"></i></span><span class="pcoded-mtext">Activities</span></a>
+                    <ul class="pcoded-submenu">
+                        <li><a th:href="@{/admin/viewActivityRequests}" >Requests</a></li>
+                        <li><a th:href="@{/admin/viewAllActivities}" >View All</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item pcoded-menu-caption">
+                    <label>Others</label>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/allUsers}" class="nav-link "><span class="pcoded-micon"><i class="feather icon-file-text"></i></span><span class="pcoded-mtext">Users</span></a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/feedbacks}" class="nav-link "><span class="pcoded-micon"><i class="feather icon-align-justify"></i></span><span class="pcoded-mtext">FeedBacks</span></a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<header class="navbar pcoded-header navbar-expand-lg navbar-light header-dark">
+
+
+    <div class="m-header">
+        <a class="mobile-menu" id="mobile-collapse" href="#!"><span></span></a>
+        <a href="#!" class="b-brand">
+            <img src="/Admin/assets/images/logo.png" alt="" class="logo">
+            <img src="/Admin/assets/images/logo-icon.png" alt="" class="logo-thumb">
+        </a>
+        <a href="#!" class="mob-toggler">
+            <i class="feather icon-more-vertical"></i>
+        </a>
+    </div>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+            <li>
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                        <i class="icon feather icon-bell"></i>
+                        <span id="notification-count" class="badge badge-pill badge-danger"
+                              th:text="${messages.size()}">0</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right notification">
+                        <div class="noti-head">
+                            <h6 class="d-inline-block m-b-0">Notifications</h6>
+                            <div class="float-right">
+                                <a href="#!" class="mark-read-link m-r-10">mark as read</a>
+                                <a href="#!" class="clear-all-link">clear all</a>
+                            </div>
+                        </div>
+                        <ul class="noti-body">
+                            <li class="n-title"><p class="m-b-0">NEW</p></li>
+                            <li class="notification"
+                                th:each="message : ${messages}"
+                                th:data-id="${message.id}"
+                                th:classappend="${message.isRead} ? 'read' : 'unread'">
+                                <div class="media">
+                                    <img class="img-radius"
+                                         th:src="${message.village?.villageProfileImage != null ? '/uploads/village/' + message.village.villageProfileImage : '/Admin/assets/images/user/default.jpg'}"
+                                         alt="Village image">
+                                    <div class="media-body">
+                                        <p>
+                                            <strong th:text="${message.village?.villageName ?: 'Unknown Village'}">Village Name</strong>
+                                            <span class="n-time text-muted">
+                                                <i class="icon feather icon-clock m-r-10"></i>
+                                                <span th:text="${message.timestamp != null ? #temporals.format(message.timestamp, 'HH:mm') : '—'}"></span>
+                                            </span>
+                                            <span th:if="${#temporals.day(message.timestamp) == #temporals.day(#temporals.createNow())}"
+                                                  class="badge bg-success ml-2">New</span>
+                                        </p>
+                                        <p th:text="${message.message}">Message content</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="noti-footer">
+                            <a th:href="@{/admin/inbox}">show all</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="dropdown drp-user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="feather icon-user"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right profile-notification">
+                        <div class="pro-head">
+                            <img th:src="@{'/uploads/admin/' + ${admin.adminProfileImage}}" alt="Admin" class="img-radius" >
+                            <span th:text="${admin.adminName}"></span>
+                            <a th:href="@{/admin/logout}" class="dud-logout" title="Logout">
+                                <i class="feather icon-log-out"></i>
+                            </a>
+                        </div>
+                        <ul class="pro-body">
+                            <li><a th:href="@{/admin/profile}" class="dropdown-item"><i class="feather icon-user"></i> Profile</a></li>
+                            <li><a th:href="@{/admin/viewResetPassword}" class="dropdown-item"><i class="feather icon-mail"></i>Reset-Password</a></li>
+                            <li><a th:href="@{/admin/logout}" class="dropdown-item"><i class="feather icon-lock"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+</header>
+
+<div class="pcoded-main-container">
+    <div class="pcoded-content">
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h5 class="m-b-10">Updated Villages</h5>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/admin/home}"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/admin/updatedVillages}">Updated-Villages</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Villages</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="forms-container">
+                            <form th:action="@{/admin/updatedVillages}" method="GET" style="margin-bottom: 20px;">
+                                <label for="statusFilter">Filter by Status:</label>
+                                <select name="statusFilter" id="statusFilter" class="form-control" onchange="this.form.submit()">
+                                    <option value="All" th:selected="${statusFilter == 'All'}">All</option>
+                                    <option value="Approved" th:selected="${statusFilter == 'Approved'}">Approved</option>
+                                    <option value="Rejected" th:selected="${statusFilter == 'Rejected'}">Rejected</option>
+                                    <option value="Pending" th:selected="${statusFilter == 'Pending'}">Pending</option>
+                                </select>
+                            </form>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th>Request-ID</th>
+                                    <th>Village Id</th>
+                                    <th>Village Name</th>
+                                    <th>Requested-Date</th>
+                                    <th>Reviewed-Date</th>
+                                    <th>Village-Email</th>
+                                    <th>Location</th>
+                                    <th>Village-Type</th>
+                                    <th>Longitude</th>
+                                    <th>Latitude</th>
+                                    <th>Reg-No</th>
+                                    <th>Authority-Name</th>
+                                    <th>Description</th>
+                                    <th>Rep-Name</th>
+                                    <th>Rep-Position</th>
+                                    <th>Off-Id-No</th>
+                                    <th>Contact-Person</th>
+                                    <th>Contact-No</th>
+                                    <th>Contact-Email</th>
+                                    <th>Alt-Contact-No</th>
+                                    <th>Bank-Name</th>
+                                    <th>Acc-No</th>
+                                    <th>Tin</th>
+                                    <th>OffDocFile</th>
+                                    <th>Stamp/Seal</th>
+                                    <th>Req-Status</th>
+                                    <th>Admin-Comment</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="request : ${villageRequests}" th:data-id="${request.id}">
+                                    <td th:text="${request.id ?: '❌'}"></td>
+                                    <td th:text="${request.villageId ?: '❌'}"></td>
+                                    <td th:text="${request.villageName ?: '❌'}"></td>
+                                    <td th:text="${request.requestedAt ?: '❌'}"></td>
+                                    <td th:text="${request.reviewedAt ?: 'Review in Progress'}"></td>
+                                    <td th:text="${request.villageEmail ?: '❌'}"></td>
+                                    <td th:text="${request.villageLocation ?: '❌'}"></td>
+                                    <td th:text="${request.villageType ?: '❌'}"></td>
+                                    <td th:text="${request.longitude ?: '❌'}"></td>
+                                    <td th:text="${request.latitude ?: '❌'}"></td>
+                                    <td th:text="${request.villageRegNumber ?: '❌'}"></td>
+                                    <td th:text="${request.villageAuthorityName ?: '❌'}"></td>
+                                    <td th:text="${request.villageDescription ?: '❌'}"></td>
+                                    <td th:text="${request.legalRepresentativeName ?: '❌'}"></td>
+                                    <td th:text="${request.representativePosition ?: '❌'}"></td>
+                                    <td th:text="${request.officialIdNumber ?: '❌'}"></td>
+                                    <td th:text="${request.contactPersonName ?: '❌'}"></td>
+                                    <td th:text="${request.contactEmail ?: '❌'}"></td>
+                                    <td th:text="${request.contactNo ?: '❌'}"></td>
+                                    <td th:text="${request.altContactNo ?: '❌'}"></td>
+                                    <td th:text="${request.bankName ?: '❌'}"></td>
+                                    <td th:text="${request.bankAccountNumber ?: '❌'}"></td>
+                                    <td th:text="${request.tin ?: '❌'}"></td>
+                                    <td>
+                                        <div th:if="${request.offDocFileName != null and #strings.endsWith(request.offDocFileName, '.pdf')}">
+                                            <iframe th:src="@{'/uploads/village/' + ${request.offDocFileName}}" width="120" height="80">
+                                                Your browser does not support iframes
+                                            </iframe>
+                                            <br>
+                                            <a th:href="@{'/uploads/village/' + ${request.offDocFileName}}" target="_blank">Download Document</a>
+                                        </div>
+
+                                        <div th:if="${request.offDocFileName != null and (#strings.endsWith(request.offDocFileName, '.docx') or #strings.endsWith(request.offDocFileName, '.doc'))}">
+                                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/bb/Microsoft_Word_2013-2019_logo.svg" width="30" alt="Word File">
+                                            <br>
+                                            <a th:href="@{'/uploads/village/' + ${request.offDocFileName}}" target="_blank">Download Document</a>
+                                        </div>
+
+                                        <div th:if="${request.offDocFileName != null and (#strings.endsWith(request.offDocFileName, '.jpg') or #strings.endsWith(request.offDocFileName, '.png'))}">
+                                            <img th:src="@{'/uploads/village/' + ${request.offDocFileName}}" width="120" alt="Uploaded Image">
+                                            <br>
+                                            <a th:href="@{'/uploads/village/' + ${request.offDocFileName}}" target="_blank">Download Image</a>
+                                        </div>
+
+                                        <div th:if="${request.offDocFileName == null}">
+                                            <span>No document uploaded</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <img th:src="@{'/uploads/village/'+${request.offStampOrSealFileName}}" alt="Stamp/Seal" width="120" height="80">
+                                            <br>
+                                            <a th:href="@{'/uploads/village/'+${request.offStampOrSealFileName}}" download>Download Image</a>
+                                        </div>
+                                    </td>
+                                    <td th:text="${request.status}"></td>
+                                    <td th:text="${request.adminComment}"></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(villageRequests)}">
+                                    <td colspan="16" style="text-align: center; color: red;">No data available</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const markReadBtn = document.querySelector(".mark-read-link");
+        const clearAllBtn = document.querySelector(".clear-all-link");
+        const notiBody = document.querySelector(".noti-body");
+        const countBadge = document.getElementById("notification-count");
+
+        const updateCount = () => {
+            const unread = notiBody.querySelectorAll(".notification.unread").length;
+            countBadge.textContent = unread > 0 ? unread : "0";
+        };
+
+        markReadBtn?.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch("/admin/inbox/markAllRead", {
+                    method: "POST"
+                });
+                if (res.ok) {
+                    notiBody.querySelectorAll(".notification.unread").forEach(item => {
+                        item.classList.remove("unread");
+                        item.classList.add("read");
+                    });
+                    updateCount();
+                }
+            } catch (err) {
+                console.error("Error marking all as read:", err);
+            }
+        });
+
+        clearAllBtn?.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch("/admin/inbox/clearAll", {
+                    method: "DELETE"
+                });
+                if (res.ok) {
+                    notiBody.innerHTML = `
+                        <li class="n-title">
+                            <p class="m-b-0 text-muted">No notifications</p>
+                        </li>
+                    `;
+                    updateCount();
+                }
+            } catch (err) {
+                console.error("Error clearing notifications:", err);
+            }
+        });
+
+        notiBody.addEventListener("click", async (e) => {
+            const item = e.target.closest(".notification.unread");
+            if (!item) return;
+            const id = item.dataset.id; // needs th:data-id in your HTML
+            try {
+                const res = await fetch(`/admin/inbox/markRead/${id}`, {
+                    method: "POST"
+                });
+                if (res.ok) {
+                    item.classList.remove("unread");
+                    item.classList.add("read");
+                    updateCount();
+                }
+            } catch (err) {
+                console.error("Error marking notification read:", err);
+            }
+        });
+        updateCount();
+    });
+</script>
+
+<script src="/Admin/assets/js/vendor-all.min.js"></script>
+<script src="/Admin/assets/js/plugins/bootstrap.min.js"></script>
+<script src="/Admin/assets/js/pcoded.min.js"></script>
+
+</body>
+
+</html>

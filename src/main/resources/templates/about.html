@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Village | About</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arizonia&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/animate.css}">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/owl.theme.default.min.css}">
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/bootstrap-datepicker.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/jquery.timepicker.css}">
+
+
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/flaticon.css}">
+    <link rel="stylesheet" th:href="@{/User/HomePage/css/style.css}">
+    <style>
+        .navbar-nav {
+           display: flex;
+           align-items: center; /* Ensures all items are vertically aligned */
+       }
+
+       .login-btn {
+           padding: 8px 15px;
+           font-size: 16px;
+           border-radius: 5px;
+           color: orange;
+           border: 2px solid #ffc107;
+           text-transform: uppercase;
+           transition: background-color 0.3s, color 0.3s;
+           background-color: transparent;
+           text-decoration: none;
+           display: inline-block; /* Ensures button behaves like other navbar items */
+           margin-left: 15px; /* Adds space between menu items and button */
+       }
+
+       .login-btn:hover {
+           background-color: #ffc107;
+           color: black;
+       }
+
+       /* Base dropdown */
+.dropdown-menu {
+ display: none;
+ position: absolute;
+ top: 100%;
+ left: 0;
+ z-index: 1000;
+ width: 100%;
+ max-height: 200px;
+ overflow-y: auto;
+ background-color: #fff;
+ border: 1px solid #ccc;
+ border-top: none;
+ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+ font-size: 0.95rem;
+ padding: 0;
+ border-radius: 0 0 6px 6px;
+}
+
+/* Dropdown item */
+.dropdown-item {
+ display: block;
+ width: 100%;
+ padding: 10px 15px;
+ color: #333;
+ background-color: #fff;
+ text-decoration: none;
+ border-bottom: 1px solid #eee;
+ cursor: pointer;
+ transition: background 0.2s ease;
+}
+
+/* Hover effect */
+.dropdown-item:hover {
+ background-color: #f1f1f1;
+ color: #006600;
+}
+
+/* Active/selected effect */
+.dropdown-item.active,
+.dropdown-item:focus {
+ background-color: #e6f7e6;
+ color: #006600;
+ font-weight: 600;
+}
+
+/* Scrollbar visibility (optional) */
+.dropdown-menu::-webkit-scrollbar {
+ width: 6px;
+}
+.dropdown-menu::-webkit-scrollbar-thumb {
+ background-color: #ccc;
+ border-radius: 10px;
+}
+.dropdown-menu::-webkit-scrollbar-track {
+ background-color: #f9f9f9;
+}
+        .user-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Ethnic Village<span>Website</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="oi oi-menu"></span> Menu
+        </button>
+
+        <div class="collapse navbar-collapse" id="ftco-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active"><a th:href="@{/}" class="nav-link">Home</a></li>
+                <li class="nav-item"><a th:href="@{/about}" class="nav-link">About</a></li>
+                <li class="nav-item"><a th:href="@{/villages}" class="nav-link">Villages</a></li>
+                <li class="nav-item"><a th:href="@{/stays}" class="nav-link">Stays</a></li>
+                <li class="nav-item"><a th:href="@{/contact}" class="nav-link">Contact</a></li>
+                <li class="nav-item" th:if="${user == null}">
+                    <a th:href="@{/loginPage}" class="btn btn-outline-warning login-btn">Login</a>
+                </li>
+
+                <li class="nav-item dropdown" th:if="${user != null}">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span style="color: #ffc107; font-weight: bold; font-size: 1.2rem;">
+                            User:
+                            <span th:text="${user.userName}" style="color: #00ff00;"></span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/profile}">👤 Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/bookingsHistory/current}">🧾 Bookings</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center" th:href="@{/user/notifications}">
+                            ✉️ Messages
+                            <span class="badge badge-pill badge-danger ml-2" th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/user/logout}">🚪 Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url('User/HomePage/images/bg_1.jpg');">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-center">
+            <div class="col-md-9 ftco-animate pb-5 text-center">
+                <p class="breadcrumbs"><span class="mr-2"><a th:href="@{/}">Home <i class="fa fa-chevron-right"></i></a></span> <span>About us <i class="fa fa-chevron-right"></i></span></p>
+                <h1 class="mb-0 bread">About Us</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section services-section">
+    <div class="container">
+        <div class="row d-flex">
+            <!-- Text Block -->
+            <div class="col-md-6 order-md-last heading-section pl-md-5 ftco-animate d-flex align-items-center">
+                <div class="w-100">
+                    <span class="subheading">Welcome to Ethnic Village</span>
+                    <h2 class="mb-4">Begin your journey into rural India</h2>
+                    <p>Discover the soul of India through immersive village stays, hands-on cultural workshops, and nature-led experiences. Whether you're learning pottery from a local artisan or hiking through spice plantations, every moment is rooted in authenticity.</p>
+                    <p>Our curated experiences connect you with real communities, real stories, and real traditions — far from the noise, close to the heart.</p>
+                    <p><a href="/activities" class="btn btn-primary py-3 px-4">Explore Activities</a></p>
+                </div>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="col-md-6">
+                <div class="row">
+                    <!-- Activities -->
+                    <div class="col-md-12 col-lg-6 d-flex align-self-stretch ftco-animate">
+                        <div class="services services-1 color-1 d-block img" style="background-image: url(User/HomePage/images/services-1.jpg);">
+                            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-paragliding"></span></div>
+                            <div class="media-body">
+                                <h3 class="heading mb-3">Village Activities</h3>
+                                <p>Join pottery, weaving, farming, and cooking sessions led by local hosts.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Travel -->
+                    <div class="col-md-12 col-lg-6 d-flex align-self-stretch ftco-animate">
+                        <div class="services services-1 color-2 d-block img" style="background-image: url(User/HomePage/images/services-2.jpg);">
+                            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-route"></span></div>
+                            <div class="media-body">
+                                <h3 class="heading mb-3">Local Travel Support</h3>
+                                <p>We help you reach remote villages with trusted transport and local guidance.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Guide -->
+                    <div class="col-md-12 col-lg-6 d-flex align-self-stretch ftco-animate">
+                        <div class="services services-1 color-3 d-block img" style="background-image: url(User/HomePage/images/services-3.jpg);">
+                            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-tour-guide"></span></div>
+                            <div class="media-body">
+                                <h3 class="heading mb-3">Cultural Guides</h3>
+                                <p>Meet storytellers and guides who share the history and heritage of their village.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Manager -->
+                    <div class="col-md-12 col-lg-6 d-flex align-self-stretch ftco-animate">
+                        <div class="services services-1 color-4 d-block img" style="background-image: url(User/HomePage/images/services-4.jpg);">
+                            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-map"></span></div>
+                            <div class="media-body">
+                                <h3 class="heading mb-3">Village Hosts</h3>
+                                <p>Each location is managed by a trusted local host who ensures your comfort and connection.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="ftco-section ftco-about img"style="background-image: url(User/HomePage/images/bg_8.png);">
+    <div class="overlay"></div>
+    <div class="container py-md-5">
+        <div class="row py-md-5">
+            <div class="col-md d-flex align-items-center justify-content-center">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section ftco-about ftco-no-pt img">
+    <div class="container">
+        <div class="row d-flex">
+            <div class="col-md-12 about-intro">
+                <div class="row">
+                    <div class="col-md-6 d-flex align-items-stretch">
+                        <div class="img d-flex w-100 align-items-center justify-content-center" style="background-image:url(User/HomePage/images/about-3.png);">
+                        </div>
+                    </div>
+                    <div class="col-md-6 pl-md-5 py-5">
+                        <div class="row justify-content-start pb-3">
+                            <div class="col-md-12 heading-section ftco-animate">
+                                <span class="subheading">About Us</span>
+                                <h2 class="mb-4">Make Your Journey Memorable, Meaningful, and Safe</h2>
+                                <p>Ethnic Village connects travelers with local communities around the world — from mountain villages to coastal hamlets — offering immersive experiences rooted in culture, nature, and trust. Whether you're learning traditional crafts, sharing meals with host families, or exploring landscapes with community guides, every moment is designed to be authentic and unforgettable.</p>
+                                <p>We work closely with verified hosts to ensure your journey is not only enriching, but also safe, respectful, and deeply personal.</p>
+                                <p><a th:href="@{/villages}" class="btn btn-primary">Book Your Destination</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section testimony-section bg-bottom" style="background-image: url(User/HomePage/images/bg_1.jpg);">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center pb-4">
+            <div class="col-md-7 text-center heading-section heading-section-white ftco-animate">
+                <span class="subheading">Ethnic Village</span>
+                <h2 class="mb-4">Tourist Feedback</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4" th:each="feedback, stat : ${feedbacks}" th:if="${stat.index < 15}">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="user-img me-3"
+                                 th:style="${feedback.user.userProfilePicName != null} ?
+                             'background-image: url(/uploads/user/' + ${feedback.user.userProfilePicName} + ');' :
+                             'background-image: url(/assets/default-user.jpg);'">
+                            </div>
+                            <div>
+                                <h5 class="mb-0" th:text="${feedback.user.userName}">User Name</h5>
+                                <small class="text-muted text-truncate d-block" style="max-width: 200px;" th:text="${feedback.user.userEmail}">user@email.com</small>
+                            </div>
+                        </div>
+                        <p class="star mb-2">
+                            <span class="fa fa-star text-warning" th:each="i : ${#numbers.sequence(1, feedback.rating)}"></span>
+                        </p>
+                        <p class="text-muted" th:text="${feedback.comment}">Feedback comment</p>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(feedbacks)}" class="text-center text-light">
+                    <p>No feedback available yet. Be the first to share your experience!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<br><br><br>
+<section class="ftco-intro ftco-section ftco-no-pt">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12 text-center">
+                <div class="img"  style="background-image: url(User/HomePage/images/bg_2.jpg);">
+                    <div class="overlay"></div>
+                    <h2>Register Village Now</h2>
+                    <p>Register village with proper data</p>
+                    <p class="mb-0"><a th:href="@{/village/register}" class="btn btn-primary px-4 py-3">Village Register Form</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="ftco-footer bg-bottom ftco-no-pt" style="background-image: url(User/HomePage/images/bg_3.jpg);">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row mb-5">
+            <!-- About Ethnic Village -->
+            <div class="col-md pt-5">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">About Ethnic Village</h2>
+                    <p>Ethnic Village connects travelers with authentic village stays and cultural experiences across India. From pottery workshops to folk performances, we help you discover the soul of rural life.</p>
+                    <ul class="ftco-footer-social list-unstyled mt-3">
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-twitter"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-facebook"></span></a></li>
+                        <li class="ftco-animate"><a href="#"><span class="fa fa-instagram"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4 ml-md-5">
+                    <h2 class="ftco-heading-2">Quick Links</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="/enquiry" class="py-2 d-block">Online Enquiry</a></li>
+                        <li><a href="/faq" class="py-2 d-block">FAQs</a></li>
+                        <li><a href="/terms" class="py-2 d-block">Booking Terms</a></li>
+                        <li><a href="/privacy" class="py-2 d-block">Privacy Policy</a></li>
+                        <li><a href="/refund" class="py-2 d-block">Refund Policy</a></li>
+                        <li><a href="/contact" class="py-2 d-block">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Explore Experiences -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">Explore Experiences</h2>
+                    <ul class="list-unstyled">
+                        <li><a href="/activities?type=adventure" class="py-2 d-block">Adventure</a></li>
+                        <li><a href="/activities?type=craft" class="py-2 d-block">Craft & Pottery</a></li>
+                        <li><a href="/activities?type=food" class="py-2 d-block">Local Cuisine</a></li>
+                        <li><a href="/activities?type=festivals" class="py-2 d-block">Festivals</a></li>
+                        <li><a href="/activities?type=nature" class="py-2 d-block">Nature Trails</a></li>
+                        <li><a href="/activities?type=heritage" class="py-2 d-block">Heritage Walks</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-md pt-5 border-left">
+                <div class="ftco-footer-widget pt-md-5 mb-4">
+                    <h2 class="ftco-heading-2">Contact Us</h2>
+                    <div class="block-23 mb-3">
+                        <ul>
+                            <li><span class="icon fa fa-map-marker"></span><span class="text">Ethnic Village HQ, Kanayannur, Kerala, India</span></li>
+                            <li><a href="tel:+919876543210"><span class="icon fa fa-phone"></span><span class="text">+91 98765 43210</span></a></li>
+                            <li><a href="mailto:support@ethnicvillage.in"><span class="icon fa fa-paper-plane"></span><span class="text">support@ethnicvillage.in</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- loader -->
+<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+
+
+<script src="User/HomePage/js/jquery.min.js"></script>
+<script src="User/HomePage/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="User/HomePage/js/popper.min.js"></script>
+<script src="User/HomePage/js/bootstrap.min.js"></script>
+<script src="User/HomePage/js/jquery.easing.1.3.js"></script>
+<script src="User/HomePage/js/jquery.waypoints.min.js"></script>
+<script src="User/HomePage/js/jquery.stellar.min.js"></script>
+<script src="User/HomePage/js/owl.carousel.min.js"></script>
+<script src="User/HomePage/js/jquery.magnific-popup.min.js"></script>
+<script src="User/HomePage/js/jquery.animateNumber.min.js"></script>
+<script src="User/HomePage/js/bootstrap-datepicker.js"></script>
+<script src="User/HomePage/js/scrollax.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+<script src="User/HomePage/js/google-map.js"></script>
+<script src="User/HomePage/js/main.js"></script>
+
+</body>
+</html>

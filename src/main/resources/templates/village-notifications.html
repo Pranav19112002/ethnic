@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Village Notifications</title>
+    <style>
+        body {
+          font-family: 'Segoe UI', sans-serif;
+          background-color: #f9f9f9;
+          margin: 0;
+          padding: 2rem;
+        }
+
+        .container {
+          max-width: 800px;
+          margin: auto;
+          background: white;
+          padding: 2rem;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+          margin-bottom: 1rem;
+          color: #333;
+        }
+
+        .header-actions {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+        }
+
+        .unread-count {
+          font-size: 0.95rem;
+          color: #555;
+        }
+
+        .mark-all-btn {
+          background-color: #28a745;
+          color: white;
+          border: none;
+          padding: 0.5rem 1rem;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+
+        .message-list {
+          max-height: 400px;
+          overflow-y: auto;
+          border-top: 1px solid #ddd;
+        }
+
+        .message-item {
+          padding: 1rem;
+          border-bottom: 1px solid #eee;
+          cursor: pointer;
+          transition: background 0.2s;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .message-item:hover {
+          background-color: #f1f1f1;
+        }
+
+        .unread {
+          background-color: #fffbe6;
+          border-left: 4px solid #ffc107;
+        }
+
+        .message-type {
+          font-weight: bold;
+          color: #333;
+        }
+
+        .message-text {
+          margin: 0.25rem 0;
+          color: #555;
+        }
+
+        .message-time {
+          font-size: 0.85rem;
+          color: #888;
+        }
+
+        .read-status {
+          font-size: 0.75rem;
+          margin-top: 0.25rem;
+          color: #6c757d;
+        }
+
+        .label-unread {
+          color: #d9534f;
+          font-weight: bold;
+        }
+
+        .empty-state {
+          text-align: center;
+          padding: 2rem;
+          color: #999;
+        }
+        .back-btn {
+          background-color: #6c757d;
+          color: white;
+          border: none;
+          padding: 0.5rem 1rem;
+          border-radius: 4px;
+          cursor: pointer;
+          margin-right: 0.5rem;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>📬 Village Notifications</h2>
+
+    <div class="header-actions">
+        <p class="unread-count" th:if="${unreadCount > 0}">
+            You have <span th:text="${unreadCount}"></span> unread messages
+        </p>
+        <button onclick="markAllAsRead()" class="mark-all-btn">Mark All as Read</button>
+        <button onclick="goBack()" class="back-btn">← Back</button>
+    </div>
+
+    <div class="message-list">
+        <div th:if="${#lists.isEmpty(villageMessages)}" class="empty-state">
+            No messages available
+        </div>
+
+        <div th:each="msg : ${villageMessages}"
+             th:class="'message-item ' + (!msg.read ? 'unread' : '')"
+             th:onclick="'markAsRead(' + ${msg.id} + ')'">
+            <div class="message-type" th:text="${msg.type}">Type</div>
+            <div class="message-text" th:text="${msg.message}">Message</div>
+            <div class="message-time"
+                 th:text="${#temporals.format(msg.timestamp, 'dd MMM yyyy, hh:mm a')}">Time</div>
+            <div class="read-status"
+                 th:text="${msg.read} ? 'Read' : 'Unread'"
+                 th:classappend="${!msg.read} ? 'label-unread' : ''"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function markAsRead(id) {
+      fetch('/village/messages/' + id + '/mark-read', {
+        method: 'POST'
+      }).then(() => location.reload());
+    }
+
+    function markAllAsRead() {
+      fetch('/village/messages/mark-all-read', {
+        method: 'POST'
+      }).then(() => location.reload());
+    }
+
+    function goBack() {
+    window.history.back();
+    }
+</script>
+
+
+</body>
+</html>
