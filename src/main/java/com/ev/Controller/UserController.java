@@ -419,61 +419,71 @@ public class UserController {
 
         return "user-booking-details";
     }
-
     @PostMapping("/create-activity-checkout-session")
     @ResponseBody
-    public Map<String, Object> createActivityCheckoutSession(@RequestParam Long bookingId,
-                                                             @RequestParam(required = false) String filterDate,
-                                                             @RequestParam(required = false) String filterActivity,
-                                                             @RequestParam(required = false) String filterVillage,
-                                                             HttpSession session) {
+    public Map<String, Object> createActivityCheckoutSession(
+            @RequestParam Long bookingId,
+            @RequestParam(required = false) String filterDate,
+            @RequestParam(required = false) String filterActivity,
+            @RequestParam(required = false) String filterVillage,
+            HttpSession session) {
+
         System.out.println("⚙️ [CREATE SESSION] Starting for bookingId: " + bookingId);
         Map<String, Object> response = new HashMap<>();
 
+        // Fetch booking
         ActivityBooking activityBooking = activityBookingService.getBookingsById(bookingId);
         if (activityBooking == null) {
             System.out.println("❌ [CREATE SESSION] Booking not found for ID: " + bookingId);
             throw new RuntimeException("Booking not found");
         }
 
+        // Set Stripe key
         Stripe.apiKey = stripeSecretKey;
 
         try {
-            long amount = (long) (activityBooking.getTotalAmount() * 100);
+            long amount = (long) (activityBooking.getTotalAmount() * 100); // convert to paisa
             System.out.println("💰 [CREATE SESSION] Amount in paisa: " + amount);
             System.out.println("📧 [CREATE SESSION] Customer email: " + activityBooking.getUser().getUserEmail());
 
-            String successUrl;
-                if (filterDate == null) filterDate = (String) session.getAttribute("filterDate");
-                if (filterActivity == null) filterActivity = (String) session.getAttribute("filterActivity");
-                if (filterVillage == null) filterVillage = (String) session.getAttribute("filterVillage");
+            // Get base URL from Railway variable
+            String baseUrl = System.getenv("APP_BASE_URL");
+            if (baseUrl == null) {
+                baseUrl = "http://localhost:8081"; // fallback for local dev
+            }
 
-                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("http://localhost:8081/user/bookingsHistory/current")
+            // Use session attributes if filters are null
+            if (filterDate == null) filterDate = (String) session.getAttribute("filterDate");
+            if (filterActivity == null) filterActivity = (String) session.getAttribute("filterActivity");
+            if (filterVillage == null) filterVillage = (String) session.getAttribute("filterVillage");
 
-                        .queryParam("bookingId", bookingId)
-                        .queryParam("session_id", "{CHECKOUT_SESSION_ID}");
+            // Build success URL dynamically
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUrl + "/user/bookingsHistory/current")
+                    .queryParam("bookingId", bookingId)
+                    .queryParam("session_id", "{CHECKOUT_SESSION_ID}");
 
-                if (filterDate != null) builder.queryParam("filterDate", filterDate);
-                if (filterActivity != null) builder.queryParam("filterActivity", filterActivity);
-                if (filterVillage != null) builder.queryParam("filterVillage", filterVillage);
+            if (filterDate != null) builder.queryParam("filterDate", filterDate);
+            if (filterActivity != null) builder.queryParam("filterActivity", filterActivity);
+            if (filterVillage != null) builder.queryParam("filterVillage", filterVillage);
 
-                successUrl = builder.build().toUriString();
+            String successUrl = builder.build().toUriString();
+            String cancelUrl = baseUrl + "/payment-cancel";
 
-
+            // Create Stripe session
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
                     .setSuccessUrl(successUrl)
-                    .setCancelUrl("http://localhost:8080/payment-cancel")
+                    .setCancelUrl(cancelUrl)
                     .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                     .setCustomerEmail(activityBooking.getUser().getUserEmail())
-                    .setClientReferenceId(String.valueOf(activityBooking.getBookingId())) // 👈 Important for webhook
+                    .setClientReferenceId(String.valueOf(activityBooking.getBookingId())) // for webhook
                     .addLineItem(
                             SessionCreateParams.LineItem.builder()
                                     .setQuantity(1L)
                                     .setPriceData(
                                             SessionCreateParams.LineItem.PriceData.builder()
                                                     .setCurrency("inr")
-                                                    .setUnitAmount((long) (activityBooking.getTotalAmount() * 100))
+                                                    .setUnitAmount(amount)
                                                     .setProductData(
                                                             SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                                                     .setName("Activity Booking #" + activityBooking.getBookingId())
@@ -485,10 +495,11 @@ public class UserController {
                     )
                     .build();
 
-            Session stripeSession  = Session.create(params);
-            response.put("id", stripeSession .getId());
-            System.out.println("✅ [CREATE SESSION] Session created with ID: " + stripeSession .getId());
-            System.out.println("🔗 [CREATE SESSION] Checkout URL: " + stripeSession .getUrl());
+            Session stripeSession = Session.create(params);
+            response.put("id", stripeSession.getId());
+
+            System.out.println("✅ [CREATE SESSION] Session created with ID: " + stripeSession.getId());
+            System.out.println("🔗 [CREATE SESSION] Checkout URL: " + stripeSession.getUrl());
 
         } catch (StripeException e) {
             System.out.println("❌ [CREATE SESSION] Stripe error: " + e.getMessage());
